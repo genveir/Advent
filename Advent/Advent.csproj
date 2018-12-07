@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="TextFile1.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Input\Advent3Input.txt" />
+  </ItemGroup>
+
+</Project>
