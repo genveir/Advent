@@ -6,9 +6,9 @@ namespace Advent
     {
         static void Main(string[] args)
         {
-            new Advent6().WritePlan();
+            new Advent7().WritePlan();
             Console.WriteLine();
-            new Advent6().MultiTask();
+            new Advent7().MultiTask();
             Console.ReadLine();
         }
     }

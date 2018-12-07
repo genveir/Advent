@@ -2,15 +2,34 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Input\a3test.txt" />
+    <None Remove="Input\a7test.txt" />
+    <None Remove="Input\Advent1Input.txt" />
+    <None Remove="Input\Advent2Input.txt" />
+    <None Remove="Input\Advent4Input.txt" />
+    <None Remove="Input\Advent5Input.txt" />
+    <None Remove="Input\Advent6Input.txt" />
+    <None Remove="Input\Advent7Input.txt" />
     <None Remove="TextFile1.txt" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Input\Advent3Input.txt" />
+    <EmbeddedResource Include="Input\a3test.txt" />
+    <EmbeddedResource Include="Input\a7test.txt" />
+    <EmbeddedResource Include="Input\Advent1Input.txt" />
+    <EmbeddedResource Include="Input\Advent2Input.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Input\Advent3Input.txt" />
+    <EmbeddedResource Include="Input\Advent4Input.txt" />
+    <EmbeddedResource Include="Input\Advent5Input.txt" />
+    <EmbeddedResource Include="Input\Advent6Input.txt" />
+    <EmbeddedResource Include="Input\Advent7Input.txt" />
   </ItemGroup>
 
 </Project>

@@ -8,172 +8,143 @@ namespace Advent
 {
     class Advent6
     {
-        private List<Prereq> GetInput()
+        private List<SearchItem> GetInput()
         {
-            var vals = new List<Prereq>();
-            //using (var txt = new StreamReader(new FileStream(@"D:\repos\Advent\Advent\Input\a6test.txt", FileMode.Open)))
-            using (var txt = new StreamReader(new FileStream(@"D:\repos\Advent\Advent\Input\Advent6Input.txt", FileMode.Open)))
+            var adventNum = this.GetType().Name.ToCharArray().Last();
+            var input = typeof(Program).Assembly.GetManifestResourceStream("Advent.Input.Advent" + adventNum + "Input.txt");
+
+            var vals = new List<SearchItem>();
+            using (var txt = new StreamReader(input))
             {
                 while (!txt.EndOfStream)
-                    vals.Add(Prereq.Parse(txt.ReadLine()));
+                    vals.Add(SearchItem.Parse(txt.ReadLine()));
             }
 
             return vals;
         }
 
-        private class Prereq
+        private class Grid
         {
-            public static Prereq Parse(string input)
+            public Grid(int XLowest, int XHighest, int YLowest, int YHighest)
             {
-                return new Prereq()
+                this.XLowest = XLowest;
+                this.XHighest = XHighest;
+                this.YLowest = YLowest;
+                this.YHighest = YHighest;
+
+                GridCoords = new GridCoord[XHighest - XLowest + 1, YHighest - YLowest + 1];
+            }
+
+            public int XLowest;
+            public int YLowest;
+            public int XHighest;
+            public int YHighest;
+
+            private GridCoord[,] GridCoords;
+
+            public GridCoord Coord(int X, int Y)
+            {
+                if (GridCoords[X - XLowest, Y - YLowest] == null)
+                    GridCoords[X - XLowest, Y - YLowest] = new GridCoord() { X = X, Y = Y };
+
+                return GridCoords[X - XLowest, Y - YLowest];
+            }
+        }
+
+        private class GridCoord
+        {
+            public int X;
+            public int Y;
+
+            public SearchItem closest;
+
+            public int CalcDistance(GridCoord other)
+            {
+                var xDist = Math.Abs(X - other.X);
+                var yDist = Math.Abs(Y - other.Y);
+
+                return xDist + yDist;
+            }
+
+            public int CalcDistance(int X, int Y)
+            {
+                var xDist = Math.Abs(this.X - X);
+                var yDist = Math.Abs(this.Y - Y);
+
+                return xDist + yDist;
+            }
+        }
+
+        private class SearchItem : GridCoord
+        {
+            public int numClosest;
+
+            public static SearchItem Parse(string input)
+            {
+                var coords = input.Split(",").Select(i => int.Parse(i)).ToArray();
+                return new SearchItem()
                 {
-                    Prerequisite = input[5],
-                    After = input[36]
+                    X = coords[0],
+                    Y = coords[1]
                 };
             }
-
-            public char Prerequisite;
-            public char After;
         }
 
-        private class PlanStep
+        public int GetLargestArea()
         {
-            public List<PlanStep> Prerequisite = new List<PlanStep>();
-            public List<PlanStep> After = new List<PlanStep>();
+            var searchItems = GetInput();
 
-            public void Take()
+            int XLowest = searchItems.Min(s => s.X);
+            int XHighest = searchItems.Max(s => s.X);
+            int YLowest = searchItems.Min(s => s.Y);
+            int YHighest = searchItems.Max(s => s.Y);
+
+            var grid = new Grid(
+                XLowest,
+                XHighest,
+                YLowest,
+                YHighest
+            );
+
+            for (int x = XLowest; x <= XHighest; x++)
             {
-                foreach (var step in After) step.Prerequisite.Remove(this);
-            }
-
-            public int TimeTaken { get; set; }
-
-            public bool IsAvailable()
-            {
-                return Prerequisite.Count == 0;
-            }
-        }
-
-        private class Plan
-        {
-            public List<PlanStep> available;
-
-            private Dictionary<char, PlanStep> steps = new Dictionary<char, PlanStep>();
-
-            public Plan(List<Prereq> input)
-            {
-                available = new List<PlanStep>();
-
-                foreach (var prereq in input)
+                for (int y = YLowest; y <= YHighest; y++)
                 {
-                    PlanStep prerequisite = GetOrCreate(prereq.Prerequisite);
-                    PlanStep after = GetOrCreate(prereq.After);
+                    var gridCoord = grid.Coord(x, y);
 
-                    prerequisite.After.Add(after);
-                    after.Prerequisite.Add(prerequisite);
+                    int lowestDist = int.MaxValue;
+                    SearchItem lowestItem = null;
+                    foreach (var item in searchItems)
+                    {
+                        var dist = item.CalcDistance(gridCoord);
+                        if (dist < lowestDist)
+                        {
+                            lowestDist = dist;
+                            lowestItem = item;
+                        }
+                    }
+                    gridCoord.closest = lowestItem;
+                    lowestItem.numClosest++;
                 }
             }
 
-            public int GetNumAvailable()
-            {
-                return steps.Where(s => s.Value.IsAvailable()).Count();
-            }
-
-            public IEnumerable<PlanStep> GetAvailable(int num)
-            {
-                var relevantSteps = steps.Where(s => s.Value.IsAvailable())
-                    .OrderBy(kv => kv.Key)
-                    .Take(num)
-                    .ToList();
-
-                foreach (var relevantStep in relevantSteps) steps.Remove(relevantStep.Key);
-                return relevantSteps.Select(kv => kv.Value);
-            }
-
-            public char? TakeNext()
-            {
-                var availableSteps = steps.Where(s => s.Value.IsAvailable());
-                if (availableSteps.Count() == 0) return null;
-
-                var next = (availableSteps.Count() > 1) ?
-                    availableSteps.OrderBy(kv => kv.Key).First() :
-                    availableSteps.Single();
-
-                steps.Remove(next.Key);
-
-                next.Value.Take();
-                return next.Key;
-            }
-
-            private PlanStep GetOrCreate(char key)
-            {
-                PlanStep step;
-                steps.TryGetValue(key, out step);
-                if (step == null)
-                {
-                    step = new PlanStep();
-                    step.TimeTaken = key - 'A' + 61; // haha, side effects much
-                    steps.Add(key, step);
-                }
-                return step;
-            }
+            return searchItems.Max(s => s.numClosest);
         }
 
-        public void WritePlan()
+        public int GetAreaSize()
         {
-            var input = GetInput();
+            var searchItems = GetInput();
 
-            var plan = new Plan(input);
-
-            using (var writer = new StreamWriter(new FileStream(@"D:\temp\plan.txt", FileMode.Create)))
+            int inArea = 0;
+            for (int x = -1000; x <= 1000; x++)
             {
-                for (char? c = plan.TakeNext(); c != null; c = plan.TakeNext())
+                for (int y = -1000; y <= 1000; y++)
                 {
-                    writer.Write(c);
-                    Console.Write(c);
+                    if (searchItems.Sum(s => s.CalcDistance(x, y)) < 10000) inArea++;
                 }
             }
-        }
 
-        public void MultiTask()
-        {
-            var input = GetInput();
-
-            var plan = new Plan(input);
-
-            int moment = 0;
-            int availableElves = 5;
-            List<TimeEvent> TimeLine = new List<TimeEvent>();
-            TimeLine.Add(new TimeEvent() { taskComplete = null, moment = 0 });
-
-            while (TimeLine.Count > 0)
-            {
-                var currentEvent = TimeLine.First();
-                TimeLine.Remove(currentEvent);
-                if (currentEvent.taskComplete != null)
-                {
-                    currentEvent.taskComplete.Take();
-                    availableElves++;
-                }
-                moment = currentEvent.moment;
-
-                var numTasks = Math.Min(plan.GetNumAvailable(), availableElves);
-                var startedTasks = plan.GetAvailable(numTasks);
-                foreach (var startedTask in startedTasks)
-                {
-                    TimeLine.Add(new TimeEvent() { taskComplete = startedTask, moment = moment + startedTask.TimeTaken });
-                    availableElves--;
-                }
-                TimeLine = TimeLine.OrderBy(tl => tl.moment).ToList();
-            }
-
-            Console.WriteLine(moment);
-        }
-
-        private class TimeEvent
-        {
-            public int moment;
-            public PlanStep taskComplete;
+            return inArea;
         }
     }
 }

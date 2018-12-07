@@ -10,9 +10,12 @@ namespace Advent
     {
         private List<char[]> GetInput()
         {
+            var adventNum = this.GetType().Name.ToCharArray().Last();
+            var input = typeof(Program).Assembly.GetManifestResourceStream("Advent.Input.Advent" + adventNum + "Input.txt");
+
             var vals = new List<char[]>();
 
-            using (var txt = new StreamReader(new FileStream(@"D:\repos\Advent\Advent\Input\Advent2Input.txt", FileMode.Open)))
+            using (var txt = new StreamReader(input))
             {
                 while (!txt.EndOfStream)
                     vals.Add(txt.ReadLine().ToCharArray());
