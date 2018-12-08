@@ -59,14 +59,10 @@ namespace Advent
 
         private class Plan
         {
-            public List<PlanStep> available;
-
             private Dictionary<char, PlanStep> steps = new Dictionary<char, PlanStep>();
 
             public Plan(List<Prereq> input)
             {
-                available = new List<PlanStep>();
-
                 foreach (var prereq in input)
                 {
                     PlanStep prerequisite = GetOrCreate(prereq.Prerequisite);
