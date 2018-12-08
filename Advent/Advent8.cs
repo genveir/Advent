@@ -56,8 +56,10 @@ namespace Advent
 
         public void WriteResult()
         {
-            Console.WriteLine(GetInput().MetadataSum);
-            Console.WriteLine(GetInput().Part2Sum);
+            var root = GetInput();
+
+            Console.WriteLine(root.MetadataSum);
+            Console.WriteLine(root.Part2Sum);
         }
     }
 }
