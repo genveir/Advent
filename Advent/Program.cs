@@ -6,7 +6,9 @@ namespace Advent
     {
         static void Main(string[] args)
         {
-            new Advent9().WriteResults();
+            new _6FromPy().DoTheThing();
+
+            Console.WriteLine("done");
             Console.ReadLine();
         }
     }
