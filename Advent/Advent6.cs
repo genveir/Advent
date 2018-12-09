@@ -123,11 +123,14 @@ namespace Advent
                             lowestDist = dist;
                             lowestItem = item;
                         }
+                        else if (dist == lowestDist) lowestItem = null;
                     }
                     gridCoord.closest = lowestItem;
-                    lowestItem.numClosest++;
-
-                    if (x == XLowest || x == XHighest || y == YLowest || y == YHighest) lowestItem.IsInfinite = true;
+                    if (lowestItem != null)
+                    {
+                        lowestItem.numClosest++;
+                        if (x == XLowest || x == XHighest || y == YLowest || y == YHighest) lowestItem.IsInfinite = true;
+                    }
                 }
             }
 
