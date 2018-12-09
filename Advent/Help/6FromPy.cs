@@ -29,12 +29,6 @@ namespace Advent
                 var minX = X.Min(); var maxX = X.Max(); var minY = Y.Min(); var maxY = Y.Max();
 
                 //#Using only the Manhattan distance, determine the area around each coordinate by counting the number of integer X,Y locations that are closest to that coordinate (and aren't tied in distance to any other coordinate).
-                //infiniteCoords = set([i for i in range(len(coords)) if X[i] in (minX, maxX) or Y[i] in [minY, maxY]])
-                var infiniteCoords = new HashSet<int>();
-                for (int i = 0; i < coords.Count(); i++)
-                {
-                    if (coords[i].X == minX || coords[i].X == maxX || coords[i].Y == minY || coords[i].Y == maxY) infiniteCoords.Add(i);
-                }
 
                 //closestPointsASCII = {}
                 var closestPointASCII = new Dictionary<XYTuple, char>();
@@ -42,8 +36,11 @@ namespace Advent
                 //closestPoints = {}
                 var closestPoints = new Dictionary<XYTuple, int>();
 
-                //pointsCount = defaultdict(int)
-                var pointsCount = new Dictionary<int, int>();
+                //infinitePoints = defaultdict(int);
+                var infinitePoints = new Dictionary<int, bool>(); for (int n = 0; n < X.Length; n++) infinitePoints.Add(n, false);
+
+                //pointsCount = defaultdict(bool)
+                var pointsCount = new Dictionary<int, int>(); for (int n = 0; n < X.Length; n++) pointsCount.Add(n, 0);
 
                 //for x in range(minX, maxX + 1) :
                 for (int x = minX; x < maxX + 1; x++)
@@ -71,8 +68,10 @@ namespace Advent
                             closestPoints.Add(new XYTuple(x, y), minDist[1]);
 
                             //pointsCount[minDist[1]] += 1
-                            if (!pointsCount.ContainsKey(minDist[1])) pointsCount.Add(minDist[1], 0);
                             pointsCount[minDist[1]] += 1;
+
+                            //infinitePoints[minDist[1]] = infinitePoints[minDist[1] or x in (minX, maxX) or y in [minY, maxY]]
+                            if (x == minX || x == maxX || y == minY || y == maxY) infinitePoints[minDist[1]] = true;
                         }
                         //else:
                         else
@@ -90,7 +89,7 @@ namespace Advent
                 //  max(
                 //      [
                 //          (pointsCount[index], coords[index]) 
-                //          for index in range(len(X)) if index not in infiniteCoords
+                //          for index in range(len(X)) if index not in infinitePoints
                 //      ]
                 //  )
                 //)
@@ -98,7 +97,7 @@ namespace Advent
                 List<PointCoordTuple> tuples = new List<PointCoordTuple>();
                 for (int index = 0; index < X.Length; index++)
                 {
-                    if (infiniteCoords.Contains(index)) continue;
+                    if (infinitePoints[index]) continue;
                     tuples.Add(new PointCoordTuple(pointsCount[index], coords[index]));
                 }
                 Console.WriteLine(tuples.Max());
