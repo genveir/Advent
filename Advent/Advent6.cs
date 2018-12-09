@@ -78,6 +78,7 @@ namespace Advent
         private class SearchItem : GridCoord
         {
             public int numClosest;
+            public bool IsInfinite = false;
 
             public static SearchItem Parse(string input)
             {
@@ -125,10 +126,12 @@ namespace Advent
                     }
                     gridCoord.closest = lowestItem;
                     lowestItem.numClosest++;
+
+                    if (x == XLowest || x == XHighest || y == YLowest || y == YHighest) lowestItem.IsInfinite = true;
                 }
             }
 
-            return searchItems.Max(s => s.numClosest);
+            return searchItems.Where(s => !s.IsInfinite).Max(s => s.numClosest);
         }
 
         public int GetAreaSize()
