@@ -91,9 +91,9 @@ namespace Advent
                 var yMin = coords.Select(c => c.Y).Min();
 
                 Console.WriteLine("adjacencyBucket:");
-                for (int x = xMin; x < xMin + 80; x++)
+                for (int y = yMin; y < yMin + 60; y++)
                 {
-                    for (int y = yMin; y < yMin; y++)
+                    for (int x = xMin; x < xMin + 60; x++)
                     {
                         Console.Write((coords.Where(c => c.X == x && c.Y == y).Count() > 0) ? "X" : " ");
                     }
@@ -135,10 +135,14 @@ namespace Advent
             var v2 = vectors.Where(v => v.velocityX != v1.velocityX).First();
             var startingTime = GetXCrossingTime(v1, v2);
 
-            for (int time = startingTime - 50; time < startingTime + 50; time++)
+            for (int time = startingTime - 5; time < startingTime + 5; time++)
             {
                 var adjacencyBucket = new AdjacencyBucket(vectors, time);
-                if (adjacencyBucket.GetNumAdjacent() == vectors.Count) Console.WriteLine("dit werkt");
+                if (adjacencyBucket.GetNumAdjacent() > vectors.Count * .8)
+                {
+                    adjacencyBucket.Print();
+                    Console.WriteLine("dit werkt, op time " + time + " met startingTime " + startingTime);
+                }
             }
         }
     }
