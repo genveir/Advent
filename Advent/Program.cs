@@ -6,7 +6,9 @@ namespace Advent
     {
         static void Main(string[] args)
         {
-            new Advent9().WriteResults();
+            new Advent10().WriteResult();
+
+            Console.WriteLine("done");
             Console.ReadLine();
         }
     }

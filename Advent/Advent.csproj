@@ -8,6 +8,7 @@
   <ItemGroup>
     <None Remove="Input\a3test.txt" />
     <None Remove="Input\a7test.txt" />
+    <None Remove="Input\Advent10Input.txt" />
     <None Remove="Input\Advent1Input.txt" />
     <None Remove="Input\Advent2Input.txt" />
     <None Remove="Input\Advent4Input.txt" />
@@ -32,6 +33,7 @@
     <EmbeddedResource Include="Input\Advent6Input.txt" />
     <EmbeddedResource Include="Input\Advent7Input.txt" />
     <EmbeddedResource Include="Input\Advent8Input.txt" />
+    <EmbeddedResource Include="Input\Advent10Input.txt" />
   </ItemGroup>
 
 </Project>
