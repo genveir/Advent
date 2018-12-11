@@ -129,11 +129,11 @@ namespace Advent
 
             var grid = new Grid(3);
             grid.AggregatePowerP1();
-            Console.WriteLine(grid.mostPowerCoord);
+            // oeps, grid geeft bottomright coord en je moet topleft hebben
+            Console.WriteLine((grid.mostPowerCoord.X - grid.mostPowerCoord.Z + 1) + "," + (grid.mostPowerCoord.Y - grid.mostPowerCoord.Z + 1) + "," + grid.mostPowerCoord.Z);
 
             var grid2 = new Grid(300);
             grid2.AggregatePowerP2();
-            // oeps
             Console.WriteLine((grid2.mostPowerCoord.X - grid2.mostPowerCoord.Z + 1) + "," + (grid2.mostPowerCoord.Y - grid2.mostPowerCoord.Z + 1) + "," + grid2.mostPowerCoord.Z);
         }
 
