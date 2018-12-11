@@ -15,15 +15,15 @@ namespace Advent
             public XYZCoord mostPowerCoord;
             public int mostPower;
 
-            public Grid()
+            public Grid(int maxZ)
             {
-                cells = new Cell[300, 300, 300];
+                cells = new Cell[300, 300, maxZ];
 
-                for (int x = 0; x < 300; x++)
+                for (int z = 0; z < maxZ; z++)
                 {
-                    for (int y = 0; y < 300; y++)
+                    for (int x = 0; x < 300; x++)
                     {
-                        for (int z = 0; z < 300; z++)
+                        for (int y = 0; y < 300; y++)
                         {
                             cells[x, y, z] = new Cell(x + 1, y + 1, z);
                         }
@@ -33,35 +33,60 @@ namespace Advent
 
             public void AggregatePowerP1()
             {
-                for (int x = 0; x < 300; x++)
-                {
-                    for (int y = 0; y < 300; y++)
-                    {
-                        CalcAggregate(x, y, 3);
+                for (int z = 0; z < 3; z++)
+                { 
+                    for (int x = 0; x < 300; x++)
+                    { 
+                        for (int y = 0; y < 300; y++)
+                        {
+                            CalcAggregate(x, y, z);
+                        }
                     }
                 }
+            }
+
+            public void AggregatePowerP2()
+            {
+                for (int z = 0; z < 300; z++)
+                {
+                    if (z % 100 == 0) Console.Write("x");
+                    else if (z % 10 == 0) Console.Write(".");
+
+                    for (int x = 0; x < 300; x++)
+                    {
+                        for (int y = 0; y < 300; y++)
+                        {
+                            CalcAggregate(x, y, z);
+                        }
+                    }
+                }
+                Console.WriteLine();
             }
 
             public void CalcAggregate(int x, int y, int z)
             {
-                var cell = cells[x, y, 0];
-                for (int xOff = -z + 1; xOff <= 0; xOff++)
-                {
-                    for (int yOff = -z + 1; yOff <= 0; yOff++)
-                    {
-                        SafeAdd(x + xOff, y + yOff, z, cell.Power);
-                    }
-                }
-            }
+                if (z > x || z > y) return;
 
-            private void SafeAdd(int x, int y, int z, int Power)
-            {
-                if (x < 0 || y < 0 || x > cells.GetUpperBound(0) || y > cells.GetUpperBound(1)) return;
-                cells[x, y, z].PowerAggregate += Power;
+                var cell = cells[x, y, z];
+                if (z == 0) cell.PowerAggregate = cell.Power;
+                else
+                {
+                    cell.PowerAggregate = cells[x - 1, y - 1, z - 1].PowerAggregate;
+                    for (int X = x-z; X < x; X++)
+                    {
+                        cell.PowerAggregate += cells[X, y, 0].Power;
+                    }
+                    for (int Y = y-z; Y < y; Y++)
+                    {
+                        cell.PowerAggregate += cells[x, Y, 0].Power;
+                    }
+                    cell.PowerAggregate += cells[x, y, 0].Power;
+                }
+
                 if (cells[x, y, z].PowerAggregate > mostPower)
                 {
                     mostPower = cells[x, y, z].PowerAggregate;
-                    mostPowerCoord = new XYZCoord(x + 1, y + 1, z);
+                    mostPowerCoord = new XYZCoord(x + 1, y + 1, z + 1);
                 }
             }
         }
@@ -98,13 +123,35 @@ namespace Advent
 
         public void WriteResult()
         {
+            //Tests();
+
             gridSerialNumber = 9798;
-            var grid = new Grid();
+
+            var grid = new Grid(3);
             grid.AggregatePowerP1();
-
-            var mostPower = grid.mostPowerCoord;
-
             Console.WriteLine(grid.mostPowerCoord);
+
+            var grid2 = new Grid(300);
+            grid2.AggregatePowerP2();
+            // oeps
+            Console.WriteLine((grid2.mostPowerCoord.X - grid2.mostPowerCoord.Z + 1) + "," + (grid2.mostPowerCoord.Y - grid2.mostPowerCoord.Z + 1) + "," + grid2.mostPowerCoord.Z);
+        }
+
+        private void Tests()
+        {
+            gridSerialNumber = 18;
+            var g0 = new Grid(300);
+            g0.AggregatePowerP2();
+            Console.WriteLine((g0.mostPowerCoord.X - g0.mostPowerCoord.Z + 1) + "," + (g0.mostPowerCoord.Y - g0.mostPowerCoord.Z + 1) + "," + g0.mostPowerCoord.Z);
+
+
+            gridSerialNumber = 42;
+            var g1 = new Grid(300);
+            g1.AggregatePowerP2();
+            Console.WriteLine((g1.mostPowerCoord.X - g1.mostPowerCoord.Z + 1) + "," + (g1.mostPowerCoord.Y - g1.mostPowerCoord.Z + 1) + "," + g1.mostPowerCoord.Z + 1);
+
+            Console.WriteLine(g0.mostPowerCoord + " should be 90,269,16 with power " + g0.mostPower + " which should be 113");
+            Console.WriteLine(g1.mostPowerCoord + " should be 232,251,12 with power " + g1.mostPower + " which should be 119");
         }
     }
 }
