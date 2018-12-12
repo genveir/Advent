@@ -106,6 +106,29 @@ namespace Advent
 
                 return new PlantLine(nextState, startInt - 2);
             }
+
+            public int PatternValue
+            {
+                get
+                {
+                    int val = 0;
+                    for (int n = minIndex; n < maxIndex; n++)
+                    {
+                        if (plants.Contains(n)) val += n;
+                    }
+                    return val;
+                }
+            }
+
+            public override string ToString()
+            {
+                var builder = new StringBuilder();
+                for (int n = minIndex; n <= maxIndex; n++)
+                {
+                    builder.Append((plants.Contains(n) ? '#' : '.'));
+                }
+                return builder.ToString();
+            }
         }
 
         private void TakeStep()
@@ -115,46 +138,40 @@ namespace Advent
 
         private void Print()
         {
-            for (int n = current.minIndex; n <= current.maxIndex; n++)
-            {
-                Console.Write((current.plants.Contains(n) ? '#' : '.'));
-            }
-            Console.WriteLine();
+            Console.WriteLine(current.ToString());
         }
 
         public void WriteResult()
         {
             ParseInput();
 
-            Print();
             for (int n = 0; n < 20; n++)
             {
-                Console.Write(current.startInt.ToString().PadRight(2) + ": ");
                 TakeStep();
-                Print();
             }
             var result = current.Value;
             Console.WriteLine("sum of all plants is " + result);
 
             int lastValue = 0;
-            int lastDiff = 0;
-            int previousDiff = 0;
+            int diff = 0;
+            int lastPattern = 0;
             int generation = 20;
             while (true) 
             {
                 TakeStep();
                 generation++;
-                var diff = (current.Value - lastValue);
-                if (diff == lastDiff && diff == previousDiff) break; // zo is het wel repeating genoeg
 
-                lastDiff = diff;
-                previousDiff = lastDiff;
+                diff = (current.Value - lastValue);
+                var pattern = current.PatternValue;
+                if (pattern == lastPattern) break;
+
+                lastPattern = pattern;
                 lastValue = current.Value;
             }
             
             var curVal = current.Value;
             long genDiff = 50L * 1000L * 1000L * 1000L - generation;
-            var longtime = curVal + lastDiff * genDiff;
+            var longtime = curVal + diff * genDiff;
 
             using (var writer = new StreamWriter(new FileStream(@"d:\temp\output.txt", FileMode.Create)))
             {
