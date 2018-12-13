@@ -10,13 +10,12 @@ namespace Advent.Advent13
 
         public XYCoord coord;
 
-        public static TrainTrack Parse(int x, int y, char input)
+        public static TrainTrack Parse(XYCoord coord, char input)
         {
-            var coord = new XYCoord(x, y);
             TrainTrack trackNorth;
             TrainTrack trackWest;
-            AllPositions.TryGetValue(new XYCoord(x, y - 1), out trackNorth);
-            AllPositions.TryGetValue(new XYCoord(x - 1, y), out trackWest);
+            AllPositions.TryGetValue(new XYCoord(coord.X, coord.Y - 1), out trackNorth);
+            AllPositions.TryGetValue(new XYCoord(coord.X - 1, coord.Y), out trackWest);
 
             switch (input)
             {
@@ -25,19 +24,8 @@ namespace Advent.Advent13
                 case '/': return new Corner(coord, trackWest, trackNorth);
                 case '-': return new EastWest(coord, trackWest);
                 case '+': return new Intersection(coord, trackWest, trackNorth);
-                case '<': CreateCart(coord, Direction.West); return new EastWest(coord, trackWest);
-                case '>': CreateCart(coord, Direction.East); return new EastWest(coord, trackWest);
-                case '^': CreateCart(coord, Direction.North); return new NorthSouth(coord, trackNorth);
-                case 'v': CreateCart(coord, Direction.South); return new NorthSouth(coord, trackNorth);
-                case ' ': return null;
                 default: throw new InvalidCastException("case " + input + " vergeten");
             }
-        }
-
-        private static void CreateCart(XYCoord coord, Direction direction)
-        {
-            var cart = new Cart(coord, direction);
-            Advent13Solution.Carts.Add(cart);
         }
 
         public static void LinkCarts(IEnumerable<Cart> carts)

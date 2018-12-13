@@ -10,7 +10,7 @@ namespace Advent.Advent13
 
     class Advent13Solution
     {
-        public static List<Cart> Carts;
+        public List<Cart> Carts;
 
         void ParseInput()
         {
@@ -20,7 +20,6 @@ namespace Advent.Advent13
 
             Carts = new List<Cart>();
 
-            var tracks = new List<TrainTrack>();
             using (var txt = new StreamReader(input))
             {
                 int y = 0;
@@ -29,15 +28,34 @@ namespace Advent.Advent13
                     var line = txt.ReadLine();
                     for (int x = 0; x < line.Length; x++)
                     {
-                        var track = TrainTrack.Parse(x, y, line[x]);
-                        if (track != null) tracks.Add(track);
+                        Parse(x, y, line[x]);
                     }
-
                     y++;
                 }
             }
 
             TrainTrack.LinkCarts(Carts);
+        }
+
+        private void Parse(int x, int y, char input)
+        {
+            var coord = new XYCoord(x, y);
+
+            switch (input)
+            {
+                case '<': CreateCart(coord, Direction.West); input = '-'; break;
+                case '>': CreateCart(coord, Direction.East); input = '-'; break;
+                case '^': CreateCart(coord, Direction.North); input = '|'; break;
+                case 'v': CreateCart(coord, Direction.South); input = '|'; break;
+            }
+
+            if (input != ' ') TrainTrack.Parse(coord, input);
+        }
+
+        private void CreateCart(XYCoord coord, Direction direction)
+        {
+            var cart = new Cart(coord, direction);
+            Carts.Add(cart);
         }
 
         public void WriteResult()
