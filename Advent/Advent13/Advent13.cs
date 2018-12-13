@@ -8,6 +8,20 @@ namespace Advent.Advent13
 {
     public enum Direction { North, East, South, West }
 
+    static class DirectionExtension
+    {
+        public static Direction Opposite(this Direction input)
+        {
+            switch (input)
+            {
+                case Direction.North: return Direction.South;
+                case Direction.East: return Direction.West;
+                case Direction.South: return Direction.North;
+                default: return Direction.East;
+            }
+        }
+    }
+
     class Advent13Solution
     {
         public List<Cart> Carts;

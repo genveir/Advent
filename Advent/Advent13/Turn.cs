@@ -9,14 +9,14 @@ namespace Advent.Advent13
         void MakeTurn(Cart cart);
     }
 
-    class Left : ITurn
+    class TurnLeft : ITurn
     {
-        private static Left _singleton;
-        public static Left Singleton
+        private static TurnLeft _singleton;
+        public static TurnLeft Singleton
         {
             get
             {
-                if (_singleton == null) _singleton = new Left();
+                if (_singleton == null) _singleton = new TurnLeft();
                 return _singleton;
             }
         }
@@ -31,17 +31,17 @@ namespace Advent.Advent13
             cart.TurnDirection = Next();
         }
 
-        public ITurn Next() { return Straight.Singleton; }
+        public ITurn Next() { return StraightOn.Singleton; }
     }
 
-    class Straight : ITurn
+    class StraightOn : ITurn
     {
-        private static Straight _singleton;
-        public static Straight Singleton
+        private static StraightOn _singleton;
+        public static StraightOn Singleton
         {
             get
             {
-                if (_singleton == null) _singleton = new Straight();
+                if (_singleton == null) _singleton = new StraightOn();
                 return _singleton;
             }
         }
@@ -51,17 +51,17 @@ namespace Advent.Advent13
             cart.TurnDirection = Next();
         }
 
-        public ITurn Next() { return Right.Singleton; }
+        public ITurn Next() { return TurnRight.Singleton; }
     }
 
-    class Right : ITurn
+    class TurnRight : ITurn
     {
-        private static Right _singleton;
-        public static Right Singleton
+        private static TurnRight _singleton;
+        public static TurnRight Singleton
         {
             get
             {
-                if (_singleton == null) _singleton = new Right();
+                if (_singleton == null) _singleton = new TurnRight();
                 return _singleton;
             }
         }
@@ -76,6 +76,6 @@ namespace Advent.Advent13
             cart.TurnDirection = Next();
         }
 
-        public ITurn Next() { return Left.Singleton; }
+        public ITurn Next() { return TurnLeft.Singleton; }
     }
 }

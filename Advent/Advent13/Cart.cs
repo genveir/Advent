@@ -25,7 +25,7 @@ namespace Advent.Advent13
             cartCoords.Add(start);
             this.start = start;
             this.Facing = facing;
-            TurnDirection = Left.Singleton;
+            TurnDirection = TurnLeft.Singleton;
         }
 
         public bool Move()
