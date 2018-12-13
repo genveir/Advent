@@ -6,40 +6,11 @@ namespace Advent.Advent13
 {
     abstract class TrainTrack
     {
-        static Dictionary<XYCoord, TrainTrack> AllPositions = new Dictionary<XYCoord, TrainTrack>();
-
         public XYCoord coord;
-
-        public static TrainTrack Parse(XYCoord coord, char input)
-        {
-            TrainTrack trackNorth;
-            TrainTrack trackWest;
-            AllPositions.TryGetValue(new XYCoord(coord.X, coord.Y - 1), out trackNorth);
-            AllPositions.TryGetValue(new XYCoord(coord.X - 1, coord.Y), out trackWest);
-
-            switch (input)
-            {
-                case '|': return new NorthSouth(coord, trackNorth);
-                case '\\': return new Corner(coord, trackNorth, trackWest);
-                case '/': return new Corner(coord, trackNorth, trackWest);
-                case '-': return new EastWest(coord, trackWest);
-                case '+': return new Intersection(coord, trackNorth, trackWest);
-                default: throw new InvalidCastException("case " + input + " vergeten");
-            }
-        }
-
-        public static void LinkCarts(IEnumerable<Cart> carts)
-        {
-            foreach (var cart in carts)
-            {
-                cart.track = AllPositions[cart.start];
-            }
-        }
 
         public TrainTrack(XYCoord coord, TrainTrack north, TrainTrack west)
         {
             this.coord = coord;
-            AllPositions.Add(coord, this);
             Neighbours = new Dictionary<Direction, TrainTrack>();
 
             if (north != null) Link(north, Direction.North, true);

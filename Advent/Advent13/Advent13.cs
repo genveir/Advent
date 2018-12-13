@@ -32,6 +32,7 @@ namespace Advent.Advent13
             //resourceName = "Advent.Input.a13test.txt";
             var input = typeof(Program).Assembly.GetManifestResourceStream(resourceName);
 
+            var factory = new TrackFactory();
             Carts = new List<Cart>();
 
             using (var txt = new StreamReader(input))
@@ -42,16 +43,16 @@ namespace Advent.Advent13
                     var line = txt.ReadLine();
                     for (int x = 0; x < line.Length; x++)
                     {
-                        Parse(x, y, line[x]);
+                        Parse(factory, x, y, line[x]);
                     }
                     y++;
                 }
             }
 
-            TrainTrack.LinkCarts(Carts);
+            factory.LinkCarts(Carts);
         }
 
-        private void Parse(int x, int y, char input)
+        private void Parse(TrackFactory factory, int x, int y, char input)
         {
             var coord = new XYCoord(x, y);
 
@@ -63,7 +64,7 @@ namespace Advent.Advent13
                 case 'v': CreateCart(coord, Direction.South); input = '|'; break;
             }
 
-            if (input != ' ') TrainTrack.Parse(coord, input);
+            if (input != ' ') factory.Parse(coord, input);
         }
 
         private void CreateCart(XYCoord coord, Direction direction)
