@@ -7,6 +7,7 @@ namespace Advent.Advent13
     abstract class TrainTrack
     {
         public XYCoord coord;
+        protected Dictionary<Direction, TrainTrack> Neighbours;
 
         public TrainTrack(XYCoord coord, TrainTrack north, TrainTrack west)
         {
@@ -16,8 +17,6 @@ namespace Advent.Advent13
             if (north != null) Link(north, Direction.North, true);
             if (west != null) Link(west, Direction.West, true);
         }
-
-        protected Dictionary<Direction, TrainTrack> Neighbours;
 
         public void Link(TrainTrack track, Direction direction, bool backLink)
         {

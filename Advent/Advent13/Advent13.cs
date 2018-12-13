@@ -48,29 +48,29 @@ namespace Advent.Advent13
                     y++;
                 }
             }
-
-            factory.LinkCarts(Carts);
         }
 
         private void Parse(TrackFactory factory, int x, int y, char input)
         {
             var coord = new XYCoord(x, y);
 
+            Cart cart = null;
+            TrainTrack track = null;
             switch (input)
             {
-                case '<': CreateCart(coord, Direction.West); input = '-'; break;
-                case '>': CreateCart(coord, Direction.East); input = '-'; break;
-                case '^': CreateCart(coord, Direction.North); input = '|'; break;
-                case 'v': CreateCart(coord, Direction.South); input = '|'; break;
+                case '<': cart = new Cart(coord, Direction.West); input = '-'; break;
+                case '>': cart = new Cart(coord, Direction.East); input = '-'; break;
+                case '^': cart = new Cart(coord, Direction.North); input = '|'; break;
+                case 'v': cart = new Cart(coord, Direction.South); input = '|'; break;
             }
 
-            if (input != ' ') factory.Parse(coord, input);
-        }
+            if (input != ' ') track = factory.Parse(coord, input);
 
-        private void CreateCart(XYCoord coord, Direction direction)
-        {
-            var cart = new Cart(coord, direction);
-            Carts.Add(cart);
+            if (cart != null)
+            {
+                Carts.Add(cart);
+                cart.track = track;
+            }
         }
 
         public void WriteResult()

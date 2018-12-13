@@ -29,13 +29,5 @@ namespace Advent.Advent13
 
             return newTrack;
         }
-
-        public void LinkCarts(IEnumerable<Cart> carts)
-        {
-            foreach (var cart in carts)
-            {
-                cart.track = AllPositions[cart.start];
-            }
-        }
     }
 }

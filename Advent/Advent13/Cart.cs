@@ -15,7 +15,6 @@ namespace Advent.Advent13
             cartCoords.Remove(coord);
         }
 
-        public XYCoord start;
         public TrainTrack track;
         public Direction Facing;
         public ITurn TurnDirection;
@@ -23,7 +22,6 @@ namespace Advent.Advent13
         public Cart(XYCoord start, Direction facing)
         {
             cartCoords.Add(start);
-            this.start = start;
             this.Facing = facing;
             TurnDirection = TurnLeft.Singleton;
         }
