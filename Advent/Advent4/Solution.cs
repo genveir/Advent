@@ -4,14 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Advent
+namespace Advent.Advent4
 {
-    class Advent4
+    class Solution : ISolution
     {
         private List<Event> GetInput()
         {
             var adventNum = this.GetType().Name.ToCharArray().Last();
-            var input = typeof(Program).Assembly.GetManifestResourceStream("Advent.Input.Advent" + adventNum + "Input.txt");
+            var input = typeof(Program).Assembly.GetManifestResourceStream("Advent.Advent4.Input.txt");
 
             var vals = new List<Event>();
             using (var txt = new StreamReader(input))
@@ -21,9 +21,9 @@ namespace Advent
             }
 
             vals = vals.OrderBy(v => v.Moment).ToList();
+            long id = -1;
             foreach (var val in vals)
             {
-                long id = -1;
                 if (val.Id == -1) val.Id = id;
                 else id = val.Id;
             }
@@ -184,6 +184,12 @@ namespace Advent
             var best = mostMinutes.minuteMostAsleep;
 
             return mostMinutes.Id * best;
+        }
+
+        public void WriteResult()
+        {
+            Console.WriteLine("part 1: " + GetMostAsleepId());
+            Console.WriteLine("part 2: " + GetMostAsleepMinute());
         }
     }
 }

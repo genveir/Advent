@@ -4,13 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Advent
+namespace Advent.Advent8
 {
-    class Advent8
+    class Solution : ISolution
     {
         private TreeNode GetInput()
         {
-            string resourceName = "Advent.Input.Advent8Input.txt";
+            string resourceName = "Advent.Advent8.Input.txt";
             var input = typeof(Program).Assembly.GetManifestResourceStream(resourceName);
 
             int[] inputInts;
@@ -58,8 +58,8 @@ namespace Advent
         {
             var root = GetInput();
 
-            Console.WriteLine(root.MetadataSum);
-            Console.WriteLine(root.Part2Sum);
+            Console.WriteLine("part1: " + root.MetadataSum);
+            Console.WriteLine("part2: " + root.Part2Sum);
         }
     }
 }

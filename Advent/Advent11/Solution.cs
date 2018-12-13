@@ -3,32 +3,41 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Advent
+namespace Advent.Advent11
 {
-    class Advent11
+    class Solution : ISolution
     {
         private static int gridSerialNumber;
 
         private class Grid
         {
-            public Cell[,,] cells;
+            public int[,,] power;
             public XYZCoord mostPowerCoord;
             public int mostPower;
 
             public Grid(int maxZ)
             {
-                cells = new Cell[300, 300, maxZ];
+                power = new int[300, 300, maxZ];
 
-                for (int z = 0; z < maxZ; z++)
+                for (int x = 0; x < 300; x++)
                 {
-                    for (int x = 0; x < 300; x++)
+                    for (int y = 0; y < 300; y++)
                     {
-                        for (int y = 0; y < 300; y++)
-                        {
-                            cells[x, y, z] = new Cell(x + 1, y + 1, z);
-                        }
+                        power[x, y, 0] = CalcPower(x + 1, y + 1);
                     }
                 }
+            }
+
+            private int CalcPower(int x, int y)
+            {
+                int rackId = x + 10;
+                var Power = y * rackId;
+                Power = Power + gridSerialNumber;
+                Power = Power * rackId;
+                Power = (Power / 100) % 10;
+                Power = Power - 5;
+
+                return Power;
             }
 
             public void AggregatePowerP1()
@@ -67,25 +76,24 @@ namespace Advent
             {
                 if (z > x || z > y) return;
 
-                var cell = cells[x, y, z];
-                if (z == 0) cell.PowerAggregate = cell.Power;
+                if (z == 0) return;
                 else
                 {
-                    cell.PowerAggregate = cells[x - 1, y - 1, z - 1].PowerAggregate;
-                    for (int X = x-z; X < x; X++)
+                    power[x, y, z] = power[x - 1, y - 1, z - 1];
+                    for (int X = x - z; X < x; X++)
                     {
-                        cell.PowerAggregate += cells[X, y, 0].Power;
+                        power[x, y, z] += power[X, y, 0];
                     }
-                    for (int Y = y-z; Y < y; Y++)
+                    for (int Y = y - z; Y < y; Y++)
                     {
-                        cell.PowerAggregate += cells[x, Y, 0].Power;
+                        power[x, y, z] += power[x, Y, 0];
                     }
-                    cell.PowerAggregate += cells[x, y, 0].Power;
+                    power[x, y, z] += power[x, y, 0];
                 }
 
-                if (cells[x, y, z].PowerAggregate > mostPower)
+                if (power[x, y, z] > mostPower)
                 {
-                    mostPower = cells[x, y, z].PowerAggregate;
+                    mostPower = power[x, y, z];
                     mostPowerCoord = new XYZCoord(x + 1, y + 1, z + 1);
                 }
             }
@@ -99,25 +107,6 @@ namespace Advent
             public override string ToString()
             {
                 return X + "," + Y + "," + Z;
-            }
-        }
-
-        private class Cell
-        {
-            public int Power { get; set; }
-            public int PowerAggregate { get; set; }
-
-            public Cell(int x, int y, int z)
-            {
-                if (z == 0)
-                {
-                    int rackId = x + 10;
-                    Power = y * rackId;
-                    Power = Power + gridSerialNumber;
-                    Power = Power * rackId;
-                    Power = (Power / 100) % 10;
-                    Power = Power - 5;
-                }
             }
         }
 

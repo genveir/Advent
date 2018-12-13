@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Advent
+namespace Advent.Advent9
 {
-    public class Advent9
+    public class Solution : ISolution
     {
         //479 players; last marble is worth 71035 points
-        public void WriteResults()
+        public void WriteResult()
         {
+            Console.Write("part1: ");
             WriteWinningScore(479, 71035);
+            Console.Write("part2: ");
             WriteWinningScore(479, 7103500);
         }
 

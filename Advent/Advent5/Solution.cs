@@ -4,14 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Advent
+namespace Advent.Advent5
 {
-    class Advent5
+    class Solution : ISolution
     {
         private string GetInput()
         {
             var adventNum = this.GetType().Name.ToCharArray().Last();
-            var input = typeof(Program).Assembly.GetManifestResourceStream("Advent.Input.Advent" + adventNum + "Input.txt");
+            var input = typeof(Program).Assembly.GetManifestResourceStream("Advent.Advent5.Input.txt");
 
             using (var txt = new StreamReader(input))
             {
@@ -58,6 +58,12 @@ namespace Advent
 
             lengths.Sort();
             return lengths.First();
+        }
+
+        public void WriteResult()
+        {
+            Console.WriteLine("part1: " + GetResult(null).Length);
+            Console.WriteLine("part2: " + GetResult2());
         }
     }
 }

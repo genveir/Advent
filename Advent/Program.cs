@@ -1,5 +1,4 @@
-﻿using Advent.Advent13;
-using System;
+﻿using System;
 
 namespace Advent
 {
@@ -7,7 +6,7 @@ namespace Advent
     {
         static void Main(string[] args)
         {
-            new Advent13Solution().WriteResult();
+            new Advent13.Solution().WriteResult();
 
             Console.WriteLine("done");
             Console.ReadLine();

@@ -4,9 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Advent
+namespace Advent.Advent12
 {
-    class Advent12
+    class Solution : ISolution
     {
         PlantLine current;
 
@@ -15,8 +15,8 @@ namespace Advent
 
         void ParseInput()
         {
-            string resourceName = "Advent.Input.Advent12Input.txt";
-            //resourceName = "Advent.Input.a12test.txt";
+            string resourceName = "Advent.Advent12.Input.txt";
+            //resourceName = "Advent.Advent12.Test.txt";
             var input = typeof(Program).Assembly.GetManifestResourceStream(resourceName);
 
             powers = new int[5];

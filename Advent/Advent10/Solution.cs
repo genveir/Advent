@@ -4,13 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Advent
+namespace Advent.Advent10
 {
-    class Advent10
+    class Solution : ISolution
     {
         List<Vector> GetInput()
         {
-            string resourceName = "Advent.Input.Advent10Input.txt";
+            string resourceName = "Advent.Advent10.Input.txt";
             var input = typeof(Program).Assembly.GetManifestResourceStream(resourceName);
 
             var vectors = new List<Vector>();
@@ -90,8 +90,7 @@ namespace Advent
                 var xMin = coords.Select(c => c.X).Min();
                 var yMin = coords.Select(c => c.Y).Min();
 
-                Console.WriteLine("adjacencyBucket:");
-                for (int y = yMin; y < yMin + 60; y++)
+                for (int y = yMin; y < yMin + 11; y++)
                 {
                     for (int x = xMin; x < xMin + 60; x++)
                     {

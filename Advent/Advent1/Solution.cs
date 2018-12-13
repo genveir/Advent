@@ -5,14 +5,14 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Advent
+namespace Advent.Advent1
 {
-    class Advent1
+    class Solution : ISolution
     {
         private List<long> GetInput()
         {
             var adventNum = this.GetType().Name.ToCharArray().Last();
-            var input = typeof(Program).Assembly.GetManifestResourceStream("Advent.Input.Advent" + adventNum + "Input.txt");
+            var input = this.GetType().Assembly.GetManifestResourceStream("Advent.Advent1.Input.txt");
 
             var vals = new List<long>();
 
@@ -49,6 +49,12 @@ namespace Advent
             var input = GetInput();
 
             return input.Sum();
+        }
+
+        public void WriteResult()
+        {
+            Console.WriteLine("part1: " + Calc());
+            Console.WriteLine("part2: " + FirstDouble());
         }
     }
 }

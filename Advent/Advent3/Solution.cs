@@ -4,14 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Advent
+namespace Advent.Advent3
 {
-    class Advent3
+    class Solution : ISolution
     {
         private List<Patch> GetInput()
         {
             var adventNum = this.GetType().Name.ToCharArray().Last();
-            var input = typeof(Program).Assembly.GetManifestResourceStream("Advent.Input.Advent" + adventNum + "Input.txt");
+            var input = typeof(Program).Assembly.GetManifestResourceStream("Advent.Advent3.Input.txt");
 
             var vals = new List<Patch>();
             using (var txt = new StreamReader(input))
@@ -98,6 +98,11 @@ namespace Advent
             }
 
             return overlap;
+        }
+
+        public void WriteResult()
+        {
+            Console.WriteLine("part2: " + GetOverlap());
         }
     }
 }

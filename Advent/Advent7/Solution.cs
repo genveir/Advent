@@ -4,15 +4,15 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Advent
+namespace Advent.Advent7
 {
-    class Advent7
+    class Solution : ISolution
     {
         private List<Prereq> GetInput()
         {
             var adventNum = this.GetType().Name.ToCharArray().Last();
-            string resourceName = "Advent.Input.Advent" + adventNum + "Input.txt";
-            var input = typeof(Program).Assembly.GetManifestResourceStream(resourceName);
+            string resourceName = "Advent.Advent7.Input.txt";
+            var input = this.GetType().Assembly.GetManifestResourceStream(resourceName);
 
             var vals = new List<Prereq>();
             using (var txt = new StreamReader(input))
@@ -131,6 +131,7 @@ namespace Advent
                     writer.Write(c);
                     Console.Write(c);
                 }
+                Console.WriteLine();
             }
         }
 
@@ -173,6 +174,15 @@ namespace Advent
         {
             public int moment;
             public PlanStep taskComplete;
+        }
+
+        public void WriteResult()
+        {
+            Console.Write("part1: ");
+            WritePlan();
+
+            Console.Write("part2: ");
+            MultiTask();
         }
     }
 }

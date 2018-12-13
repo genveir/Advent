@@ -4,14 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Advent
+namespace Advent.Advent2
 {
-    class Advent2
+    class Solution : ISolution
     {
         private List<char[]> GetInput()
         {
             var adventNum = this.GetType().Name.ToCharArray().Last();
-            var input = typeof(Program).Assembly.GetManifestResourceStream("Advent.Input.Advent" + adventNum + "Input.txt");
+            var input = typeof(Program).Assembly.GetManifestResourceStream("Advent.Advent2.Input.txt");
 
             var vals = new List<char[]>();
 
@@ -87,6 +87,12 @@ namespace Advent
             }
 
             return null;
+        }
+
+        public void WriteResult()
+        {
+            Console.WriteLine("part1: " + GetChecksum());
+            Console.WriteLine("part2: " + GetMatchingChars());
         }
     }
 }

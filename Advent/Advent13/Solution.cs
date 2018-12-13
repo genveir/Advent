@@ -22,15 +22,15 @@ namespace Advent.Advent13
         }
     }
 
-    class Advent13Solution
+    class Solution : ISolution
     {
         public List<Cart> Carts;
 
         void ParseInput()
         {
-            string resourceName = "Advent.Input.Advent13Input.txt";
+            string resourceName = "Advent.Advent13.Input.txt";
             //resourceName = "Advent.Input.a13test.txt";
-            var input = typeof(Program).Assembly.GetManifestResourceStream(resourceName);
+            var input = this.GetType().Assembly.GetManifestResourceStream(resourceName);
 
             var factory = new TrackFactory();
             Carts = new List<Cart>();

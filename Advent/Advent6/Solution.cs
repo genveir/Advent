@@ -4,14 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Advent
+namespace Advent.Advent6
 {
-    class Advent6
+    class Solution : ISolution
     {
         private List<SearchItem> GetInput()
         {
             var adventNum = this.GetType().Name.ToCharArray().Last();
-            var input = typeof(Program).Assembly.GetManifestResourceStream("Advent.Input.Advent" + adventNum + "Input.txt");
+            var input = typeof(Program).Assembly.GetManifestResourceStream("Advent.Advent6.Input.txt");
 
             var vals = new List<SearchItem>();
             using (var txt = new StreamReader(input))
@@ -151,6 +151,12 @@ namespace Advent
             }
 
             return inArea;
+        }
+
+        public void WriteResult()
+        {
+            Console.WriteLine("part1: " + GetLargestArea());
+            Console.WriteLine("part2: " + GetAreaSize());
         }
     }
 }
