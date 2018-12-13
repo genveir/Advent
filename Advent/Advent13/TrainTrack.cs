@@ -36,11 +36,14 @@ namespace Advent.Advent13
             }
         }
 
-        public TrainTrack(XYCoord coord)
+        public TrainTrack(XYCoord coord, TrainTrack north, TrainTrack west)
         {
             this.coord = coord;
             AllPositions.Add(coord, this);
             Neighbours = new Dictionary<Direction, TrainTrack>();
+
+            if (north != null) Link(north, Direction.North, true);
+            if (west != null) Link(west, Direction.West, true);
         }
 
         protected Dictionary<Direction, TrainTrack> Neighbours;
@@ -51,34 +54,23 @@ namespace Advent.Advent13
             if (backLink) track.Link(this, direction.Opposite(), false);
         }
 
-        public abstract void Move(Cart cart);
-    }
-
-    class Straight : TrainTrack
-    {
-        public Straight(XYCoord coord, TrainTrack north, TrainTrack west) : base(coord)
-        {
-            if (north != null) Link(north, Direction.North, true);
-            if (west != null) Link(west, Direction.West, true);
-        }
-
-        public override void Move(Cart cart)
+        public virtual void Move(Cart cart)
         {
             cart.track = Neighbours[cart.Facing];
         }
     }
 
-    class NorthSouth : Straight
+    class NorthSouth : TrainTrack
     {
         public NorthSouth(XYCoord coord, TrainTrack north) : base(coord, north, null) { }
     }
 
-    class EastWest : Straight
+    class EastWest : TrainTrack
     {
         public EastWest(XYCoord coord, TrainTrack west) : base(coord, null, west) { }
     }
 
-    class Intersection : Straight
+    class Intersection : TrainTrack
     {
         public Intersection(XYCoord coord, TrainTrack north, TrainTrack west) : base(coord, north, west) { }
 
@@ -95,7 +87,7 @@ namespace Advent.Advent13
         private bool HasWest;
         private bool HasNorth;
 
-        public Corner(XYCoord coord, TrainTrack north, TrainTrack west) : base(coord)
+        public Corner(XYCoord coord, TrainTrack north, TrainTrack west) : base(coord, north, west)
         {
             if (west is EastWest || west is Intersection) { Link(west, Direction.West, true); HasWest = true; }
             if (north is NorthSouth || north is Intersection) { Link(north, Direction.North, true); HasNorth = true; }
@@ -103,20 +95,18 @@ namespace Advent.Advent13
 
         public override void Move(Cart cart)
         {
-            switch (cart.Facing)
+            if (cart.Facing == Direction.North || cart.Facing == Direction.South)
             {
-                case Direction.North:
-                case Direction.South:
-                    if (HasWest) { cart.track = Neighbours[Direction.West]; cart.Facing = Direction.West; }
-                    else { cart.track = Neighbours[Direction.East]; cart.Facing = Direction.East; }
-                    break;
-                case Direction.East:
-                case Direction.West:
-                    if (HasNorth) { cart.track = Neighbours[Direction.North]; cart.Facing = Direction.North; }
-                    else { cart.track = Neighbours[Direction.South]; cart.Facing = Direction.South; }
-                    break;
-                default: throw new Exception("kannie");
+                if (HasWest) cart.Facing = Direction.West;
+                else cart.Facing = Direction.East;
             }
+            else
+            {
+                if (HasNorth) cart.Facing = Direction.North;
+                else cart.Facing = Direction.South;
+            }
+
+            base.Move(cart);
         }
     }
 }
