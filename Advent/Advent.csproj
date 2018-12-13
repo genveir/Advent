@@ -7,10 +7,12 @@
 
   <ItemGroup>
     <None Remove="Input\a12test.txt" />
+    <None Remove="Input\a13test.txt" />
     <None Remove="Input\a3test.txt" />
     <None Remove="Input\a7test.txt" />
     <None Remove="Input\Advent10Input.txt" />
     <None Remove="Input\Advent12Input.txt" />
+    <None Remove="Input\Advent13Input.txt" />
     <None Remove="Input\Advent1Input.txt" />
     <None Remove="Input\Advent2Input.txt" />
     <None Remove="Input\Advent4Input.txt" />
@@ -23,9 +25,11 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Input\a12test.txt" />
+    <EmbeddedResource Include="Input\a13test.txt" />
     <EmbeddedResource Include="Input\a3test.txt" />
     <EmbeddedResource Include="Input\a7test.txt" />
     <EmbeddedResource Include="Input\Advent12Input.txt" />
+    <EmbeddedResource Include="Input\Advent13Input.txt" />
     <EmbeddedResource Include="Input\Advent1Input.txt" />
     <EmbeddedResource Include="Input\Advent2Input.txt" />
   </ItemGroup>
