@@ -128,11 +128,15 @@ namespace Advent.Advent15
                     else currentDepth = toEval.Depth;
                 }
 
-                if (toEval.Type == tileType) TargetToPathMap.Add(toEval, toEval.RunDepthChain());
                 if (toEval.Type == TileType.Floor)
                 {
                     foreach (var n in toEval.Neighbours)
                     {
+                        if (n.Type == tileType && !TargetToPathMap.ContainsKey(toEval))
+                        {
+                            TargetToPathMap.Add(toEval, toEval.RunDepthChain());
+                        }
+
                         if (n.FoundBy != FindCounter)
                         {
                             n.FoundBy = FindCounter;

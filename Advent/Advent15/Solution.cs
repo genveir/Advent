@@ -12,7 +12,7 @@ namespace Advent.Advent15
         public const int GOBLIN_HP = 200;
         public const int GOBLIN_AP = 3;
         public const int ELF_HP = 200;
-        public const int ELF_AP = 3;
+        public static int ELF_AP = 3;
 
         private List<Tile> Creatures;
         private Dictionary<TileType, int> numOfEach;
@@ -98,17 +98,27 @@ namespace Advent.Advent15
             public int hps;
         }
 
-        public RunResult Run(bool print = false)
+        public RunResult Run(bool stopIfElfDies = false, bool print = false)
         {
+            var numElves = numOfEach[TileType.Elf];
+
             int turn = 0;
             while (Step() && turn < 1000)
             {
                 turn++;
 
+                if (stopIfElfDies)
+                {
+                    if (numOfEach[TileType.Elf] != numElves)
+                    {
+                        Console.WriteLine("elf died with " + ELF_AP + " AP");
+                        return new RunResult() { hasResult = false };
+                    }
+                }
+
                 if (print)
                 {
                     Print(turn);
-                    Console.ReadLine();
                 }
             }
 
@@ -120,11 +130,27 @@ namespace Advent.Advent15
         {
             ParseInput();
 
-            var result = Run();
+            var result = Run(false);
 
             if (result.hasResult)
             {
+                Console.Write("part1: ");
                 Console.WriteLine(FormattedResult(result));
+            }
+
+            for (int n = 4; n < 100; n++)
+            {
+                ELF_AP = n;
+                ParseInput();
+
+                result = Run(true);
+
+                if (result.hasResult)
+                {
+                    Console.Write("part2: ");
+                    Console.WriteLine(FormattedResult(result));
+                    return;
+                }
             }
         }
 
@@ -163,8 +189,13 @@ namespace Advent.Advent15
 
         public void Print(int turn)
         {
-            Console.WriteLine("after turn " + turn + " the status is:");
+            Console.WriteLine("Round: " + turn);
             Console.WriteLine(this);
+            Console.WriteLine();
+            Console.WriteLine();
+            foreach (var creature in Creatures.OrderBy(c => c.coord)) Console.WriteLine((creature.Type == TileType.Goblin ? "G" : "E") + "(" + creature.HP + ")");
+            Console.WriteLine();
+            Console.WriteLine();
         }
     }
 }

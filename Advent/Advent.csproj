@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Advent15\NogEenInput.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Advent15\NogEenInput.txt" />
     <EmbeddedResource Include="Advent15\Test3.txt" />
     <EmbeddedResource Include="Advent15\Test6.txt" />
     <EmbeddedResource Include="Advent15\Test5.txt" />
