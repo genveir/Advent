@@ -26,7 +26,7 @@ namespace Advent.Advent15
 
         public XYCoord coord;
         // inserts zijn in order (N, W, E, S)
-        protected List<Tile> Neighbours;
+        public List<Tile> Neighbours;
 
         public Tile(XYCoord coord, Tile north, Tile west, TileType type)
         {

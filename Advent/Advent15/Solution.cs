@@ -16,7 +16,6 @@ namespace Advent.Advent15
 
         private List<Tile> Creatures;
         private Dictionary<TileType, int> numOfEach;
-        private TileFactory factory;
 
         private string Input;
         public enum InputMode { String, File }
@@ -47,7 +46,7 @@ namespace Advent.Advent15
 
         private void ParseInput()
         {
-            factory = new TileFactory();
+            var factory = new TileFactory();
             Creatures = new List<Tile>();
             numOfEach = new Dictionary<TileType, int>();
             numOfEach[TileType.Elf] = 0;
@@ -70,8 +69,6 @@ namespace Advent.Advent15
             }
         }
         
-
-
         public bool Step()
         {
             var creatures = Creatures.OrderBy(c => c.coord).ToList();
@@ -98,7 +95,7 @@ namespace Advent.Advent15
             public int hps;
         }
 
-        public RunResult Run(bool stopIfElfDies = false, bool print = false)
+        public RunResult Run(bool stopIfElfDies = false)
         {
             var numElves = numOfEach[TileType.Elf];
 
@@ -111,14 +108,8 @@ namespace Advent.Advent15
                 {
                     if (numOfEach[TileType.Elf] != numElves)
                     {
-                        Console.WriteLine("elf died with " + ELF_AP + " AP");
                         return new RunResult() { hasResult = false };
                     }
-                }
-
-                if (print)
-                {
-                    Print(turn);
                 }
             }
 
@@ -165,15 +156,20 @@ namespace Advent.Advent15
         public override string ToString()
         {
             var builder = new StringBuilder();
-            var maxX = factory.AllPositions.Keys.Max(k => k.X);
-            var maxY = factory.AllPositions.Keys.Max(k => k.Y);
+            FindCounter--;
+            var tiles = new List<Tile>();
+            foreach(var creature in Creatures) RecursiveGetNeighbours(tiles, creature);
+
+            var maxX = tiles.Max(k => k.coord.X);
+            var maxY = tiles.Max(k => k.coord.Y);
             for (int y = 0; y <= maxY; y++)
             {
                 for (int x = 0; x <= maxX; x++)
                 {
-                    var tile = factory.AllPositions[new XYCoord(x, y)];
+                    var tile = tiles.Where(t => t.coord.Equals(new XYCoord(x, y))).SingleOrDefault();
 
-                    switch (tile.Type)
+                    if (tile == null) builder.Append('#');
+                    else switch (tile.Type)
                     {
                         case TileType.Floor: builder.Append('.'); break;
                         case TileType.Goblin: builder.Append('G'); break;
@@ -187,15 +183,16 @@ namespace Advent.Advent15
             return builder.ToString();
         }
 
-        public void Print(int turn)
+        private static int FindCounter = -1;
+        private void RecursiveGetNeighbours(List<Tile> soFar, Tile tile)
         {
-            Console.WriteLine("Round: " + turn);
-            Console.WriteLine(this);
-            Console.WriteLine();
-            Console.WriteLine();
-            foreach (var creature in Creatures.OrderBy(c => c.coord)) Console.WriteLine((creature.Type == TileType.Goblin ? "G" : "E") + "(" + creature.HP + ")");
-            Console.WriteLine();
-            Console.WriteLine();
+            if (!(tile.FoundBy == FindCounter)) soFar.Add(tile);
+
+            tile.FoundBy = FindCounter;
+            foreach(var neighbour in tile.Neighbours)
+            {
+                if (neighbour.FoundBy != FindCounter) RecursiveGetNeighbours(soFar, neighbour);
+            }
         }
     }
 }

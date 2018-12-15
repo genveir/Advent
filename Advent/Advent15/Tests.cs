@@ -360,56 +360,48 @@ namespace Advent.Advent15
         [Test]
         public void MoveExample()
         {
-            var testCase = Parse(@" #########
-                                    #G..G..G#
-                                    #.......#
-                                    #.......#
-                                    #G..E..G#
-                                    #.......#
-                                    #.......#
-                                    #G..G..G#
-                                    #########");
+            var testCase = Parse(@" G..G..G
+                                    .......
+                                    .......
+                                    G..E..G
+                                    .......
+                                    .......
+                                    G..G..G");
 
             var solution = new Solution(testCase, Solution.InputMode.String);
             solution.Step();
 
-            var s1 = Parse(@"   #########
-                                #.G...G.#
-                                #...G...#
-                                #...E..G#
-                                #.G.....#
-                                #.......#
-                                #G..G..G#
-                                #.......#
-                                #########");
+            var s1 = Parse(@"   .G...G.
+                                ...G...
+                                ...E..G
+                                .G.....
+                                .......
+                                G..G..G
+                                .......");
 
             Assert.AreEqual(s1, solution.ToString());
 
             solution.Step();
 
-            var s2 = Parse(@"   #########
-                                #..G.G..#
-                                #...G...#
-                                #.G.E.G.#
-                                #.......#
-                                #G..G..G#
-                                #.......#
-                                #.......#
-                                #########");
+            var s2 = Parse(@"   ..G.G..
+                                ...G...
+                                .G.E.G.
+                                .......
+                                G..G..G
+                                .......
+                                .......");
 
             Assert.AreEqual(s2, solution.ToString());
 
             solution.Step();
 
-            var s3 = Parse(@"   #########
-                                #.......#
-                                #..GGG..#
-                                #..GEG..#
-                                #G..G...#
-                                #......G#
-                                #.......#
-                                #.......#
-                                #########");
+            var s3 = Parse(@"   .......
+                                ..GGG..
+                                ..GEG..
+                                G..G...
+                                ......G
+                                .......
+                                .......");
 
             Assert.AreEqual(s3, solution.ToString());
         }

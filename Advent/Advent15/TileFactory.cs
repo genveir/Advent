@@ -7,7 +7,7 @@ namespace Advent.Advent15
 {
     class TileFactory
     {
-        public Dictionary<XYCoord, Tile> AllPositions = new Dictionary<XYCoord, Tile>();
+        private Dictionary<XYCoord, Tile> AllPositions = new Dictionary<XYCoord, Tile>();
 
         public Tile Parse(XYCoord coord, char input)
         {
@@ -22,12 +22,10 @@ namespace Advent.Advent15
                 case 'G': newTile = new Goblin(coord, tileNorth, tileWest); break;
                 case 'E': newTile = new Elf(coord, tileNorth, tileWest); break;
                 case '.': newTile = new Tile(coord, tileNorth, tileWest, TileType.Floor); break;
-                case '#': newTile = new Tile(coord, tileNorth, tileWest, TileType.Wall); break;
                 case 'e': newTile = new Elf(coord, tileNorth, tileWest) { IsStaticTestGuy = true }; break;
-                default: Debug.WriteLine("unknown char at " + coord); break;
             }
 
-            AllPositions.Add(coord, newTile);
+            if (newTile != null) AllPositions.Add(coord, newTile);
 
             return newTile;
         }
