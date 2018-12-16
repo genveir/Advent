@@ -129,26 +129,18 @@ namespace Advent.Advent15
                 Console.WriteLine(FormattedResult(result));
             }
 
-            int stepSize = 64;
-            ELF_AP = stepSize;
-            RunResult lastSuccess = new RunResult();
-            while (stepSize > 0)
-            {
+            ELF_AP = 4;
+            for (ELF_AP = 4; true; ELF_AP++)
+            { 
                 ParseInput();
 
                 result = Run(true);
 
-                stepSize = stepSize / 2;
-                if (result.hasResult)
-                {
-                    ELF_AP -= (stepSize == 0) ? 1 : stepSize;
-                    lastSuccess = result;
-                }
-                else ELF_AP += (stepSize == 0) ? 1 : stepSize;
+                if (result.hasResult) break;
             }
 
             Console.Write("part2: ");
-            Console.WriteLine(FormattedResult(lastSuccess));
+            Console.WriteLine(FormattedResult(result));
             return;
         }
 
