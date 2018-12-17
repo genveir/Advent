@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace Advent.Advent17
     {
         HashSet<(int x, int y)> blockedTiles;
         Dictionary<(int x, int y), bool> waterTiles;
+
         int yMin;
         int yMax;
         int xMin;
@@ -111,91 +113,101 @@ namespace Advent.Advent17
 
         public void WriteResult()
         {
-            xMin = 495;
-            Console.WriteLine(xMin); // returnt 1 ????!?!
+            PropDown(500, yMin);
 
-            var water = Propagate(500, yMin, new (int x, int y)[0], 0);
-
-            Console.WriteLine(this);
-            Console.WriteLine("part1: " + water.numWater);
+            Console.WriteLine("part1: " + waterTiles.Count);
+            Console.WriteLine("part2: " + waterTiles.Where(wt => wt.Value).Count());
         }
 
-        private FlowResult Propagate(int x, int y, (int x, int y)[] soFar, int propDir)
+        private bool PropDown(int x, int y)
         {
-            // base case
-            if (blockedTiles.Contains((x, y))) return FlowResult.BaseCase;
-            if (waterTiles.ContainsKey((x, y))) return new FlowResult() { blocked = waterTiles[(x, y)] };
-            if (y == yMax) return FlowResult.DropCase;
+            if (blockedTiles.Contains((x, y))) return true;
+            if (waterTiles.ContainsKey((x, y))) return waterTiles[(x, y)];
+            if (y == yMax + 1) return false;
 
-            // propagate
-            (int x, int y)[] withThis = new (int x, int y)[soFar.Length + 1];
-            soFar.CopyTo(withThis, 0);
-            withThis[soFar.Length] = (x, y);
+            waterTiles.Add((x, y), false);
 
-            var below = new FlowResult();
-            var left = new FlowResult();
-            var right = new FlowResult();
+            var belowIsBlocked = false;
+            var leftIsBlocked = false;
+            var rightIsBlocked = false;
 
-            below = Propagate(x, y + 1, withThis, 0);
-            
-            if (below.blocked)
+            belowIsBlocked = PropDown(x, y + 1);
+
+            if (belowIsBlocked)
             {
-                if (propDir != 1) left = Propagate(x - 1, y, withThis, -1);
-                else left = FlowResult.BaseCase;
+                leftIsBlocked = PropLeft(x - 1, y);
 
-                if (propDir != -1) right = Propagate(x + 1, y, withThis, 1);
-                else right = FlowResult.BaseCase;
+                rightIsBlocked = PropRight(x + 1, y);
             }
 
-            bool settled = (left.blocked && right.blocked);
-            
-            var  result = new FlowResult()
+            if (leftIsBlocked && rightIsBlocked)
             {
-                blocked = left.blocked && right.blocked && below.blocked,
-                numSettled = left.numSettled + right.numSettled + below.numSettled + ((settled) ? 1 : 0),
-                numWater = left.numWater + right.numWater + below.numWater + 1
-            };
-            waterTiles.Add((x, y), result.blocked);
+                PropSettled(x, y);
+            }
 
-            return result;
+            return leftIsBlocked && rightIsBlocked && belowIsBlocked;
         }
 
-        private class FlowResult
+        private bool PropLeft(int x, int y)
         {
-            public static FlowResult BaseCase
+            if (blockedTiles.Contains((x, y))) return true;
+            if (waterTiles.ContainsKey((x, y))) return waterTiles[(x, y)];
+
+            waterTiles.Add((x, y), false);
+
+            var belowIsBlocked = false;
+            var leftIsBlocked = false;
+
+            belowIsBlocked = PropDown(x, y + 1);
+
+            if (belowIsBlocked)
             {
-                get
-                {
-                    return new FlowResult()
-                    {
-                        blocked = true,
-                        numSettled = 0,
-                        numWater = 0
-                    };
-                }
+                leftIsBlocked = PropLeft(x - 1, y);
             }
 
-            public static FlowResult DropCase
+            return leftIsBlocked && belowIsBlocked;
+        }
+
+        private bool PropRight(int x, int y)
+        {
+            if (blockedTiles.Contains((x, y))) return true;
+            if (waterTiles.ContainsKey((x, y))) return waterTiles[(x, y)];
+
+            waterTiles.Add((x, y), false);
+
+            var belowIsBlocked = false;
+            var rightIsBlocked = false;
+
+            belowIsBlocked = PropDown(x, y + 1);
+
+            if (belowIsBlocked)
             {
-                get
-                {
-                    return new FlowResult()
-                    {
-                        blocked = false,
-                        numSettled = 0,
-                        numWater = 0
-                    };
-                }
+                rightIsBlocked = PropRight(x + 1, y);
             }
 
-            public int numWater = 0;
-            public int numSettled = 0;
-            public bool blocked = false;
+            return rightIsBlocked && belowIsBlocked;
+        }
 
-            public override string ToString()
-            {
-                return "flow " + (blocked ? "blocked" : "open") + " (" + numSettled + " / " + numWater;
-            }
+        private void PropSettled(int x, int y)
+        {
+            PropSettledLeft(x, y);
+            PropSettledRight(x + 1, y);
+        }
+
+        private void PropSettledLeft(int x, int y)
+        {
+            if (blockedTiles.Contains((x, y))) return;
+            waterTiles[(x, y)] = true;
+
+            PropSettledLeft(x - 1, y);
+        }
+
+        private void PropSettledRight(int x, int y)
+        {
+            if (blockedTiles.Contains((x, y))) return;
+            waterTiles[(x, y)] = true;
+
+            PropSettledRight(x + 1, y);
         }
 
         public override string ToString()
@@ -203,7 +215,7 @@ namespace Advent.Advent17
             var builder = new StringBuilder();
             for (int y = 0; y <= yMax; y++)
             {
-                for (int x = xMin = 1; x <= xMax + 1; x++)
+                for (int x = xMin - 1; x <= xMax + 1; x++)
                 {
                     if (blockedTiles.Contains((x, y))) builder.Append('#');
                     else if (waterTiles.ContainsKey((x, y))) builder.Append(waterTiles[(x, y)] ? '~' : '|');
