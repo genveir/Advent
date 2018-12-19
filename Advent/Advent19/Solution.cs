@@ -145,8 +145,7 @@ namespace Advent.Advent19
         public void WriteResult()
         {
             register = new int[6];
-            for (int n = 0; n < 11; n++) ExecuteStep();
-            HetProgramma();
+            while(ExecuteStep()) { }
             Console.WriteLine("part 1: " + register[0]);
 
             register = new int[6];
