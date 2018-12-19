@@ -10,14 +10,51 @@ namespace Advent.ElfCode
     {
         public static void Main(string[] args)
         {
-            var registers = int.Parse(args[0]);
-            var programFile = args[1];
-            var inputFile = args[2];
+            try
+            {
+                if (args.Length != 3)
+                {
+                    WriteUsage();
+                    return;
+                }
 
-            var runner = new ElfCodeRunner(programFile, InputMode.File, inputFile, InputMode.File, registers);
-            runner.Run();
+                var registers = int.Parse(args[0]);
+                var programFile = args[1];
+                var inputFile = args[2];
 
-            Console.WriteLine("done");
+                var runner = new ElfCodeRunner(programFile, InputMode.File, inputFile, InputMode.File, registers);
+                runner.Run();
+
+                Console.WriteLine("done");
+            }
+            catch (Exception)
+            {
+                WriteUsage();
+                
+                throw;
+            }
+        }
+
+        private static void WriteUsage()
+        {
+            Console.WriteLine("Usage:");
+            Console.WriteLine("The ElfCode Interpreter takes 3 arguments:");
+            Console.WriteLine("first argument: the number of registers the program will have access to");
+            Console.WriteLine("second argument: the path of the program file");
+            Console.WriteLine("third argument: the path of the input file");
+            Console.WriteLine();
+            Console.WriteLine("Code (in C#) can be found at https://github.com/genveir/Advent/tree/ElfCode");
+            Console.WriteLine("The language is ElfCode from https://adventofcode.com/2018/day/19");
+            Console.WriteLine("Expanded with I/O commands as shown in ");
+            Console.WriteLine("  https://old.reddit.com/r/adventofcode/comments/a7o5ww/2018_day_1_part_1_in_elfcode/");
+            Console.WriteLine();
+            Console.WriteLine("In addition to that, you can add breakpoints by putting a B behind a");
+            Console.WriteLine("line in the program (so: eqri 0 0 0 B). Lines starting with // are also");
+            Console.WriteLine("ignored. Anything on an input line (except a B) behind the 4th argument");
+            Console.WriteLine("is also ignored, so you can just write comments behind the lines.");
+            Console.WriteLine();
+            Console.WriteLine("The interpreter is not very friendly, and will crash on any mistakes in your");
+            Console.WriteLine("program or input.");
         }
 
         public enum InputMode { String, File, Resource }
