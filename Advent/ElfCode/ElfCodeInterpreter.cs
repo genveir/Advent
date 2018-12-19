@@ -169,6 +169,7 @@ namespace Advent.ElfCode
 
         public void SetInput(int[] input)
         {
+            inputCursor = 0;
             this.input = input;
         }
 
