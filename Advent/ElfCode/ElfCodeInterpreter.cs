@@ -64,7 +64,7 @@ namespace Advent.ElfCode
                 .TakeLast(3)
                 .Select(s => int.Parse(s))
                 .ToArray();
-            var breakHere = splitLine.Take(5).Last() == "B";
+            var breakHere = splitLine.Take(5).Last().Trim() == "B";
 
             var programLine = new ProgramLine
             {
@@ -173,13 +173,23 @@ namespace Advent.ElfCode
             this.input = input;
         }
 
+        bool breakNext;
         public bool ExecuteStep()
         {
             var ip = InstructionPointer;
 
             if (ip < 0 || ip >= program.Count) return false;
             var line = program[ip];
-            if (line.breakHere) ; // set a breakpoint here
+            if (line.breakHere || breakNext)
+            {
+                Console.WriteLine(this + " " + line);
+                Console.WriteLine("(s)tep, [c]ontinue" + (line.breakHere ? "or (d)elete breakpoint and continue?" : ""));
+
+                breakNext = false;
+                var i = Console.ReadLine();
+                if (i == "s") breakNext = true;
+                else if (i == "d") line.breakHere = false;
+            }
             line.Execute(ref register);
 
             InstructionPointer++;
