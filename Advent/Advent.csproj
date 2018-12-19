@@ -14,6 +14,8 @@
     <None Remove="Advent18\Test.txt" />
     <None Remove="Advent19\Input.txt" />
     <None Remove="Advent19\Test.txt" />
+    <None Remove="Advent1\ElfCode.ec" />
+    <None Remove="Advent1\Test.txt" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,6 +35,7 @@
     <EmbeddedResource Include="Advent18\Test.txt" />
     <EmbeddedResource Include="Advent19\Input.txt" />
     <EmbeddedResource Include="Advent19\Test.txt" />
+    <EmbeddedResource Include="Advent1\ElfCode.ec" />
     <EmbeddedResource Include="Advent3\Test.txt" />
     <EmbeddedResource Include="Advent7\Test.txt" />
     <EmbeddedResource Include="Advent12\Input.txt" />
@@ -46,6 +49,10 @@
     <EmbeddedResource Include="Advent7\Input.txt" />
     <EmbeddedResource Include="Advent8\Input.txt" />
     <EmbeddedResource Include="Advent10\Input.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Advent1\Test.txt" />
   </ItemGroup>
 
   <ItemGroup>

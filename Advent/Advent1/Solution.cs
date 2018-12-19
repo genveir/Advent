@@ -48,6 +48,9 @@ namespace Advent.Advent1
         {
             var input = GetInput();
 
+            Console.WriteLine("highest number is " + input.Max());
+            Console.WriteLine("lowest number is " + input.Min());
+
             return input.Sum();
         }
 
