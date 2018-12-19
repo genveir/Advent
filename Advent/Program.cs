@@ -10,13 +10,12 @@ namespace Advent
 
             var runner = new ElfCode.ElfCodeRunner(
                 input: "Advent1.Input",
-                inputMode: ElfCode.ElfCodeRunner.InputMode.File,
+                inputMode: ElfCode.ElfCodeRunner.InputMode.Resource,
                 program: "Advent1.ElfCode",
-                programMode: ElfCode.ElfCodeRunner.InputMode.File,
+                programMode: ElfCode.ElfCodeRunner.InputMode.Resource,
                 numRegisters: 6);
             runner.Run();
             
-
             Console.WriteLine("done");
             Console.ReadLine();
         }
