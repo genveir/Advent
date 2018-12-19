@@ -156,26 +156,16 @@ namespace Advent.Advent19
             Console.WriteLine("part 2: " + register[0]);
         }
 
-        int target, output, outerloopCounter, innerloopCounter;
         private void HetProgramma()
         {
-            target = register[2];
-            output = register[0];
+            int target = register[2];
+            int output = register[0];
 
-            l1: outerloopCounter = 1;
-            l2: innerloopCounter = 1;
-            l3: var testVal = outerloopCounter * innerloopCounter;
-            l4: var theBoolean = target == testVal;
-
-            l6: if (theBoolean) { output = outerloopCounter + output; }
-
-            l8: innerloopCounter++;
-            l9: theBoolean = innerloopCounter > target;
-            l10: if (!theBoolean)  goto l3; 
-
-            l12: outerloopCounter++;
-            l13: theBoolean = outerloopCounter > target;
-            l14: if (!theBoolean)  goto l2;
+            for (int outerloopCounter = 1; outerloopCounter <= target; outerloopCounter++)
+            {
+                if (target % outerloopCounter != 0) continue;
+                else output = outerloopCounter + output;
+            }
 
             register[0] = output;
         }
