@@ -17,10 +17,10 @@ namespace ElfCode
                 program: "ElfcodeInterpreter.ec",
                 programMode: ElfCodeRunner.InputMode.Resource,
                 input: @"#ip 3
-setr 123 321 21 
-addi 456 654 123456",
+setr 123 321 21
+addr 456 6 54",
                 inputMode: ElfCodeRunner.InputMode.String,
-                numRegisters: 20);
+                numRegisters: 29);
             var exit = runner.Run();
 
             Console.WriteLine("program exited with ip " + exit);
@@ -34,7 +34,7 @@ addi 456 654 123456",
                 programMode: ElfCodeRunner.InputMode.Resource,
                 input: op + " 0 0 0",
                 inputMode: ElfCodeRunner.InputMode.String,
-                numRegisters: 20);
+                numRegisters: 29);
             runner.DontBreak = true;
             return runner.Run();
         }

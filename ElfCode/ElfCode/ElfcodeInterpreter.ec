@@ -4,9 +4,11 @@
 // register 7 bit ipbound
 // register 8 ipBinding
 // register 9 general jumpback
-// 10 - 14 reserved
+// register 10 instruction list pointer
+// register 11 instruction list count
+// 12 - 14 reserved
 // 15 - 20 working memory
-//
+// 21 - 420 instruction list (space for 100 instructions)
 // exit codes: 10000 = parse error
 //
 // 0
@@ -227,64 +229,64 @@ seti 237 0 0		// jump to setr parsing TODO
 // 200
 // parse parameters of the different operators
 // addi
-seti 4999 0 9		// jumpback to next addi-step
+seti 0 0 20			
 seti 239 0 0		// jump to parameter parsing
 // addr
-seti 5000 0 9		// jumpback to next addr-step
+seti 1 0 20
 seti 239 0 0		// jump to parameter parsing
 // bani
-seti 5001 0 9		// jumpback to next bani-step
+seti 2 0 20
 seti 239 0 0		// jump to parameter parsing
 // banr
-seti 5002 0 9		// jumpback to next banr-step
+seti 3 0 20
 seti 239 0 0		// jump to parameter parsing
 // bori
-seti 5003 0 9		// jumpback to next bori-step
+seti 4 0 20
 seti 239 0 0		// jump to parameter parsing
 // borr
-seti 5004 0 9		// jumpback to next borr-step
+seti 5 0 20
 seti 239 0 0		// jump to parameter parsing
 // eqir
-seti 5005 0 9		// jumpback to next eqir-step
+seti 6 0 20
 seti 239 0 0		// jump to parameter parsing
 // eqri
-seti 5006 0 9		// jumpback to next eqri-step
+seti 7 0 20
 seti 239 0 0		// jump to parameter parsing
 // eqrr
-seti 5007 0 9		// jumpback to next eqrr-step
+seti 8 0 20
 seti 239 0 0		// jump to parameter parsing
 // geti
-seti 5008 0 9		// jumpback to next geti-step
+seti 9 0 20
 seti 239 0 0		// jump to parameter parsing
 // gtir
-seti 5009 0 9		// jumpback to next gtir-step
+seti 10 0 20
 seti 239 0 0		// jump to parameter parsing
 // gtri
-seti 5010 0 9		// jumpback to next gtri-step
+seti 11 0 20
 seti 239 0 0		// jump to parameter parsing
 // gtrr
-seti 5011 0 9		// jumpback to next gtrr-step
+seti 12 0 20
 seti 239 0 0		// jump to parameter parsing
 // muli
-seti 5012 0 9		// jumpback to next muli-step
+seti 13 0 20
 seti 239 0 0		// jump to parameter parsing
 // mulr
-seti 5013 0 9		// jumpback to next mulr-step
+seti 14 0 20
 seti 239 0 0		// jump to parameter parsing
 // outi
-seti 5014 0 9		// jumpback to next outi-step
+seti 15 0 20
 seti 239 0 0		// jump to parameter parsing
 // outr
-seti 5015 0 9		// jumpback to next outr-step
+seti 16 0 20
 seti 239 0 0		// jump to parameter parsing
 // peek
-seti 5016 0 9		// jumpback to next peek-step
+seti 17 0 20
 seti 239 0 0		// jump to parameter parsing
 // seti
-seti 5017 0 9		// jumpback to next seti-step
+seti 18 0 20
 seti 239 0 0		// jump to parameter parsing
 // setr
-seti 5018 0 9		// jumpback to next setr-step
+seti 19 0 20
 seti 239 0 0		// jump to parameter parsing
 // 239 parameter parsing
 seti 0 0 17
@@ -330,9 +332,244 @@ seti 262 0 0
 // 278 loop until input is a linefeed or we're out of file
 peek 0 0 15
 addr 0 15 0
-seti 0 0 0
+seti 499 0 0 B
 geti 0 0 16
 eqri 16 10 15
 addr 0 15 0
 seti 277 0 0
+seti 499 0 0 B
+// reserved space
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0
+addi 0 0 0 
+// 500 instruction list
+// Add instruction:
+muli 11 5 16 B
+addi 16 1 16
+addi 11 1 11
+setr 0 0 9
+addi 9 2 9
+addr 0 16 0
 seti 0 0 0
+//
+setr 20 0 21
+setr 17 0 22
+setr 18 0 23
+setr 19 0 24
+setr 9 0 0
+setr 20 0 25
+setr 17 0 26
+setr 18 0 27
+setr 19 0 28
+setr 9 0 0
