@@ -102,6 +102,7 @@ namespace Advent.ElfCode
                 case "geti": return geti;
                 case "outi": return outi;
                 case "outr": return outr;
+                case "outc": return outc;
                 default: throw new Exception("unknown instruction " + name);
             }
         }
@@ -132,8 +133,9 @@ namespace Advent.ElfCode
         public void peek(ref int[] r, int a, int b, int c) { r[c] = hasNextInput ? 1 : 0; }
         public void geti(ref int[] r, int a, int b, int c) { r[c] = nextInput; }
 
-        public void outi(ref int[]r, int a, int b, int c) { Console.WriteLine(c); }
-        public void outr(ref int[]r, int a, int b, int c) { Console.WriteLine(r[c]); }
+        public void outr(ref int[]r, int a, int b, int c) { Console.WriteLine(r[a]); }
+        public void outi(ref int[] r, int a, int b, int c) { Console.Write((char)a); }
+        public void outc(ref int[]r, int a, int b, int c) { Console.Write((char)r[a]); }
 
         private class ProgramLine
         {
@@ -174,11 +176,11 @@ namespace Advent.ElfCode
         }
 
         bool breakNext;
-        public bool ExecuteStep()
+        public int ExecuteStep()
         {
             var ip = InstructionPointer;
 
-            if (ip < 0 || ip >= program.Count) return false;
+            if (ip < 0 || ip >= program.Count) return ip;
             var line = program[ip];
             if (line.breakHere || breakNext)
             {
@@ -188,12 +190,12 @@ namespace Advent.ElfCode
                 breakNext = true;
                 var i = Console.ReadLine();
                 if (i == "c") breakNext = false;
-                else if (i == "d") line.breakHere = false;
+                else if (i == "d") { line.breakHere = false; breakNext = false; }
             }
             line.Execute(ref register);
 
             InstructionPointer++;
-            return true;
+            return 0;
         }
 
         public override string ToString()

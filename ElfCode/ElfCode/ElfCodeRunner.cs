@@ -23,9 +23,9 @@ namespace Advent.ElfCode
                 var inputFile = args[2];
 
                 var runner = new ElfCodeRunner(programFile, InputMode.File, inputFile, InputMode.File, registers);
-                runner.Run();
+                var exitCode = runner.Run();
 
-                Console.WriteLine("done");
+                Console.WriteLine("done, exitcode: " + exitCode);
             }
             catch (Exception)
             {
@@ -103,14 +103,16 @@ namespace Advent.ElfCode
             return input;
         }
 
-        public void Step()
+        public int Step()
         {
-            interpreter.ExecuteStep();
+            return interpreter.ExecuteStep();
         }
 
-        public void Run()
+        public int Run()
         {
-            while(interpreter.ExecuteStep()) { }
+            int exitPointer = 0;
+            while(exitPointer == 0) { exitPointer = interpreter.ExecuteStep(); }
+            return exitPointer;
         }
     }
 }
