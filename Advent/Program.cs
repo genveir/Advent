@@ -6,15 +6,7 @@ namespace Advent
     {
         static void Main(string[] args)
         {
-            //new Advent1.Solution().WriteResult();
-
-            var runner = new ElfCode.ElfCodeRunner(
-                input: "Advent1.Input",
-                inputMode: ElfCode.ElfCodeRunner.InputMode.Resource,
-                program: "Advent1.ElfCode",
-                programMode: ElfCode.ElfCodeRunner.InputMode.Resource,
-                numRegisters: 6);
-            runner.Run();
+            new Advent20.Solution().WriteResult();
             
             Console.WriteLine("done");
             Console.ReadLine();
