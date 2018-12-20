@@ -3,16 +3,18 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <StartupObject>Advent.ElfCode.ElfCodeRunner</StartupObject>
+    <StartupObject>ElfCode.InterpreterEntry</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Advent1\ElfCode.ec" />
+    <None Remove="ElfCode\ElfcodeInterpreter.ec" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Advent1\ElfCode.ec" />
     <EmbeddedResource Include="Advent1\Input.txt" />
+    <EmbeddedResource Include="ElfCode\ElfcodeInterpreter.ec" />
   </ItemGroup>
 
 </Project>
