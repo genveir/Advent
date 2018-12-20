@@ -183,11 +183,11 @@ namespace Advent.ElfCode
             if (line.breakHere || breakNext)
             {
                 Console.WriteLine(this + " " + line);
-                Console.WriteLine("(s)tep, [c]ontinue" + (line.breakHere ? "or (d)elete breakpoint and continue?" : ""));
+                Console.WriteLine("[s]tep, (c)ontinue" + (line.breakHere ? " or (d)elete breakpoint and continue?" : ""));
 
-                breakNext = false;
+                breakNext = true;
                 var i = Console.ReadLine();
-                if (i == "s") breakNext = true;
+                if (i == "c") breakNext = false;
                 else if (i == "d") line.breakHere = false;
             }
             line.Execute(ref register);
