@@ -114,5 +114,11 @@ namespace Advent.ElfCode
             while(exitPointer == 0) { exitPointer = interpreter.ExecuteStep(); }
             return exitPointer;
         }
+
+        public bool DontBreak
+        {
+            get { return interpreter.SkipAllBreakPoints; }
+            set { interpreter.SkipAllBreakPoints = true; }
+        }
     }
 }

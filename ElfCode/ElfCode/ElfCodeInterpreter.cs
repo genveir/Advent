@@ -56,7 +56,7 @@ namespace Advent.ElfCode
         private ProgramLine ParseProgramLine(string line)
         {
             var splitLine = line
-                .Split(' ');
+                .Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
 
             var op = GetOpByName(splitLine[0]);
             var lineVals = splitLine
@@ -175,6 +175,8 @@ namespace Advent.ElfCode
             this.input = input;
         }
 
+        public bool SkipAllBreakPoints { get; set; }
+
         bool breakNext;
         public int ExecuteStep()
         {
@@ -182,7 +184,7 @@ namespace Advent.ElfCode
 
             if (ip < 0 || ip >= program.Count) return ip;
             var line = program[ip];
-            if (line.breakHere || breakNext)
+            if (!SkipAllBreakPoints && line.breakHere || breakNext)
             {
                 Console.WriteLine(this + " " + line);
                 Console.WriteLine("[s]tep, (c)ontinue" + (line.breakHere ? " or (d)elete breakpoint and continue?" : ""));
