@@ -56,7 +56,7 @@ namespace Advent.ElfCode
         private ProgramLine ParseProgramLine(string line)
         {
             var splitLine = line
-                .Split(' ');
+                .Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
 
             var op = GetOpByName(splitLine[0]);
             var lineVals = splitLine
@@ -102,6 +102,7 @@ namespace Advent.ElfCode
                 case "geti": return geti;
                 case "outi": return outi;
                 case "outr": return outr;
+                case "outc": return outc;
                 default: throw new Exception("unknown instruction " + name);
             }
         }
@@ -132,8 +133,9 @@ namespace Advent.ElfCode
         public void peek(ref int[] r, int a, int b, int c) { r[c] = hasNextInput ? 1 : 0; }
         public void geti(ref int[] r, int a, int b, int c) { r[c] = nextInput; }
 
-        public void outi(ref int[]r, int a, int b, int c) { Console.WriteLine(c); }
-        public void outr(ref int[]r, int a, int b, int c) { Console.WriteLine(r[c]); }
+        public void outr(ref int[]r, int a, int b, int c) { Console.WriteLine(r[a]); }
+        public void outi(ref int[] r, int a, int b, int c) { Console.Write((char)a); }
+        public void outc(ref int[]r, int a, int b, int c) { Console.Write((char)r[a]); }
 
         private class ProgramLine
         {
@@ -173,27 +175,29 @@ namespace Advent.ElfCode
             this.input = input;
         }
 
+        public bool SkipAllBreakPoints { get; set; }
+
         bool breakNext;
-        public bool ExecuteStep()
+        public int ExecuteStep()
         {
             var ip = InstructionPointer;
 
-            if (ip < 0 || ip >= program.Count) return false;
+            if (ip < 0 || ip >= program.Count) return ip;
             var line = program[ip];
-            if (line.breakHere || breakNext)
+            if (!SkipAllBreakPoints && line.breakHere || breakNext)
             {
                 Console.WriteLine(this + " " + line);
-                Console.WriteLine("(s)tep, [c]ontinue" + (line.breakHere ? "or (d)elete breakpoint and continue?" : ""));
+                Console.WriteLine("[s]tep, (c)ontinue" + (line.breakHere ? " or (d)elete breakpoint and continue?" : ""));
 
-                breakNext = false;
+                breakNext = true;
                 var i = Console.ReadLine();
-                if (i == "s") breakNext = true;
-                else if (i == "d") line.breakHere = false;
+                if (i == "c") breakNext = false;
+                else if (i == "d") { line.breakHere = false; breakNext = false; }
             }
             line.Execute(ref register);
 
             InstructionPointer++;
-            return true;
+            return 0;
         }
 
         public override string ToString()
