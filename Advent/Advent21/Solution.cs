@@ -8,8 +8,6 @@ namespace Advent.Advent21
 {
     class Solution : ISolution
     {
-        private string input;
-
         public enum InputMode { String, File }
 
         public Solution() : this("Input", InputMode.File) { }
@@ -37,31 +35,36 @@ namespace Advent.Advent21
         }
 
         private ElfCode.ElfCodeInterpreter interpreter;
+        private int accumulationRegister;
 
         private void _ParseInput(string input)
         {
-            this.input = input;
+            interpreter = new ElfCode.ElfCodeInterpreter(input, 6);
+            accumulationRegister = interpreter.Program[28].a;
+            // performance rewrite
+            var toDivi = interpreter.Program[17];
+            var loopCheckRegister = interpreter.Program[20].b;
+            interpreter.Program[17] = interpreter.ParseProgramLine("divi " + loopCheckRegister + " 256 " + toDivi.c);
         }
 
         public void WriteResult()
         {
-            interpreter = new ElfCode.ElfCodeInterpreter(input, 6);
             HashSet<int> results = new HashSet<int>();
             bool isFirst = true;
             int lastAdded = 0;
             while (interpreter.ExecuteStep() == 0)
             {
-                if (interpreter.GetRegister(2) == 28)
+                if (interpreter.InstructionPointer == 28)
                 {
-                    if (results.Contains(interpreter.GetRegister(3))) break;
+                    if (results.Contains(interpreter.GetRegister(accumulationRegister))) break;
 
                     if (isFirst)
                     {
                         isFirst = false;
-                        Console.WriteLine("part1: " + interpreter.GetRegister(3));
+                        Console.WriteLine("part1: " + interpreter.GetRegister(accumulationRegister));
                     }
-                    lastAdded = interpreter.GetRegister(3);
-                    results.Add(interpreter.GetRegister(3));
+                    lastAdded = interpreter.GetRegister(accumulationRegister);
+                    results.Add(interpreter.GetRegister(accumulationRegister));
                 }
             };
             Console.WriteLine("part2: " + lastAdded);

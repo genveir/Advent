@@ -8,13 +8,13 @@ namespace Advent.ElfCode
 {
     class ElfCodeInterpreter
     {
-        List<ProgramLine> program;
-        int[] register;
+        public List<ProgramLine> Program;
+        public int[] register;
         int boundRegister = -1;
 
         bool bound;
         int _ip;
-        int InstructionPointer
+        public int InstructionPointer
         {
             get
             {
@@ -35,7 +35,7 @@ namespace Advent.ElfCode
 
         public ElfCodeInterpreter(string input, int numRegisters)
         {
-            program = new List<ProgramLine>();
+            Program = new List<ProgramLine>();
             register = new int[numRegisters];
 
             var lines = input.Split('\n');
@@ -49,11 +49,11 @@ namespace Advent.ElfCode
                     boundRegister = register;
                     bound = true;
                 }
-                else program.Add(ParseProgramLine(line));
+                else Program.Add(ParseProgramLine(line));
             }
         }
 
-        private ProgramLine ParseProgramLine(string line)
+        public ProgramLine ParseProgramLine(string line)
         {
             var splitLine = line
                 .Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
@@ -152,7 +152,7 @@ namespace Advent.ElfCode
         public void outi(ref int[] r, int a, int b, int c) { Console.Write((char)a); }
         public void outc(ref int[]r, int a, int b, int c) { Console.Write((char)r[a]); }
 
-        private class ProgramLine
+        public class ProgramLine
         {
             public op op;
             public int a, b, c;
@@ -197,8 +197,8 @@ namespace Advent.ElfCode
         {
             var ip = InstructionPointer;
 
-            if (ip < 0 || ip >= program.Count) return ip;
-            var line = program[ip];
+            if (ip < 0 || ip >= Program.Count) return ip;
+            var line = Program[ip];
             if (!SkipAllBreakPoints && line.breakHere || breakNext)
             {
                 Console.WriteLine(this + " " + line);
