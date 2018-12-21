@@ -46,7 +46,7 @@ namespace Advent.Advent19
         public void WriteResult()
         {
             interpreter.Reset();
-            while(interpreter.ExecuteStep()) { }
+            while(interpreter.ExecuteStep() == 0) { }
             Console.WriteLine("part 1: " + interpreter.GetRegister(0));
 
             interpreter.Reset();

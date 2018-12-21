@@ -78,7 +78,7 @@ namespace Advent.ElfCode
             return programLine;
         }
 
-        private op GetOpByName(string name)
+        private op GetOpByName(string name, bool elfCodePlus = true)
         {
             switch (name)
             {
@@ -98,11 +98,20 @@ namespace Advent.ElfCode
                 case "eqir": return eqir;
                 case "eqri": return eqri;
                 case "eqrr": return eqrr;
+            }
+            if (!elfCodePlus) throw new Exception("unknown instruction " + name);
+
+            switch (name)
+            { 
                 case "peek": return peek;
                 case "geti": return geti;
                 case "outi": return outi;
                 case "outr": return outr;
                 case "outc": return outc;
+                case "divi": return divi;
+                case "divr": return divr;
+                case "mini": return mini;
+                case "minr": return minr;
                 default: throw new Exception("unknown instruction " + name);
             }
         }
@@ -129,6 +138,12 @@ namespace Advent.ElfCode
         public void eqir(ref int[] r, int a, int b, int c) { r[c] = a == r[b] ? 1 : 0; }
         public void eqri(ref int[] r, int a, int b, int c) { r[c] = r[a] == b ? 1 : 0; }
         public void eqrr(ref int[] r, int a, int b, int c) { r[c] = r[a] == r[b] ? 1 : 0; }
+
+        public void divi(ref int[] r, int a, int b, int c) { r[c] = r[a] / b; }
+        public void divr(ref int[] r, int a, int b, int c) { r[c] = r[a] / r[b]; }
+
+        public void mini(ref int[] r, int a, int b, int c) { r[c] = r[a] = b; }
+        public void minr(ref int[] r, int a, int b, int c) { r[c] = r[a] - r[b]; }
 
         public void peek(ref int[] r, int a, int b, int c) { r[c] = hasNextInput ? 1 : 0; }
         public void geti(ref int[] r, int a, int b, int c) { r[c] = nextInput; }
