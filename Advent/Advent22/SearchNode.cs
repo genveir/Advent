@@ -23,7 +23,7 @@ namespace Advent.Advent22
             this.tool = tool;
         }
 
-        public int Priority
+        public int Cost
         {
             get
             {
@@ -33,7 +33,7 @@ namespace Advent.Advent22
 
         public int CompareTo(SearchNode other)
         {
-            if (this.Priority != other.Priority) return Priority.CompareTo(other.Priority);
+            if (this.Cost != other.Cost) return Cost.CompareTo(other.Cost);
             else return tile.HeuristicDistance.CompareTo(other.tile.HeuristicDistance);
         }
 
@@ -69,7 +69,7 @@ namespace Advent.Advent22
         private void AddToResult(int time, Tile tile, Tool tool)
         {
             var node = new SearchNode(explored, time, tile, tool);
-            if (node.Priority < Priority) return;
+            if (node.Cost < Cost) return;
 
             if (explored.TryAdd(node, 0))
             {
@@ -95,7 +95,7 @@ namespace Advent.Advent22
 
         public override string ToString()
         {
-            return string.Format("{0} / {3}: {1}, {2}", time, tile, tool.ToString(), Priority);
+            return string.Format("{0} / {3}: {1}, {2}", time, tile, tool.ToString(), Cost);
         }
     }
 }

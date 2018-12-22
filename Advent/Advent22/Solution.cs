@@ -45,17 +45,19 @@ namespace Advent.Advent22
             var baseTile = Tiles.GetTile(0, 0);
             var baseNode = new SearchNode(explored, 0, baseTile, Tool.Torch);
 
+            int currentCost = 0;
             var minDist = int.MaxValue - 1000;
 
-            var pQueue = new Advent22PriorityQueue(baseNode.Priority);
+            var pQueue = new Advent22PriorityQueue(baseNode.Cost);
             pQueue.Enqueue(baseNode);
             while (pQueue.Count > 0)
             {
-                List<SearchNode> atPrio = new List<SearchNode>();
+                List<SearchNode> atCost = new List<SearchNode>();
 
-                (var nodes, var num) = pQueue.DequeueLowestPrio(100);
+                // dit is bugged. Als je hem op 1 zet zou je hetzelfde antwoord verwachten maar dat krijg je niet.
+                (var nodes, var num) = pQueue.DequeueLowestCost(100);
 
-                for(int n = 0; n < num; n++)
+                for (int n = 0; n < num; n++)
                 {
                     if (nodes[n].tile.coord.Equals(target) && nodes[n].tool == Tool.Torch)
                     {
@@ -65,20 +67,20 @@ namespace Advent.Advent22
                     // limit search to nodes that don't detour too far. 
                     // Search space is random, we'll be able to move in a fairly straight line
                     if (nodes[n].tile.HeuristicDistance > minDist + 75) continue;
-                    atPrio.Add(nodes[n]);
+                    atCost.Add(nodes[n]);
                 }
 
-                var currentPrio = nodes[0].Priority;
-                //Console.WriteLine("dequeued " + atPrio.Count + " at prio: " + currentPrio + " min dist: " + minDist);
+                //if (atCost.Count > 0) currentCost = atCost[0].Cost;
+                //Console.WriteLine("dequeued " + atCost.Count + " at cost: " + currentCost + " min dist: " + minDist + " queueCount " + pQueue.Count);
 
-                if (atPrio.Count > 0)
+                if (atCost.Count > 0)
                 {
-                    var batchMin = atPrio.Min(sn => sn.tile.HeuristicDistance);
+                    var batchMin = atCost.Min(sn => sn.tile.HeuristicDistance);
                     if (batchMin < minDist) minDist = batchMin;
 
-                    Parallel.ForEach(atPrio, node => node.Explore());
+                    Parallel.ForEach(atCost, node => node.Explore());
 
-                    pQueue.Enqueue(atPrio.SelectMany(ap => ap.ExploreResult));
+                    pQueue.Enqueue(atCost.SelectMany(ap => ap.ExploreResult));
                 }
             }
 
