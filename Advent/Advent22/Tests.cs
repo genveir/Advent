@@ -28,6 +28,16 @@ namespace Advent.Advent22
         public void Part1StillCorrect()
         {
             var sol = new Solution(10647, (7, 770));
+
+            Assert.AreEqual(6208, sol.GetTotalRisk());
+        }
+
+        [Test]
+        public void Part2StillCorrect()
+        {
+            var sol = new Solution(10647, (7, 770));
+
+            Assert.AreEqual(1039, sol.FindFastest());
         }
     }
 }

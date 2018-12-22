@@ -12,19 +12,22 @@ namespace Advent.Advent22
 
         int count = 0;
         int prioStart;
+        int dequeueSize;
+
         SearchNode[] returnArray;
-        public Advent22PriorityQueue(int prioStart)
+        public Advent22PriorityQueue(int prioStart, int dequeueSize)
         {
             stacks = new ConcurrentStack<SearchNode>[1000];
             for (int n = 0; n < stacks.Length; n++)
             {
                 stacks[n] = new ConcurrentStack<SearchNode>();
             }
+            this.dequeueSize = dequeueSize;
             this.prioStart = prioStart;
-            returnArray = new SearchNode[30000];
+            returnArray = new SearchNode[dequeueSize];
         }
 
-        public int LowestPrio
+        public int LowestCost
         {
             get
             {
@@ -39,9 +42,9 @@ namespace Advent.Advent22
             }
         }
 
-        public (SearchNode[] nodes, int num) DequeueLowestCost(int max)
+        public (SearchNode[] nodes, int num) DequeueLowestCost()
         {
-            var num = stacks[LowestPrio].TryPopRange(returnArray, 0, max);
+            var num = stacks[LowestCost].TryPopRange(returnArray, 0, dequeueSize);
             count -= num;
             return (returnArray, num);
         }

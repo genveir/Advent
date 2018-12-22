@@ -48,13 +48,14 @@ namespace Advent.Advent22
             int currentCost = 0;
             var minDist = int.MaxValue - 1000;
 
-            var pQueue = new Advent22PriorityQueue(baseNode.Cost);
+            var dequeuesize = 100;
+            var pQueue = new Advent22PriorityQueue(baseNode.Cost, dequeuesize);
             pQueue.Enqueue(baseNode);
             while (pQueue.Count > 0)
             {
                 List<SearchNode> atCost = new List<SearchNode>();
 
-                (var nodes, var num) = pQueue.DequeueLowestCost(100);
+                (var nodes, var num) = pQueue.DequeueLowestCost();
 
                 for (int n = 0; n < num; n++)
                 {
