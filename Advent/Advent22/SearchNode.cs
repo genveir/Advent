@@ -9,13 +9,13 @@ namespace Advent.Advent22
 
     class SearchNode : IComparable<SearchNode>
     {
-        private ConcurrentDictionary<SearchNode, byte> explored;
+        private ConcurrentDictionary<SearchNode, int> explored;
 
         public int time;
         public Tile tile;
         public Tool tool;
 
-        public SearchNode(ConcurrentDictionary<SearchNode, byte> explored, int time, Tile tile, Tool tool)
+        public SearchNode(ConcurrentDictionary<SearchNode, int> explored, int time, Tile tile, Tool tool)
         {
             this.explored = explored;
             this.time = time;
@@ -69,10 +69,13 @@ namespace Advent.Advent22
         private void AddToResult(int time, Tile tile, Tool tool)
         {
             var node = new SearchNode(explored, time, tile, tool);
-            if (node.Cost < Cost) return;
 
-            if (explored.TryAdd(node, 0))
+            int previousCost;
+            var alreadyFound = explored.TryGetValue(node, out previousCost);
+
+            if ((previousCost == 0 || previousCost > node.Cost))
             {
+                explored.AddOrUpdate(node, node.Cost, (sn, cost) => node.Cost);
                 ExploreResult.Add(node);
             }
         }
@@ -81,14 +84,13 @@ namespace Advent.Advent22
         {
             var tileHash = tile.GetHashCode() * 179;
             var toolHash = (int)(tool + 1) * 997300;
-            var timeHash = time * 46370000;
-            return tileHash + toolHash + timeHash;
+            return tileHash + toolHash;
         }
 
         public override bool Equals(object obj)
         {
             var other = obj as SearchNode;
-            var areEqual = tile.Equals(other.tile) && tool == other.tool && time.Equals(other.time);
+            var areEqual = tile.Equals(other.tile) && tool == other.tool;
 
             return areEqual;
         }

@@ -40,7 +40,7 @@ namespace Advent.Advent22
         
         public int FindFastest()
         {
-            var explored = new ConcurrentDictionary<SearchNode, byte>();
+            var explored = new ConcurrentDictionary<SearchNode, int>();
 
             var baseTile = Tiles.GetTile(0, 0);
             var baseNode = new SearchNode(explored, 0, baseTile, Tool.Torch);
@@ -54,7 +54,6 @@ namespace Advent.Advent22
             {
                 List<SearchNode> atCost = new List<SearchNode>();
 
-                // dit is bugged. Als je hem op 1 zet zou je hetzelfde antwoord verwachten maar dat krijg je niet.
                 (var nodes, var num) = pQueue.DequeueLowestCost(100);
 
                 for (int n = 0; n < num; n++)
@@ -64,9 +63,6 @@ namespace Advent.Advent22
                         return nodes[n].time;
                     }
 
-                    // limit search to nodes that don't detour too far. 
-                    // Search space is random, we'll be able to move in a fairly straight line
-                    if (nodes[n].tile.HeuristicDistance > minDist + 75) continue;
                     atCost.Add(nodes[n]);
                 }
 

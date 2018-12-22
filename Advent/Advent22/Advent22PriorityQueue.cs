@@ -21,7 +21,7 @@ namespace Advent.Advent22
                 stacks[n] = new ConcurrentStack<SearchNode>();
             }
             this.prioStart = prioStart;
-            returnArray = new SearchNode[1000];
+            returnArray = new SearchNode[30000];
         }
 
         public int LowestPrio
