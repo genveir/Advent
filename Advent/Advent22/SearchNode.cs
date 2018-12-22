@@ -45,14 +45,22 @@ namespace Advent.Advent22
             {
                 if (IsValidTool(neighbour, tool)) AddToResult(time + 1, neighbour, tool);
             }
-
-            for (int n = 0; n < 3; n++)
-            {
-                if (IsValidTool(tile, (Tool)n)) AddToResult(time + 7, tile, (Tool)n);
-            }
+            AddToResult(time + 7, tile, OtherTool());
         }
 
         public List<SearchNode> ExploreResult = new List<SearchNode>();
+
+        private Tool OtherTool()
+        {
+            var type = tile.Type;
+            switch (type)
+            {
+                case 0: return tool == Tool.Torch ? Tool.Gear : Tool.Torch;
+                case 1: return tool == Tool.Gear ? Tool.None : Tool.Gear;
+                case 2: return tool == Tool.None ? Tool.Torch : Tool.None;
+                default: return Tool.None;
+            }
+        }
 
         private bool IsValidTool(Tile tile, Tool tool)
         {
