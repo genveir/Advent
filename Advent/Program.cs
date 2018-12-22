@@ -6,7 +6,9 @@ namespace Advent
     {
         static void Main(string[] args)
         {
-            new Advent21.Solution().WriteResult();
+            var sol = new Advent22.Solution();
+            Console.WriteLine(sol);
+            sol.WriteResult();
             
             Console.WriteLine("done");
             Console.ReadLine();
