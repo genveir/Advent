@@ -11,7 +11,6 @@ namespace Advent.Advent22
         public void Example()
         {
             var sol = new Solution(510, (10, 10));
-            Solution.current = sol;
 
             Assert.AreEqual(114, sol.GetTotalRisk());
             Assert.AreEqual(45, sol.FindFastest());
