@@ -192,7 +192,6 @@ namespace Advent.Advent22
                 }
             }
 
-            int hashCompares;
             public override int GetHashCode()
             {
                 var tileHash = tile.GetHashCode() * 179;
@@ -201,7 +200,6 @@ namespace Advent.Advent22
                 return tileHash + toolHash + timeHash;
             }
 
-            int equalityCompares;
             public override bool Equals(object obj)
             {
                 var other = obj as SearchNode;
