@@ -82,8 +82,8 @@ namespace Advent.Advent23
 
         public long GetPointInRangeOfMost()
         {
-            int inflateStart = 1000000000;
-            int inflateShift = 10;
+            int inflateStart = 134217728;
+            int inflateShift = 2;
 
             var voxelsAt = new ConcurrentStack<Voxel>[1001];
             InitVoxels(voxelsAt, inflateStart);
@@ -155,7 +155,7 @@ namespace Advent.Advent23
         public void RunRound(ConcurrentStack<Voxel>[] voxelsAt, int inflateFactor, int inflateShift)
         {
             var voxelsFound = GetHighest(voxelsAt);
-            var voxelsToCheck = voxelsFound.SelectMany(vah => vah.Inflate(inflateShift)).ToList();
+            var voxelsToCheck = voxelsFound.SelectMany(vah => vah.Inflate(inflateShift)).Distinct().ToList();
             for (int n = 0; n < voxelsAt.Length; n++) voxelsAt[n] = new ConcurrentStack<Voxel>();
 
             var smallBots = bots.Select(b => b.ReduceByFactor(inflateFactor)).ToList();

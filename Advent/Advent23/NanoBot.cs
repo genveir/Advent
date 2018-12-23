@@ -26,11 +26,11 @@ namespace Advent.Advent23
         {
             var voxels = new List<Voxel>();
 
-            for (int z = 0; z < factor; z++)
+            for (int z = -factor; z < factor; z++)
             {
-                for (int y = 0; y < factor; y++)
+                for (int y = -factor; y < factor; y++)
                 {
-                    for (int x = 0; x < factor; x++)
+                    for (int x = -factor; x < factor; x++)
                     {
                         voxels.Add(new Voxel()
                         {
@@ -48,6 +48,17 @@ namespace Advent.Advent23
         public override string ToString()
         {
             return string.Format("({0}, {1}, {2})", X, Y, Z);
+        }
+
+        public override int GetHashCode()
+        {
+            return (int)(X + Y * 3 + Z * 5);
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as Voxel;
+            return other.X == X && other.Y == Y && other.Z == Z;
         }
     }
 
