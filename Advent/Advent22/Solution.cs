@@ -67,8 +67,8 @@ namespace Advent.Advent22
                     atCost.Add(nodes[n]);
                 }
 
-                //if (atCost.Count > 0) currentCost = atCost[0].Cost;
-                //Console.WriteLine("dequeued " + atCost.Count + " at cost: " + currentCost + " min dist: " + minDist + " queueCount " + pQueue.Count);
+                if (atCost.Count > 0) currentCost = atCost[0].Cost;
+                Console.WriteLine("dequeued " + atCost.Count + " at cost: " + currentCost + " min dist: " + minDist + " queueCount " + pQueue.Count);
 
                 if (atCost.Count > 0)
                 {
