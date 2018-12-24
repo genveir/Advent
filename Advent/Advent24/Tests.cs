@@ -19,7 +19,7 @@ namespace Advent.Advent24
         public void BoostExample()
         {
             var sol = new Solution("Test", Solution.InputMode.File);
-            foreach (var group in sol.fight.immuneSystem) group.Boost(1570);
+            foreach (var group in sol.fight.immuneSystemArmy) group.Boost(1570);
 
             Assert.AreEqual(51, sol.GetPart1());
             Assert.AreEqual(51, sol.GetPart2());
@@ -37,7 +37,7 @@ namespace Advent.Advent24
         public void BoostDrawTimeTest()
         {
             var sol = new Solution();
-            foreach (var group in sol.fight.immuneSystem) group.Boost(50);
+            foreach (var group in sol.fight.immuneSystemArmy) group.Boost(50);
 
             var result = sol.GetPart1();
         }
