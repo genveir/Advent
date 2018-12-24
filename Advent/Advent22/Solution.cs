@@ -45,9 +45,6 @@ namespace Advent.Advent22
             var baseTile = Tiles.GetTile(0, 0);
             var baseNode = new SearchNode(explored, 0, baseTile, Tool.Torch);
 
-            int currentCost = 0;
-            var minDist = int.MaxValue - 1000;
-
             var dequeuesize = 100;
             var pQueue = new Advent22PriorityQueue(baseNode.Cost, dequeuesize);
             pQueue.Enqueue(baseNode);
@@ -67,14 +64,8 @@ namespace Advent.Advent22
                     atCost.Add(nodes[n]);
                 }
 
-                if (atCost.Count > 0) currentCost = atCost[0].Cost;
-                Console.WriteLine("dequeued " + atCost.Count + " at cost: " + currentCost + " min dist: " + minDist + " queueCount " + pQueue.Count);
-
                 if (atCost.Count > 0)
                 {
-                    var batchMin = atCost.Min(sn => sn.tile.HeuristicDistance);
-                    if (batchMin < minDist) minDist = batchMin;
-
                     Parallel.ForEach(atCost, node => node.Expand());
 
                     pQueue.Enqueue(atCost.SelectMany(ap => ap.ExpandResult));
