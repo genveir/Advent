@@ -40,10 +40,10 @@ namespace Advent.Advent22
         
         public int FindFastest()
         {
-            var explored = new ConcurrentDictionary<SearchNode, int>();
+            var expanded = new ConcurrentDictionary<SearchNode, int>();
 
             var baseTile = Tiles.GetTile(0, 0);
-            var baseNode = new SearchNode(explored, 0, baseTile, Tool.Torch);
+            var baseNode = new SearchNode(expanded, 0, baseTile, Tool.Torch);
 
             var dequeuesize = 100;
             var pQueue = new Advent22PriorityQueue(baseNode.Cost, dequeuesize);

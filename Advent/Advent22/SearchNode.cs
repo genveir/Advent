@@ -9,15 +9,15 @@ namespace Advent.Advent22
 
     class SearchNode : IComparable<SearchNode>
     {
-        private ConcurrentDictionary<SearchNode, int> explored;
+        private ConcurrentDictionary<SearchNode, int> expanded;
 
         public int time;
         public Tile tile;
         public Tool tool;
 
-        public SearchNode(ConcurrentDictionary<SearchNode, int> explored, int time, Tile tile, Tool tool)
+        public SearchNode(ConcurrentDictionary<SearchNode, int> expanded, int time, Tile tile, Tool tool)
         {
-            this.explored = explored;
+            this.expanded = expanded;
             this.time = time;
             this.tile = tile;
             this.tool = tool;
@@ -76,14 +76,14 @@ namespace Advent.Advent22
 
         private void AddToResult(int time, Tile tile, Tool tool)
         {
-            var node = new SearchNode(explored, time, tile, tool);
+            var node = new SearchNode(expanded, time, tile, tool);
 
             int previousCost;
-            var alreadyFound = explored.TryGetValue(node, out previousCost);
+            var alreadyFound = expanded.TryGetValue(node, out previousCost);
 
             if ((previousCost == 0 || previousCost > node.Cost))
             {
-                explored.AddOrUpdate(node, node.Cost, (sn, cost) => node.Cost);
+                expanded.AddOrUpdate(node, node.Cost, (sn, cost) => node.Cost);
                 ExpandResult.Add(node);
             }
         }
