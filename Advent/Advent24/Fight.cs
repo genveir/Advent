@@ -16,6 +16,12 @@ namespace Advent.Advent24
             this.infectionArmy = infection;
         }
 
+        public void Print()
+        {
+            foreach (var group in immuneSystemArmy) Console.WriteLine(group + " with " + group.numUnits + " units");
+            foreach (var group in infectionArmy) Console.WriteLine(group + " with " + group.numUnits + " units");
+        }
+
         public void Reset()
         {
             foreach (var group in immuneSystemArmy) group.Reset();
@@ -28,8 +34,11 @@ namespace Advent.Advent24
         }
 
         public Affiliation Winner;
+        private static int roundNum = 1;
         public bool DoRound()
         {
+            Console.WriteLine("ROUND " + roundNum++);
+
             var targets = DoTargetSelection();
             int numKilledThisRound = DoAttack(targets);
 
@@ -97,6 +106,8 @@ namespace Advent.Advent24
                 if (target != null)
                 {
                     numKilledThisRound += target.TakeDamageFrom(group);
+
+                    Console.WriteLine(group + " attacks " + target + " and " + target.numUnits + " are left");
                 }
             }
 

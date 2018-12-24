@@ -68,14 +68,16 @@ namespace Advent.Advent24
 
         public int GetPart2()
         {
-            for (int n = 0; n < 100000; n++)
+            int result = -1;
+            for (int n = 0; n < 100; n++)
             {
                 fight.Reset();
                 fight.Boost(n);
                 while (fight.DoRound()) { }
-                if (fight.Winner == Affiliation.ImmuneSystem) return fight.immuneSystemArmy.Sum(g => g.numUnits);
+                Console.WriteLine(n + " " + fight.infectionArmy.Sum(g => g.numUnits) + " " +  fight.Winner.ToString() + " wins");
+                if (fight.Winner == Affiliation.ImmuneSystem && result == -1) result = fight.immuneSystemArmy.Sum(g => g.numUnits);
             }
-            return -1;
+            return result;
         }
 
         public void WriteResult()

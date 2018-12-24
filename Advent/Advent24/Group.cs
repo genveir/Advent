@@ -57,7 +57,7 @@ namespace Advent.Advent24
 
         public override string ToString()
         {
-            return string.Format("{0} group {1} ({2})", affiliation, unitType.initiative, EffectivePower);
+            return string.Format("{0} group {1}", affiliation, unitType.initiative);
         }
 
         public static Group Parse(string input, Affiliation affiliation)
