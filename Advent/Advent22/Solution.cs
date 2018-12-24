@@ -75,9 +75,9 @@ namespace Advent.Advent22
                     var batchMin = atCost.Min(sn => sn.tile.HeuristicDistance);
                     if (batchMin < minDist) minDist = batchMin;
 
-                    Parallel.ForEach(atCost, node => node.Explore());
+                    Parallel.ForEach(atCost, node => node.Expand());
 
-                    pQueue.Enqueue(atCost.SelectMany(ap => ap.ExploreResult));
+                    pQueue.Enqueue(atCost.SelectMany(ap => ap.ExpandResult));
                 }
             }
 

@@ -37,7 +37,7 @@ namespace Advent.Advent22
             else return tile.HeuristicDistance.CompareTo(other.tile.HeuristicDistance);
         }
 
-        public void Explore()
+        public void Expand()
         {
             var neighbours = tile.Neighbours;
 
@@ -48,7 +48,7 @@ namespace Advent.Advent22
             AddToResult(time + 7, tile, OtherTool());
         }
 
-        public List<SearchNode> ExploreResult = new List<SearchNode>();
+        public List<SearchNode> ExpandResult = new List<SearchNode>();
 
         private Tool OtherTool()
         {
@@ -84,7 +84,7 @@ namespace Advent.Advent22
             if ((previousCost == 0 || previousCost > node.Cost))
             {
                 explored.AddOrUpdate(node, node.Cost, (sn, cost) => node.Cost);
-                ExploreResult.Add(node);
+                ExpandResult.Add(node);
             }
         }
 
