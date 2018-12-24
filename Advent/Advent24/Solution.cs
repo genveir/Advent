@@ -59,9 +59,9 @@ namespace Advent.Advent24
 
         public Fight fight;
 
-        public int GetPart1(bool print = false)
+        public int GetPart1()
         {
-            while (fight.DoRound(print)) { }
+            while (fight.DoRound()) { }
 
             return fight.immuneSystemArmy.Union(fight.infectionArmy).Sum(g => g.numUnits);
         }
@@ -72,7 +72,7 @@ namespace Advent.Advent24
             {
                 fight.Reset();
                 fight.Boost(n);
-                while (fight.DoRound(false)) { }
+                while (fight.DoRound()) { }
                 if (fight.Winner == Affiliation.ImmuneSystem) return fight.immuneSystemArmy.Sum(g => g.numUnits);
             }
             return -1;
@@ -80,7 +80,7 @@ namespace Advent.Advent24
 
         public void WriteResult()
         {
-            Console.WriteLine("part1: " + GetPart1(false));
+            Console.WriteLine("part1: " + GetPart1());
             Console.WriteLine("part2: " + GetPart2());
         }
     }

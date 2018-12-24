@@ -28,29 +28,10 @@ namespace Advent.Advent24
         }
 
         public Affiliation Winner;
-        public bool DoRound(bool print)
+        public bool DoRound()
         {
-            if (print)
-            {
-                Console.WriteLine("Immune System:");
-                for (int n = 0; n < immuneSystemArmy.Count; n++)
-                    Console.WriteLine(string.Format("Group {0} contains {1} units", immuneSystemArmy[n].unitType.initiative, immuneSystemArmy[n].numUnits));
-
-                Console.WriteLine("Infection:");
-                for (int n = 0; n < infectionArmy.Count; n++)
-                    Console.WriteLine(string.Format("Group {0} contains {1} units", infectionArmy[n].unitType.initiative, infectionArmy[n].numUnits));
-
-                Console.WriteLine();
-            }
-
-            var targets = DoTargetSelection(print);
-            int numKilledThisRound = DoAttack(targets, print);
-
-            if (print)
-            {
-                Console.WriteLine("Round done");
-                Console.ReadLine();
-            }
+            var targets = DoTargetSelection();
+            int numKilledThisRound = DoAttack(targets);
 
             if (numKilledThisRound == 0 || immuneSystemArmy.Sum(g => g.numUnits) == 0) { Winner = Affiliation.Infection; return false; }
             if (infectionArmy.Sum(g => g.numUnits) == 0) { Winner = Affiliation.ImmuneSystem; return false; }
@@ -58,7 +39,7 @@ namespace Advent.Advent24
             return true;
         }
 
-        public Dictionary<Group, Group> DoTargetSelection(bool print)
+        public Dictionary<Group, Group> DoTargetSelection()
         {
             // During the target selection phase, each group attempts to choose one target.In decreasing order of effective power, 
             //groups choose their targets; in a tie, the group with the higher initiative chooses first.
@@ -90,24 +71,14 @@ namespace Advent.Advent24
                     .ThenByDescending(g => g.unitType.initiative)
                     .FirstOrDefault();
 
-                if (print)
-                {
-                    Console.WriteLine(
-                        string.Format("{0} group {1} will attack {2}",
-                            group.affiliation, group.unitType.initiative, 
-                            (target == null) ? "noone" : string.Format("group {0} and deal {1} damage", 
-                                target.unitType.initiative, group.DamageTo(target))));
-                }
-
                 alreadyPicked.Add(target);
                 targets.Add(group, target);
             }
 
-            if (print) Console.WriteLine();
             return targets;
         }
 
-        public int DoAttack(Dictionary<Group, Group> targets, bool print)
+        public int DoAttack(Dictionary<Group, Group> targets)
         {
             // During the attacking phase, each group deals damage to the target it selected, if any. Groups attack in 
             // decreasing order of initiative, regardless of whether they are part of the infection or the immune system. 
@@ -125,19 +96,6 @@ namespace Advent.Advent24
                 var target = targets[group];
                 if (target != null)
                 {
-                    if (print)
-                    {
-                        var numKilled = Math.Min(target.numUnits, group.DamageTo(target) / target.unitType.hitpoints);
-                        Console.WriteLine(
-                            string.Format("{0} group {1} attacks group {2} for {3} damage, killing {4} units leaving {5}",
-                                group.affiliation, 
-                                group.unitType.initiative, 
-                                target.unitType.initiative, 
-                                group.DamageTo(target), 
-                                numKilled,
-                                target.numUnits - numKilled));
-                    }
-
                     numKilledThisRound += target.TakeDamageFrom(group);
                 }
             }
