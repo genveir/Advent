@@ -9,8 +9,8 @@ namespace Advent2019
         {
             ISolution solution = new Advent1.Solution();
 
-            solution.WriteResult1();
-            solution.WriteResult2();
+            Console.WriteLine(string.Format("Result for part 1: {0}", solution.GetResult1()));
+            Console.WriteLine(string.Format("Result for part 2: {0}", solution.GetResult2()));
 
             Console.ReadLine();
         }
