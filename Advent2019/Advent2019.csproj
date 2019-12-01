@@ -7,7 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Advent1\Input.txt" />
     <None Remove="Shared\Input.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Advent1\Input.txt" />
   </ItemGroup>
 
   <ItemGroup>

@@ -71,7 +71,7 @@ namespace Advent2019.Shared
                 if (resourceNames.Contains(option)) name = option;
                 else
                 {
-                    option = callingClass.Name + "." + input + ".txt";
+                    option = callingClass.Namespace + "." + input + ".txt";
                     if (resourceNames.Contains(option)) name = option;
                 }
             }
