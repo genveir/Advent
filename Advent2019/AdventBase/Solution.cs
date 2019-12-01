@@ -27,7 +27,12 @@ namespace Advent2019.AdventBase
 
                 foreach(var line in lines)
                 {
+                    var pi = new ParsedInput()
+                    {
 
+                    };
+
+                    parsedInputs.Add(pi);
                 }
 
                 return parsedInputs;

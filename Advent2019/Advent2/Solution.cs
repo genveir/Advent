@@ -8,13 +8,13 @@ namespace Advent2019.Advent2
 {
     public class Solution : ISolution
     {
-        IEnumerable<ParsedInput> parsedInput;
+        IEnumerable<ParsedInput> modules;
 
         public Solution(Input.InputMode inputMode, string input)
         {
             var lines = Input.GetInputLines(inputMode, input).ToArray();
 
-            parsedInput = ParsedInput.Parse(lines);
+            modules = ParsedInput.Parse(lines);
         }
         public Solution() : this(Input.InputMode.Embedded, "Input") { }
 
@@ -27,7 +27,12 @@ namespace Advent2019.Advent2
 
                 foreach(var line in lines)
                 {
+                    var pi = new ParsedInput()
+                    {
 
+                    };
+
+                    parsedInputs.Add(pi);
                 }
 
                 return parsedInputs;
