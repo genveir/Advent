@@ -25,8 +25,8 @@ namespace Advent2019.OpCode
         public bool Break { get; set; }
         public void DoBreak()
         {
-            Console.WriteLine("IP is at " + program.instructionPointer);
-            Console.WriteLine(program.CurrentOperator);
+            Console.Clear();
+            Print();
             Console.WriteLine("[C]ontinue operation, [I]gnore breakpoint this run, [D]elete breakpoint, or [Enter] for step");
             var action = Console.ReadLine();
 
@@ -67,6 +67,29 @@ namespace Advent2019.OpCode
             while (!program.Stop)
             {
                 Step();
+            }
+        }
+
+
+        public void Print()
+        {
+            // beter maken
+            var copy = program.Copy();
+            copy.instructionPointer = 0;
+            while (copy.instructionPointer < copy.program.Length)
+            {
+                bool atPointer = copy.instructionPointer == program.instructionPointer;
+
+                var op = Operator.GetCurrent(copy);
+                
+                Console.ForegroundColor = atPointer ? ConsoleColor.Red : ConsoleColor.White;
+                Console.Write(copy.instructionPointer.ToString().PadRight(4));
+                Console.Write(atPointer ? "[" : " ");
+                Console.Write(op);
+                Console.Write(atPointer ? "]" : " ");
+                Console.WriteLine();
+
+                copy.instructionPointer += op.OpLength;
             }
         }
     }

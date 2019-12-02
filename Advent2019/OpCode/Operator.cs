@@ -14,11 +14,11 @@ namespace Advent2019.OpCode
             this.program = program;
         }
 
-        public static Operator GetCurrent(Program program)
+        public static Operator Get(Program program, int position)
         {
             bool breakOp = false;
 
-            var instruction = program.AtPointer();
+            var instruction = program.GetAt(position);
             if (instruction.Contains("B"))
             {
                 instruction = instruction.Replace("B", "");
@@ -38,14 +38,19 @@ namespace Advent2019.OpCode
             return op;
         }
 
+        public static Operator GetCurrent(Program program)
+        {
+            return Get(program, program.instructionPointer);
+        }
+
         public abstract void Execute();
         public abstract int OpLength { get; }
+        public abstract string OpName { get; }
     }
 
     public abstract class BaseFourPlaceOperator : Operator
     {
         public BaseFourPlaceOperator(Program program) : base(program) { }
-        public abstract string OpName { get; }
         public override int OpLength => 4;
 
         protected int input1Ref { get { return program.IAtOffset(1); } }
@@ -54,11 +59,11 @@ namespace Advent2019.OpCode
 
         public override string ToString()
         {
-            return string.Format("{0} {1} [{2}] + {3} [{4}] => {5} {6}",
-                OpName,
-                input1Ref, program.GetAt(input1Ref),
-                input2Ref, program.GetAt(input2Ref),
-                outputRef,
+            return string.Format("{0} {1} {2} [{3}], {4} [{5}] => {6} {7}",
+                program.AtPointer().PadRight(3), OpName.PadRight(6),
+                input1Ref.ToString().PadRight(4), program.GetAt(input1Ref).PadRight(4),
+                input2Ref.ToString().PadRight(4), program.GetAt(input2Ref).PadRight(4),
+                outputRef.ToString().PadRight(4),
                 Break ? "BREAK" : "");
         }
     }
@@ -111,6 +116,7 @@ namespace Advent2019.OpCode
     {
         public Stop(Program program) : base(program) { }
         public override int OpLength => 1;
+        public override string OpName => "Stop";
 
         public override void Execute()
         {
@@ -119,17 +125,18 @@ namespace Advent2019.OpCode
 
         public override string ToString()
         {
-            return "Stop " + (Break ? "BREAK" : "");
+            return program.AtPointer() + " STOP  " + (Break ? "BREAK" : "");
         }
     }
 
     public class NotAnOp : Stop
     {
         public NotAnOp(Program program) : base(program) { }
+        public override string OpName => "NOP(" + program.AtPointer() + ")";
 
         public override string ToString()
         {
-            return program.GetAt(program.instructionPointer).ToString();
+            return program.AtPointer() + " NOP   " + (Break ? "BREAK" : ""); 
         }
     }
 }

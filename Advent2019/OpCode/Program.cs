@@ -7,19 +7,16 @@ namespace Advent2019.OpCode
 {
     public class Program
     {
-        public Dictionary<int, string> program;
+        public string[] program;
 
         public bool Stop { get; set; } = false;
 
         public int instructionPointer;
 
-        private Program() { program = new Dictionary<int, string>(); }
+        private Program() { }
         public Program(string[] ops) : this()
         {
-            for (int n = 0; n < ops.Length; n++)
-            {
-                program[n] = ops[n];
-            }
+            program = ops.DeepCopy();
             Stop = false;
 
             instructionPointer = 0;
@@ -29,8 +26,7 @@ namespace Advent2019.OpCode
 
         public Program Copy()
         {
-            var newProgram = new Program();
-            foreach(var kvp in program) { newProgram.SetAt(kvp.Key, kvp.Value); }
+            var newProgram = new Program(program);
             newProgram.Stop = this.Stop;
             newProgram.instructionPointer = this.instructionPointer;
 
@@ -67,6 +63,13 @@ namespace Advent2019.OpCode
         public void SetAt(int position, string value)
         {
             var hasBreak = SafeGet(position)?.Contains("B") ?? false;
+            if (position >= program.Length)
+            {
+                var newLength = Math.Min(int.MaxValue, Math.Max(position, program.LongLength * 2L));
+                var buffer = new string[newLength];
+                program.CopyTo(buffer, 0);
+                program = buffer;
+            }
             program[position] = value + (hasBreak ? "B" : "");
         }
         public void ISetAt(int position, int value)
@@ -78,9 +81,8 @@ namespace Advent2019.OpCode
         public int IntGet(int position) { return int.Parse(SafeGet(position).Replace("B", "")); }
         public string SafeGet(int position)
         {
-            string output;
-            program.TryGetValue(position, out output);
-            return output;
+            if (position < 0 || position >= program.Length) return "0";
+            else return program[position];
         }
 
         public void RemoveBreakpoint(int position)
