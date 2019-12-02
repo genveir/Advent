@@ -1,4 +1,5 @@
-﻿using Advent2019.Shared;
+﻿using Advent2019.OpCode;
+using Advent2019.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,52 +9,30 @@ namespace Advent2019.Advent2
 {
     public class Solution : ISolution
     {
-        static int[] startintProgram;
-        static int[] program;
-        static bool stop = false;
+        public Executor executor;
 
         public bool replace = true;
 
         public Solution(Input.InputMode inputMode, string input)
         {
-            startintProgram = Input.GetInputLines(inputMode, input, new char[] { ',' }).Select(num => int.Parse(num)).ToArray();
+            var startProg = Input.GetInputLines(inputMode, input, new char[] { ',' }).ToArray();
+            executor = new Executor(startProg);
         }
         public Solution() : this(Input.InputMode.Embedded, "Input") { }
 
-        private class Op
-        {
-            public static void Execute(int index)
-            {
-                switch(program[index])
-                {
-                    case 1: program[program[index + 3]] = program[program[index + 1]] + program[program[index + 2]]; break;
-                    case 2: program[program[index + 3]] = program[program[index + 1]] * program[program[index + 2]]; break;
-                    case 99: stop = true; break;
-                    default: stop = true; break;
-                }
-            }
-        }
-
-
-
         public string GetResult1()
         {
-            program = startintProgram.DeepCopy();
+            executor.Reset();
 
             if (replace)
             {
-                program[1] = 12;
-                program[2] = 2;
+                executor.program.SetAt(1, "12");
+                executor.program.SetAt(2, "2");
             }
 
-            int cursor = 0;
-            while (!stop)
-            {
-                Op.Execute(cursor);
-                cursor += 4;
-            }
+            executor.Execute();
 
-            return program[0].ToString();
+            return executor.program.GetAt(0).ToString();
         }
 
         public string GetResult2()
@@ -62,20 +41,14 @@ namespace Advent2019.Advent2
             {
                 for (int second = 0; second < 100; second++)
                 {
-                    program = startintProgram.DeepCopy();
-                    stop = false;
+                    executor.Reset();
 
-                    program[1] = first;
-                    program[2] = second;
+                    executor.program.ISetAt(1, first);
+                    executor.program.ISetAt(2, second);
 
-                    int cursor = 0;
-                    while (!stop)
-                    {
-                        Op.Execute(cursor);
-                        cursor += 4;
-                    }
+                    executor.Execute();
 
-                    if (program[0] == 19690720) return (100 * first + second).ToString();
+                    if (executor.program.IGetAt(0) == 19690720) return (100 * first + second).ToString();
                 }
             }
 
