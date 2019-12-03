@@ -1,4 +1,4 @@
 # Advent
-AdventOfCode2018
+AdventOfCode
 
-Horrible loops-in-loops implementations of Advent of Code 2018
+Horrible loops-in-loops implementations of Advent of Code 2018 and 2019
