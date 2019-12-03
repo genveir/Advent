@@ -19,6 +19,7 @@ namespace Advent2019.OpCode
         public void Reset()
         {
             program = startProgram.Copy();
+            lastPrint = null;
         }
 
         public int lastBreakPosition;
@@ -71,9 +72,9 @@ namespace Advent2019.OpCode
         }
 
 
+        Program lastPrint;
         public void Print()
         {
-            // beter maken
             var copy = program.Copy();
             copy.instructionPointer = 0;
             while (copy.instructionPointer < copy.program.Length)
@@ -82,7 +83,18 @@ namespace Advent2019.OpCode
 
                 var op = Operator.GetCurrent(copy);
                 
-                Console.ForegroundColor = atPointer ? ConsoleColor.Red : ConsoleColor.White;
+                for (int n = 0; n < op.OpLength; n++)
+                {
+                    var curVal = copy.GetAt(copy.instructionPointer + n);
+                    var lastVal = lastPrint?.GetAt(copy.instructionPointer + n) ?? curVal;
+                    var same = lastVal == curVal;
+
+                    Console.ForegroundColor = same ? ConsoleColor.White : ConsoleColor.Red;
+                    Console.Write((copy.instructionPointer + n + ":").ToString().PadRight(5) + " " + curVal.PadRight(8));
+                }
+                for (int n = 0; n < 4 - op.OpLength; n++) Console.Write("".PadRight(14));
+
+                Console.ForegroundColor = atPointer ? ConsoleColor.Green : ConsoleColor.White;
                 Console.Write(copy.instructionPointer.ToString().PadRight(4));
                 Console.Write(atPointer ? "[" : " ");
                 Console.Write(op);
@@ -91,6 +103,8 @@ namespace Advent2019.OpCode
 
                 copy.instructionPointer += op.OpLength;
             }
+
+            lastPrint = copy;
         }
     }
 }
