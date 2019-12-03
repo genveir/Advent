@@ -43,17 +43,18 @@ namespace Advent2019.Advent3
 
                         for(int n = 0; n < distance; n++)
                         {
+                            bool first = true;
                             switch(direction)
                             {
-                                case 'R': x++; wire.Add((x, y)); break;
-                                case 'L': x--; wire.Add((x, y)); break;
-                                case 'U': y++; wire.Add((x, y)); break;
-                                case 'D': y--; wire.Add((x, y)); break;
+                                case 'R': x++; if (wire.Contains((x, y))) first = false; else wire.Add((x, y)); break;
+                                case 'L': x--; if (wire.Contains((x, y))) first = false; else wire.Add((x, y)); break;
+                                case 'U': y++; if (wire.Contains((x, y))) first = false; else wire.Add((x, y)); break;
+                                case 'D': y--; if (wire.Contains((x, y))) first = false; else wire.Add((x, y)); break;
                             }
                             totalDist++;
 
                             if (!steps.ContainsKey((x, y))) steps[(x, y)] = totalDist;
-                            else steps[(x, y)] = steps[(x, y)] + totalDist;
+                            else if (first) steps[(x, y)] = steps[(x, y)] + totalDist;
                         }
                     }
 
