@@ -8,31 +8,31 @@ namespace Advent2019.Advent3
 {
     public class Solution : ISolution
     {
-        static Dictionary<(int x, int y), int> steps;
+        Dictionary<(int x, int y), int> steps;
         HashSet<(int x, int y)>[] wires;
 
         public Solution(Input.InputMode inputMode, string input)
         {
             var lines = Input.GetInputLines(inputMode, input).ToArray();
 
-            wires = ParsedInput.Parse(lines);
+            steps = new Dictionary<(int x, int y), int>();
+            wires = ParsedInput.Parse(lines, steps);
             
         }
         public Solution() : this(Input.InputMode.Embedded, "Input") { }
 
         private class ParsedInput
         {
-            public static HashSet<(int x, int y)>[] Parse(IEnumerable<string> lines)
+            public static HashSet<(int x, int y)>[] Parse(string[] lines, Dictionary<(int x, int y), int> steps)
             {
-                steps = new Dictionary<(int x, int y), int>();
+                var result = new HashSet<(int x, int y)>[lines.Length];
 
-                var result = new HashSet<(int x, int y)>[2];
-                int num = 0;
-                foreach(var line in lines)
+                for (int num = 0; num < lines.Length; num++)
                 {
-                    var split = line.Split(",", StringSplitOptions.RemoveEmptyEntries);
-                    split = split.Select(s => s.Trim()).ToArray();
+                    var split = lines[num].Replace(" ", "").Split(",", StringSplitOptions.RemoveEmptyEntries);
+
                     HashSet<(int x, int y)> wire = new HashSet<(int x, int y)>();
+
                     int x = 0;
                     int y = 0;
                     int totalDist = 0;
@@ -57,7 +57,7 @@ namespace Advent2019.Advent3
                         }
                     }
 
-                    result[num++] = wire;
+                    result[num] = wire;
                 }
 
                 return result;
