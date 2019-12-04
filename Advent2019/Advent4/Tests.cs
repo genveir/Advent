@@ -7,20 +7,26 @@ namespace Advent2019.Advent4
 {
     class Tests
     {
-        [TestCase("", "")]
-        public void Test1(string input, string output)
+        [TestCase(111111, true)]
+        [TestCase(223450, false)]
+        [TestCase(123789, false)]
+        public void Test1(int input, bool output)
         {
-            var sol = new Solution(Shared.Input.InputMode.String, input);
+            var sol = new Solution(Shared.Input.InputMode.String, "");
 
-            Assert.AreEqual(output, sol.GetResult1());
+            Assert.AreEqual(output, sol.Test(input, false));
         }
 
-        [TestCase("", "")]
-        public void Test2(string input, string output)
+        [TestCase(112233, true)]
+        [TestCase(111122, true)]
+        [TestCase(123444, false)]
+        [TestCase(332211, false)]
+        [TestCase(111222, false)]
+        public void Test2(int input, bool output)
         {
-            var sol = new Solution(Shared.Input.InputMode.String, input);
+            var sol = new Solution(Shared.Input.InputMode.String, "");
 
-            Assert.AreEqual(output, sol.GetResult2());
+            Assert.AreEqual(output, sol.Test(input, true));
         }
     }
 }

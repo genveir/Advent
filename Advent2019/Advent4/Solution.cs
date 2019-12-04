@@ -8,45 +8,66 @@ namespace Advent2019.Advent4
 {
     public class Solution : ISolution
     {
-        IEnumerable<ParsedInput> modules;
-
         public Solution(Input.InputMode inputMode, string input)
         {
             var lines = Input.GetInputLines(inputMode, input).ToArray();
 
-            modules = ParsedInput.Parse(lines);
         }
         public Solution() : this(Input.InputMode.Embedded, "Input") { }
 
-        private class ParsedInput
+        public bool Test(int num, bool is2)
         {
+            var digits = ('a' + num.ToString() + "a").ToCharArray();
 
-            public static IEnumerable<ParsedInput> Parse(IEnumerable<string> lines)
+            bool hasdouble = false;
+            for (int n = 1; n < digits.Length - 2; n++)
             {
-                var parsedInputs = new List<ParsedInput>();
+                int dign0 = digits[n - 1]- 48;
+                int dign = digits[n] - 48;
+                int dign1 = digits[n + 1] - 48;
+                int dign2 = digits[n + 2] - 48;
 
-                foreach(var line in lines)
-                {
-                    var pi = new ParsedInput()
-                    {
+                var before = dign != dign0 || !is2;
+                var areeq = dign == dign1;
+                var arenteq = dign != dign2;
 
-                    };
-
-                    parsedInputs.Add(pi);
-                }
-
-                return parsedInputs;
+                if (before && areeq && arenteq) hasdouble = true;
+                if (digits[n] > digits[n + 1]) return false;
             }
+
+            return hasdouble;
         }
+
+        public int low = 145852;
+        public int high = 616942;
 
         public string GetResult1()
         {
-            return "";
+            int bla = 0;
+
+            int num = low;
+            while (num <= high)
+            {
+                if (Test(num, false)) bla++;
+                num++;
+            }
+
+            return bla.ToString();
         }
 
         public string GetResult2()
         {
-            return "";
+            int bla = 0;
+
+            int num = low;
+            while (num <= high)
+            {
+                if (Test(num, true)) bla++;
+                num++;
+            }
+
+            // not 1517
+            return bla.ToString();
         }
     }
 }
