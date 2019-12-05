@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Advent2019.OpCode
@@ -19,20 +20,47 @@ namespace Advent2019.OpCode
             bool breakOp = false;
 
             var instruction = program.GetAt(position);
+
             if (instruction.Contains("B"))
             {
                 instruction = instruction.Replace("B", "");
                 breakOp = true;
             }
 
+            bool[] isRef = new bool[3] { true, true, true };
+
+            var broken = instruction.ToCharArray().Select(c => c - 48).ToArray(); ;
+            int counter = 0;
+            if (broken.Length < 6)
+            {
+                for (int n = broken.Length - 3; n >= 0; n--)
+                {
+                    isRef[counter++] = broken[n] == 0;
+                }
+            }
+
+
+            var instructionlength2 = broken.Length > 1;
+            int startindex = broken.Length - (instructionlength2 ? 2 : 1);
+            instruction = instruction.Substring(startindex);
+            instruction = instruction.TrimStart('0');
+
             Operator op;
             switch (instruction)
             {
-                case "1": op = new AddRR(program); break;
-                case "2": op = new MultiplyRR(program); break;
-                case "99": op = new Stop(program); break;
+                case "1": op = new Add(program); break;
+                case "2": op = new Multiply(program); break;
+                case "3": op = new In(program);break;
+                case "4": op = new Out(program);break;
+                case "5": op = new JumpIfTrue(program); break;
+                case "6": op = new JumpIfFalse(program); break;
+                case "7": op = new Less(program); break;
+                case "8": op = new Equal(program); break;
+                case "99": op = new Stop(program); break;                
+                    
                 default: op = new NotAnOp(program); break;
             }
+            op.Ref = isRef;
 
             op.Break = breakOp;
             return op;
@@ -42,6 +70,11 @@ namespace Advent2019.OpCode
         {
             return Get(program, program.instructionPointer);
         }
+
+        public bool[] Ref;
+        protected int param1 { get { return Ref[0] ? program.IGetAt(program.IAtOffset(1)) : program.IAtOffset(1); } }
+        protected int param2 { get { return Ref[1] ? program.IGetAt(program.IAtOffset(2)) : program.IAtOffset(2); } }
+        protected int param3 { get { return Ref[2] ? program.IGetAt(program.IAtOffset(3)) : program.IAtOffset(3); } }
 
         public abstract void Execute();
         public abstract int OpLength { get; }
@@ -53,10 +86,12 @@ namespace Advent2019.OpCode
         public BaseTwoPlaceOperator(Program program) : base(program) { }
         public override int OpLength => 2;
 
-        protected int input { get { return program.IAtOffset(1); } }
+        protected int input { get { return param1; } }
 
-        protected string Format(bool inputIsRef)
+        protected string Format()
         {
+            bool inputIsRef = Ref[0];
+
             return OpName + ":" +
                 (inputIsRef ? "ref(" : "") + input + (inputIsRef ? ")" : "");
         }
@@ -67,16 +102,18 @@ namespace Advent2019.OpCode
         public BaseThreePlaceOperator(Program program) : base(program) { }
         public override int OpLength => 3;
 
-        protected int input { get { return program.IAtOffset(1); } }
-        protected int outputRef { get { return program.IAtOffset(2); } }
+        protected int input { get { return param1; } }
+        protected int output { get { return param2; } }
 
-        protected string Format(bool inputIsRef)
+        protected string Format()
         {
+            bool inputIsRef = Ref[0];
+
             return OpName + ":" +
                 (inputIsRef ? "ref(" : "") + input + (inputIsRef ? ")" : "") +
                 " = " +
                 (inputIsRef ? program.IGetAt(input).ToString() : input.ToString()) +
-                " => ref(" + outputRef + ")";
+                " => ref(" + output + ")";
         }
     }
 
@@ -85,12 +122,15 @@ namespace Advent2019.OpCode
         public BaseFourPlaceOperator(Program program) : base(program) { }
         public override int OpLength => 4;
 
-        protected int input1 { get { return program.IAtOffset(1); } }
-        protected int input2 { get { return program.IAtOffset(2); } }
+        protected int input1 { get { return param1; } }
+        protected int input2 { get { return param2; } }
         protected int outputRef { get { return program.IAtOffset(3); } }
 
-        protected string Format(bool input1IsRef, bool input2IsRef, string op)
+        protected string Format(string op)
         {
+            bool input1IsRef = Ref[0];
+            bool input2IsRef = Ref[1];
+
             return OpName + ":" +
                 (input1IsRef ? "ref(" : "") + input1 + (input1IsRef ? ")" : "") +
                 " " + op + " " +
@@ -103,435 +143,139 @@ namespace Advent2019.OpCode
         }
     }
 
-    public class AddRR : BaseFourPlaceOperator
+    public class In : BaseTwoPlaceOperator
     {
-        public AddRR(Program program) : base(program) { }
-        public override string OpName => "AddRR";
+        public In(Program program) : base(program) { }
+        public override string OpName => "In";
 
         public override void Execute()
         {
-            program.ISetAt(outputRef, program.IGetAt(input1) + program.IGetAt(input2));
+            Ref[0] = false;
+            Console.WriteLine("inp: ");
+            //var val = Console.ReadLine();
+            var val = "5";
+
+            program.SetAt(input, val);
         }
 
         public override string ToString()
         {
-            return Format(true, true, "+");
+            return Format();
         }
     }
 
-    public class AddRI : BaseFourPlaceOperator
+    public class Out : BaseTwoPlaceOperator
     {
-        public AddRI(Program program) : base(program) { }
-        public override string OpName => "AddRI";
+        public Out(Program program) : base(program) { }
+        public override string OpName => "Out";
 
         public override void Execute()
         {
-            program.ISetAt(outputRef, program.IGetAt(input1) + input2);
+            Console.WriteLine("Output: " + param1);
         }
 
         public override string ToString()
         {
-            return Format(true, false, "+");
+            return Format();
         }
     }
 
-    public class AddIR : BaseFourPlaceOperator
+    public class Add : BaseFourPlaceOperator
     {
-        public AddIR(Program program) : base(program) { }
-        public override string OpName => "AddIR";
+        public Add(Program program) : base(program) { }
+        public override string OpName => "Add" + (Ref[0] ? "R" : "I") + (Ref[1] ? "R" : "I");
 
         public override void Execute()
         {
-            program.ISetAt(outputRef, input1 + program.IGetAt(input2));
+            program.ISetAt(outputRef, input1 + input2);
         }
 
         public override string ToString()
         {
-            return Format(false, true, "+");
+            return Format("+");
+        }
+    }
+    
+
+    public class Multiply : BaseFourPlaceOperator
+    {
+        public Multiply(Program program) : base(program) { }
+        public override string OpName => "Mul" + (Ref[0] ? "R" : "I") + (Ref[1] ? "R" : "I");
+
+        public override void Execute()
+        {
+            program.ISetAt(outputRef, input1 * input2);
+        }
+
+        public override string ToString()
+        {
+            return Format("*");
         }
     }
 
-    public class SubtractRR : BaseFourPlaceOperator
+    public class JumpIfTrue : BaseThreePlaceOperator
     {
-        public SubtractRR(Program program) : base(program) { }
-        public override string OpName => "SubRR";
+        public JumpIfTrue(Program program) : base(program) { }
+        public override string OpName => "JIT" + (Ref[0] ? "R" : "I");
 
         public override void Execute()
         {
-            program.ISetAt(outputRef, program.IGetAt(input1) - program.IGetAt(input2));
+            if (input != 0) program.instructionPointer = output - 3;
         }
 
         public override string ToString()
         {
-            return Format(true, true, "-");
+            return Format();
         }
     }
 
-    public class SubtractRI : BaseFourPlaceOperator
+    public class JumpIfFalse : BaseThreePlaceOperator
     {
-        public SubtractRI(Program program) : base(program) { }
-        public override string OpName => "SubRI";
+        public JumpIfFalse(Program program) : base(program) { }
+        public override string OpName => "JIF" + (Ref[0] ? "R" : "I");
 
         public override void Execute()
         {
-            program.ISetAt(outputRef, program.IGetAt(input1) - input2);
+            if (input == 0) program.instructionPointer = output - 3;
         }
 
         public override string ToString()
         {
-            return Format(true, false, "-");
+            return Format();
         }
     }
 
-    public class SubtractIR : BaseFourPlaceOperator
+    public class Less : BaseFourPlaceOperator
     {
-        public SubtractIR(Program program) : base(program) { }
-        public override string OpName => "SubIR";
+        public Less(Program program): base(program) { }
+        public override string OpName => "Les" + (Ref[0] ? "R" : "I") + (Ref[1] ? "R" : "I");
 
         public override void Execute()
         {
-            program.ISetAt(outputRef, input1 - program.IGetAt(input2));
+            if (input1 < input2) program.ISetAt(outputRef, 1);
+            else program.ISetAt(outputRef, 0);
         }
 
         public override string ToString()
         {
-            return Format(false, true, "-");
+            return Format("<");
         }
     }
 
-    public class MultiplyRR : BaseFourPlaceOperator
+    public class Equal : BaseFourPlaceOperator
     {
-        public MultiplyRR(Program program) : base(program) { }
-        public override string OpName => "MulRR";
+        public Equal(Program program) : base(program) { }
+        public override string OpName => "Eq" + (Ref[0] ? "R" : "I") + (Ref[1] ? "R" : "I");
 
         public override void Execute()
         {
-            program.ISetAt(outputRef, program.IGetAt(input1) * program.IGetAt(input2));
+            if (input1 == input2) program.ISetAt(outputRef, 1);
+            else program.ISetAt(outputRef, 0);
         }
 
         public override string ToString()
         {
-            return Format(true, true, "*");
-        }
-    }
-
-    public class MultiplyRI : BaseFourPlaceOperator
-    {
-        public MultiplyRI(Program program) : base(program) { }
-        public override string OpName => "MulRI";
-
-        public override void Execute()
-        {
-            program.ISetAt(outputRef, program.IGetAt(input1) * input2);
-        }
-
-        public override string ToString()
-        {
-            return Format(true, false, "*");
-        }
-    }
-
-    public class MultiplyIR : BaseFourPlaceOperator
-    {
-        public MultiplyIR(Program program) : base(program) { }
-        public override string OpName => "MulIR";
-
-        public override void Execute()
-        {
-            program.ISetAt(outputRef, input1 * program.IGetAt(input2));
-        }
-
-        public override string ToString()
-        {
-            return Format(false, true, "*");
-        }
-    }
-
-    public class DivideRR : BaseFourPlaceOperator
-    {
-        public DivideRR(Program program) : base(program) { }
-        public override string OpName => "DivRR";
-
-        public override void Execute()
-        {
-            program.ISetAt(outputRef, program.IGetAt(input1) / program.IGetAt(input2));
-        }
-
-        public override string ToString()
-        {
-            return Format(true, true, "/");
-        }
-    }
-
-    public class DivideRI : BaseFourPlaceOperator
-    {
-        public DivideRI(Program program) : base(program) { }
-        public override string OpName => "DivRI";
-
-        public override void Execute()
-        {
-            program.ISetAt(outputRef, program.IGetAt(input1) / input2);
-        }
-
-        public override string ToString()
-        {
-            return Format(true, false, "/");
-        }
-    }
-
-    public class DivideIR : BaseFourPlaceOperator
-    {
-        public DivideIR(Program program) : base(program) { }
-        public override string OpName => "DivIR";
-
-        public override void Execute()
-        {
-            program.ISetAt(outputRef, input1 / program.IGetAt(input2));
-        }
-
-        public override string ToString()
-        {
-            return Format(false, true, "/");
-        }
-    }
-
-    public class ModRR : BaseFourPlaceOperator
-    {
-        public ModRR(Program program) : base(program) { }
-        public override string OpName => "ModRR";
-
-        public override void Execute()
-        {
-            program.ISetAt(outputRef, program.IGetAt(input1) % program.IGetAt(input2));
-        }
-
-        public override string ToString()
-        {
-            return Format(true, true, "%");
-        }
-    }
-
-    public class ModRI : BaseFourPlaceOperator
-    {
-        public ModRI(Program program) : base(program) { }
-        public override string OpName => "ModRI";
-
-        public override void Execute()
-        {
-            program.ISetAt(outputRef, program.IGetAt(input1) % input2);
-        }
-
-        public override string ToString()
-        {
-            return Format(true, false, "%");
-        }
-    }
-
-    public class ModIR : BaseFourPlaceOperator
-    {
-        public ModIR(Program program) : base(program) { }
-        public override string OpName => "ModIR";
-
-        public override void Execute()
-        {
-            program.ISetAt(outputRef, input1 % program.IGetAt(input2));
-        }
-
-        public override string ToString()
-        {
-            return Format(false, true, "%");
-        }
-    }
-
-    public class BANDRR : BaseFourPlaceOperator
-    {
-        public BANDRR(Program program) : base(program) { }
-        public override string OpName => "BANDRR";
-
-        public override void Execute()
-        {
-            program.ISetAt(outputRef, program.IGetAt(input1) & program.IGetAt(input2));
-        }
-
-        public override string ToString()
-        {
-            return Format(true, true, "&");
-        }
-    }
-
-    public class BANDRI : BaseFourPlaceOperator
-    {
-        public BANDRI(Program program) : base(program) { }
-        public override string OpName => "BANDRI";
-
-        public override void Execute()
-        {
-            program.ISetAt(outputRef, program.IGetAt(input1) & input2);
-        }
-
-        public override string ToString()
-        {
-            return Format(true, false, "&");
-        }
-    }
-
-    public class BANDIR : BaseFourPlaceOperator
-    {
-        public BANDIR(Program program) : base(program) { }
-        public override string OpName => "BANDIR";
-
-        public override void Execute()
-        {
-            program.ISetAt(outputRef, input1 & program.IGetAt(input2));
-        }
-
-        public override string ToString()
-        {
-            return Format(false, true, "&");
-        }
-    }
-
-    public class BORRR : BaseFourPlaceOperator
-    {
-        public BORRR(Program program) : base(program) { }
-        public override string OpName => "BORRR";
-
-        public override void Execute()
-        {
-            program.ISetAt(outputRef, program.IGetAt(input1) | program.IGetAt(input2));
-        }
-
-        public override string ToString()
-        {
-            return Format(true, true, "|");
-        }
-    }
-
-    public class BORRI : BaseFourPlaceOperator
-    {
-        public BORRI(Program program) : base(program) { }
-        public override string OpName => "BORRI";
-
-        public override void Execute()
-        {
-            program.ISetAt(outputRef, program.IGetAt(input1) | input2);
-        }
-
-        public override string ToString()
-        {
-            return Format(true, false, "|");
-        }
-    }
-
-    public class BORIR : BaseFourPlaceOperator
-    {
-        public BORIR(Program program) : base(program) { }
-        public override string OpName => "BORIR";
-
-        public override void Execute()
-        {
-            program.ISetAt(outputRef, input1 | program.IGetAt(input2));
-        }
-
-        public override string ToString()
-        {
-            return Format(false, true, "|");
-        }
-    }
-
-    public class JumpR : BaseTwoPlaceOperator
-    {
-        public JumpR(Program program) : base(program) { }
-        public override string OpName => "JumpR";
-
-        public override void Execute()
-        {
-            program.instructionPointer += program.IGetAt(input) - 2; // assumption: jump ahead N places, no shift after
-        }
-
-        public override string ToString()
-        {
-            return Format(true);
-        }
-    }
-
-    public class JumpI : BaseTwoPlaceOperator
-    {
-        public JumpI(Program program) : base(program) { }
-        public override string OpName => "JumpI";
-
-        public override void Execute()
-        {
-            program.instructionPointer += input - 2; // assumption: jump ahead N places, no shift after
-        }
-
-        public override string ToString()
-        {
-            return Format(false);
-        }
-    }
-
-    public class GotoR : BaseTwoPlaceOperator
-    {
-        public GotoR(Program program) : base(program) { }
-        public override string OpName => "GotoR";
-
-        public override void Execute()
-        {
-            program.instructionPointer = program.IGetAt(input) - 2; // assumption: jump ahead N places, no shift after
-        }
-        public override string ToString()
-        {
-            return Format(true);
-        }
-
-    }
-
-    public class GotoI : BaseTwoPlaceOperator
-    {
-        public GotoI(Program program) : base(program) { }
-        public override string OpName => "GotoI";
-
-        public override void Execute()
-        {
-            program.instructionPointer = input - 2; // assumption: jump ahead N places, no shift after
-        }
-
-        public override string ToString()
-        {
-            return Format(false);
-        }
-    }
-
-    public class SetR : BaseThreePlaceOperator
-    {
-        public SetR(Program program) : base(program) { }
-        public override string OpName => "SetR";
-
-        public override void Execute()
-        {
-            program.ISetAt(outputRef, program.IGetAt(input));
-        }
-
-        public override string ToString()
-        {
-            return Format(true);
-        }
-    }
-
-    public class SetI : BaseThreePlaceOperator
-    {
-        public SetI(Program program) : base(program) { }
-        public override string OpName => "SetI";
-
-        public override void Execute()
-        {
-            program.ISetAt(outputRef, input);
-        }
-
-        public override string ToString()
-        {
-            return Format(false);
+            return Format("=");
         }
     }
 

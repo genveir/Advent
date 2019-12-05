@@ -77,12 +77,12 @@ namespace Advent2019.OpCode
         {
             var copy = program.Copy();
             copy.instructionPointer = 0;
-            while (copy.instructionPointer < copy.program.Length)
+            while (copy.instructionPointer < copy.program.Length && copy.instructionPointer < 255)
             {
                 bool atPointer = copy.instructionPointer == program.instructionPointer;
 
                 var op = Operator.GetCurrent(copy);
-                
+
                 for (int n = 0; n < op.OpLength; n++)
                 {
                     var curVal = copy.GetAt(copy.instructionPointer + n);
@@ -92,14 +92,18 @@ namespace Advent2019.OpCode
                     Console.ForegroundColor = same ? ConsoleColor.White : ConsoleColor.Red;
                     Console.Write((copy.instructionPointer + n + ":").ToString().PadRight(5) + " " + curVal.PadRight(8));
                 }
-                for (int n = 0; n < 4 - op.OpLength; n++) Console.Write("".PadRight(14));
 
-                Console.ForegroundColor = atPointer ? ConsoleColor.Green : ConsoleColor.White;
-                Console.Write(copy.instructionPointer.ToString().PadRight(4));
-                Console.Write(atPointer ? "[" : " ");
-                Console.Write(op);
-                Console.Write(atPointer ? "]" : " ");
-                Console.WriteLine();
+                if (!(op is NotAnOp))
+                {
+                    for (int n = 0; n < 4 - op.OpLength; n++) Console.Write("".PadRight(14));
+                
+                    Console.ForegroundColor = atPointer ? ConsoleColor.Green : ConsoleColor.White;
+                    Console.Write(copy.instructionPointer.ToString().PadRight(4));
+                    Console.Write(atPointer ? "[" : " ");
+                    Console.Write(op);
+                    Console.Write(atPointer ? "]" : " ");
+                    Console.WriteLine();
+                }
 
                 copy.instructionPointer += op.OpLength;
             }
