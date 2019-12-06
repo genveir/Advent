@@ -151,9 +151,8 @@ namespace Advent2019.OpCode
         public override void Execute()
         {
             Ref[0] = false;
-            Console.WriteLine("inp: ");
-            //var val = Console.ReadLine();
-            var val = "5";
+            Console.Write("inp: ");
+            var val = Console.ReadLine();
 
             program.SetAt(input, val);
         }

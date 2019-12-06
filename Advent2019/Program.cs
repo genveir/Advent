@@ -7,7 +7,7 @@ namespace Advent2019
     {
         static void Main(string[] args)
         {
-            ISolution solution = new Advent5.Solution();
+            ISolution solution = new Advent6.Solution();
 
             Console.WriteLine(string.Format("Result for part 1: {0}", solution.GetResult1()));
             Console.WriteLine(string.Format("Result for part 2: {0}", solution.GetResult2()));
