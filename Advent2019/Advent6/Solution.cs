@@ -71,9 +71,12 @@ namespace Advent2019.Advent6
                 return list;
             }
 
+            public int? parentCount;
             public int CountParents()
             {
-                return 1 + Parent?.CountParents() ?? 0;
+                parentCount = parentCount ?? 1 + Parent?.CountParents() ?? 0;
+
+                return parentCount.Value;
             }
 
             public override string ToString()
