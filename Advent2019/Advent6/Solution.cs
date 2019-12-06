@@ -72,9 +72,10 @@ namespace Advent2019.Advent6
             }
 
             public int? parentCount;
-            public int CountParents()
+            public int CountParents(bool reset = false)
             {
-                parentCount = parentCount ?? 1 + Parent?.CountParents() ?? 0;
+                if (reset) parentCount = null;
+                parentCount = parentCount ?? 1 + Parent?.CountParents(reset) ?? 0;
 
                 return parentCount.Value;
             }
@@ -88,7 +89,9 @@ namespace Advent2019.Advent6
 
         public string GetResult1()
         {
-            return bodies.Values.Sum(b => b.CountParents()).ToString();
+            var result = bodies.Values.Sum(b => b.CountParents()).ToString();
+
+            return result;
         }
 
         public string GetResult2()
@@ -103,7 +106,7 @@ namespace Advent2019.Advent6
 
             foreach (var body in targets) body.Parent = null;
 
-            var dist = myBody.Parent.CountParents() + sanBody.Parent.CountParents();
+            var dist = myBody.Parent.CountParents(true) + sanBody.Parent.CountParents(true);
             return dist.ToString();
 
             // not 563
