@@ -100,7 +100,6 @@ namespace Advent2019.Advent7
                     var third = amplifiers[2].GetOutput(second);
                     var fourth = amplifiers[3].GetOutput(third);
                     fifth = amplifiers[4].GetOutput(fourth);
-                    eenskijken.Add(fifth);
                 } while (!amplifiers[4].IsStopped());
 
                 if (fifth > bestResult) bestResult = fifth;
