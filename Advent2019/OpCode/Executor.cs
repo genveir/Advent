@@ -71,13 +71,24 @@ namespace Advent2019.OpCode
             }
         }
 
+        public void ExecuteToOutput()
+        {
+            while (!program.Stop && program.output.Count == 0)
+            {
+                Step();
+            }
+        }
+
 
         Program lastPrint;
         public void Print()
         {
+            if (program.Name != null) Console.Title = program.Name;
+            else Console.Title = "Unnamed IntCode program";
+
             var copy = program.Copy();
-            copy.instructionPointer = 0;
-            while (copy.instructionPointer < copy.program.Length && copy.instructionPointer < 255)
+            //copy.instructionPointer = 0;
+            while (copy.instructionPointer < copy.program.Length && copy.instructionPointer - program.instructionPointer < 150)
             {
                 bool atPointer = copy.instructionPointer == program.instructionPointer;
 
@@ -93,17 +104,15 @@ namespace Advent2019.OpCode
                     Console.Write((copy.instructionPointer + n + ":").ToString().PadRight(5) + " " + curVal.PadRight(8));
                 }
 
-                if (!(op is NotAnOp))
-                {
-                    for (int n = 0; n < 4 - op.OpLength; n++) Console.Write("".PadRight(14));
-                
-                    Console.ForegroundColor = atPointer ? ConsoleColor.Green : ConsoleColor.White;
-                    Console.Write(copy.instructionPointer.ToString().PadRight(4));
-                    Console.Write(atPointer ? "[" : " ");
-                    Console.Write(op);
-                    Console.Write(atPointer ? "]" : " ");
-                    Console.WriteLine();
-                }
+                for (int n = 0; n < 4 - op.OpLength; n++) Console.Write("".PadRight(14));
+
+                Console.ForegroundColor = atPointer ? ConsoleColor.Green : ConsoleColor.White;
+                Console.Write(copy.instructionPointer.ToString().PadRight(4));
+                Console.Write(atPointer ? "[" : " ");
+                Console.Write(op);
+                Console.Write(atPointer ? "]" : " ");
+                Console.WriteLine();
+
 
                 copy.instructionPointer += op.OpLength;
             }

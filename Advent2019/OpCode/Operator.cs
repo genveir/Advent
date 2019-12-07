@@ -19,7 +19,7 @@ namespace Advent2019.OpCode
         {
             bool breakOp = false;
 
-            var instruction = program.GetAt(position);
+            var instruction = program.GetAt(position).Trim();
 
             if (instruction.Contains("B"))
             {
@@ -93,7 +93,7 @@ namespace Advent2019.OpCode
             bool inputIsRef = Ref[0];
 
             return OpName + ":" +
-                (inputIsRef ? "ref(" : "") + input + (inputIsRef ? ")" : "");
+                (inputIsRef ? "ref(" : "") + program.IAtOffset(1) + (inputIsRef ? ")" : "");
         }
     }
 
@@ -110,7 +110,7 @@ namespace Advent2019.OpCode
             bool inputIsRef = Ref[0];
 
             return OpName + ":" +
-                (inputIsRef ? "ref(" : "") + input + (inputIsRef ? ")" : "") +
+                (inputIsRef ? "ref(" : "") + program.IAtOffset(1) + (inputIsRef ? ")" : "") +
                 " = " +
                 (inputIsRef ? program.IGetAt(input).ToString() : input.ToString()) +
                 " => ref(" + output + ")";
@@ -132,9 +132,9 @@ namespace Advent2019.OpCode
             bool input2IsRef = Ref[1];
 
             return OpName + ":" +
-                (input1IsRef ? "ref(" : "") + input1 + (input1IsRef ? ")" : "") +
+                (input1IsRef ? "ref(" : "") + program.IAtOffset(1) + (input1IsRef ? ")" : "") +
                 " " + op + " " +
-                (input2IsRef ? "ref(" : "") + input2 + (input1IsRef ? ")" : "") +
+                (input2IsRef ? "ref(" : "") + program.IAtOffset(2) + (input1IsRef ? ")" : "") +
                 "  = " + 
                 (input1IsRef ? program.IGetAt(input1).ToString() : input1.ToString()) + 
                 " " + op + " " +
@@ -151,15 +151,25 @@ namespace Advent2019.OpCode
         public override void Execute()
         {
             Ref[0] = false;
-            Console.Write("inp: ");
-            var val = Console.ReadLine();
+            string val;
+            if (program.inputs.Count == 0)
+            {
+                Console.Write("inp: ");
+                val = Console.ReadLine();
+            }
+            else
+            {
+                val = program.inputs.Dequeue();
+            }
 
             program.SetAt(input, val);
         }
 
         public override string ToString()
         {
-            return Format();
+            return "Input " +
+                ((program.inputs.Count != 0) ? program.inputs.Peek() : "none") +
+                " => " + program.IAtOffset(1);
         }
     }
 
@@ -170,12 +180,13 @@ namespace Advent2019.OpCode
 
         public override void Execute()
         {
-            Console.WriteLine("Output: " + param1);
+            if (program.Verbose) Console.WriteLine("Output: " + param1);
+            program.output.Enqueue(param1.ToString());
         }
 
         public override string ToString()
         {
-            return Format();
+            return "Output " + param1;
         }
     }
 

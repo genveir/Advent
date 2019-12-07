@@ -11,14 +11,14 @@ namespace Advent2019
             var stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            ISolution solution = new Advent6.Solution();
+            ISolution solution = new Advent7.Solution();
 
-            var result1 = solution.GetResult1();
+            //var result1 = solution.GetResult1();
             var result2 = solution.GetResult2();
 
             stopWatch.Stop();
 
-            Console.WriteLine(string.Format("Result for part 1: {0}", result1));
+            //Console.WriteLine(string.Format("Result for part 1: {0}", result1));
             Console.WriteLine(string.Format("Result for part 2: {0}", result2));
             Console.WriteLine();
             Console.WriteLine("Total runtime: " + stopWatch.ElapsedMilliseconds + "ms");

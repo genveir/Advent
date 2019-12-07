@@ -7,13 +7,20 @@ namespace Advent2019.OpCode
 {
     public class Program
     {
+        public string Name { get; set; }
+
         public string[] program;
 
         public bool Stop { get; set; } = false;
 
         public int instructionPointer;
 
-        private Program() { }
+        public Queue<string> inputs;
+
+        public bool Verbose { get; set; } = false;
+        public Queue<string> output;
+
+        private Program() { inputs = new Queue<string>(); output = new Queue<string>(); }
         public Program(string[] ops) : this()
         {
             program = ops.DeepCopy();
@@ -29,6 +36,8 @@ namespace Advent2019.OpCode
             var newProgram = new Program(program);
             newProgram.Stop = this.Stop;
             newProgram.instructionPointer = this.instructionPointer;
+            newProgram.inputs = new Queue<string>(inputs);
+            newProgram.output = new Queue<string>(output);
 
             return newProgram;
         }
