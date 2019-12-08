@@ -14,7 +14,7 @@ namespace Advent2019.Advent8
         {
             var lines = Input.GetInputLines(inputMode, input).ToArray();
 
-            digits = lines.Single().ToCharArray().Select(c => c - 48).ToArray(); ;
+            digits = lines.Single().ToCharArray().Select(c => c - 48).ToArray();
         }
         public Solution() : this(Input.InputMode.Embedded, "Input") { }
 
