@@ -17,6 +17,7 @@
     <None Remove="AdventInfi\Input.txt" />
     <None Remove="AdventBase\Input.txt" />
     <None Remove="Advent2\Input.txt" />
+    <None Remove="LeaderBoard\LeaderBoard.txt" />
     <None Remove="Shared\Input.txt" />
   </ItemGroup>
 
@@ -31,10 +32,12 @@
     <EmbeddedResource Include="AdventInfi\Input.txt" />
     <EmbeddedResource Include="AdventBase\Input.txt" />
     <EmbeddedResource Include="Advent2\Input.txt" />
+    <EmbeddedResource Include="LeaderBoard\LeaderBoard.txt" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="NUnit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
   </ItemGroup>

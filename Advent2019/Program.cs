@@ -1,4 +1,5 @@
-﻿using Advent2019.Shared;
+﻿using Advent2019.LeaderBoard;
+using Advent2019.Shared;
 using System;
 using System.Diagnostics;
 
