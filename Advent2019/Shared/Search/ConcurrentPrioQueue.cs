@@ -6,25 +6,25 @@ using System.Threading;
 
 namespace Advent2019.Shared.Search
 {
-    class ConcurrentPriorityQueue<T>
+    public class ConcurrentPriorityQueue
     {
-        private ConcurrentStack<SearchNode<T>>[] stacks;
+        private ConcurrentStack<SearchNode>[] stacks;
 
         int count = 0;
         int prioStart;
         int dequeueSize;
 
-        SearchNode<T>[] returnArray;
+        SearchNode[] returnArray;
         public ConcurrentPriorityQueue(int prioStart, int dequeueSize)
         {
-            stacks = new ConcurrentStack<SearchNode<T>>[1000];
+            stacks = new ConcurrentStack<SearchNode>[1000];
             for (int n = 0; n < stacks.Length; n++)
             {
-                stacks[n] = new ConcurrentStack<SearchNode<T>>();
+                stacks[n] = new ConcurrentStack<SearchNode>();
             }
             this.dequeueSize = dequeueSize;
             this.prioStart = prioStart;
-            returnArray = new SearchNode<T>[dequeueSize];
+            returnArray = new SearchNode[dequeueSize];
         }
 
         public int LowestCost
@@ -42,7 +42,7 @@ namespace Advent2019.Shared.Search
             }
         }
 
-        public (SearchNode<T>[] nodes, int num) DequeueLowestCost()
+        public (SearchNode[] nodes, int num) DequeueLowestCost()
         {
             var num = stacks[LowestCost].TryPopRange(returnArray, 0, dequeueSize);
             count -= num;
@@ -51,13 +51,13 @@ namespace Advent2019.Shared.Search
 
         public int Count { get { return count; } }
 
-        public void Enqueue(SearchNode<T> node)
+        public void Enqueue(SearchNode node)
         {
             stacks[node.Cost - prioStart].Push(node);
             Interlocked.Increment(ref count);
         }
 
-        public void Enqueue(IEnumerable<SearchNode<T>> nodes)
+        public void Enqueue(IEnumerable<SearchNode> nodes)
         {
             foreach (var node in nodes) Enqueue(node);
         }

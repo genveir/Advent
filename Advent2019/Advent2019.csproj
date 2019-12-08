@@ -7,12 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Shared\Search\**" />
-    <EmbeddedResource Remove="Shared\Search\**" />
-    <None Remove="Shared\Search\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="Advent1\Input.txt" />
     <None Remove="Advent3\Input.txt" />
     <None Remove="Advent4\Input.txt" />

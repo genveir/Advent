@@ -5,20 +5,19 @@ using System.Text;
 
 namespace Advent2019.Shared.Search
 {
-    class SearchNode<T> : IComparable<SearchNode<T>>
+    public abstract class SearchNode : IComparable<SearchNode>
     {
-        private ConcurrentDictionary<SearchNode<T>, int> expanded;
+        protected ConcurrentDictionary<SearchNode, int> expanded;
 
         public int time;
-        public T item;
 
-        // todo
-        public int HeuristicDistance { get; set; }
+        public abstract int GetHeuristicDistance();
+        public abstract (int cost, SearchNode neighbour)[] GetNeighbours();
+        public abstract bool IsAtTarget();
 
-        public SearchNode(ConcurrentDictionary<SearchNode<T>, int> expanded, T item, int time)
+        public SearchNode(ConcurrentDictionary<SearchNode, int> expanded, int time)
         {
             this.expanded = expanded;
-            this.item = item;
             this.time = time;
         }
 
@@ -26,60 +25,40 @@ namespace Advent2019.Shared.Search
         {
             get
             {
-                return time + HeuristicDistance;
+                return time + GetHeuristicDistance();
             }
         }
 
-        public int CompareTo(SearchNode<T> other)
+        public int CompareTo(SearchNode other)
         {
             if (this.Cost != other.Cost) return Cost.CompareTo(other.Cost);
-            else return HeuristicDistance.CompareTo(other.HeuristicDistance);
+            else return GetHeuristicDistance().CompareTo(other.GetHeuristicDistance());
         }
 
         public void Expand()
         {
-            (SearchNode<T> neighbour, int cost)[] neighbours = Neighbours;
+            (int cost, SearchNode neighbour)[] neighbours = GetNeighbours();
 
             foreach (var neighbour in neighbours)
             {
-                AddToResult(neighbour.cost);
+                AddToResult(neighbour.cost, neighbour.neighbour);
             }
         }
 
-        public List<SearchNode<T>> ExpandResult = new List<SearchNode<T>>();
+        public List<SearchNode> ExpandResult = new List<SearchNode>();
 
-        private void AddToResult(int time)
+        private void AddToResult(int transitionCost, SearchNode neighbour)
         {
-            var node = new SearchNode<T>(expanded, time);
+            neighbour.time = this.time + transitionCost;
 
             int previousCost;
-            var alreadyFound = expanded.TryGetValue(node, out previousCost);
+            var alreadyFound = expanded.TryGetValue(neighbour, out previousCost);
 
-            if ((previousCost == 0 || previousCost > node.Cost))
+            if ((previousCost == 0 || previousCost > neighbour.Cost))
             {
-                expanded.AddOrUpdate(node, node.Cost, (sn, cost) => node.Cost);
-                ExpandResult.Add(node);
+                expanded.AddOrUpdate(neighbour, neighbour.Cost, (sn, cost) => neighbour.Cost);
+                ExpandResult.Add(neighbour);
             }
-        }
-
-        public override int GetHashCode()
-        {
-            var tileHash = tile.GetHashCode() * 179;
-            var toolHash = (int)(tool + 1) * 997300;
-            return tileHash + toolHash;
-        }
-
-        public override bool Equals(object obj)
-        {
-            var other = obj as SearchNode<T>;
-            var areEqual = tile.Equals(other.tile) && tool == other.tool;
-
-            return areEqual;
-        }
-
-        public override string ToString()
-        {
-            return string.Format("Node ", time, tile, tool.ToString(), Cost);
         }
     }
 }
