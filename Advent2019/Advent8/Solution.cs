@@ -9,7 +9,6 @@ namespace Advent2019.Advent8
     public class Solution : ISolution
     {
         int[] digits;
-        EncodedImage image;
 
         public Solution(Input.InputMode inputMode, string input)
         {
@@ -19,45 +18,36 @@ namespace Advent2019.Advent8
         }
         public Solution() : this(Input.InputMode.Embedded, "Input") { }
 
-        private class EncodedImage
-        {
-            
-        }
-
         public string GetResult1()
         {
             int numLayers = digits.Length / (25 * 6);
 
-            var layers = new layerdata[numLayers];
+            int minZeroes = int.MaxValue;
+            int returnValue = -1;
             for (int n = 0; n < numLayers; n++)
             {
-                layers[n] = new layerdata();
+                var types = new int[3];
+
                 int start = n * 25 * 6;
                 for (int p =0; p < 25 * 6; p++)
                 {
-                    switch(digits[start + p])
-                    {
-                        case 0: layers[n].zeroes++; break;
-                        case 1: layers[n].ones++; break;
-                        case 2: layers[n].twos++; break;
-                    }
+                    types[digits[start + p]]++;
+                }
+                if (types[0] < minZeroes)
+                {
+                    minZeroes = types[0];
+                    returnValue = types[1] * types[2];
                 }
             }
 
-            var min = layers.Min(l => l.zeroes);
-            var minLayer = layers.Where(l => l.zeroes == min).Single();
-            return (minLayer.ones * minLayer.twos).ToString();
-        }
-
-        struct layerdata
-        {
-            public int zeroes;
-            public int ones;
-            public int twos;
+            return returnValue.ToString();
         }
 
         public string GetResult2()
         {
+            var output = new StringBuilder();
+            output.AppendLine();
+
             int numLayers = digits.Length / (25 * 6);
             for (int y = 0; y < 6; y++)
             {
@@ -69,16 +59,16 @@ namespace Advent2019.Advent8
                         if (digits[position] == 2) continue;
                         else
                         {
-                            if (digits[position] == 1) Console.Write("X");
-                            if (digits[position] == 0) Console.Write(" ");
+                            if (digits[position] == 1) output.Append("X");
+                            if (digits[position] == 0) output.Append(" ");
                             break;
                         }
                     }
                 }
-                Console.WriteLine();
+                output.AppendLine();
             }
 
-            return "";
+            return output.ToString();
         }
     }
 }
