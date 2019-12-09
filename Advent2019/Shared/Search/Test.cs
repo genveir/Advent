@@ -46,7 +46,7 @@ namespace Advent2019.Shared.Search
 
         public override int GetHeuristicDistance()
         {
-            return target - x + y;
+            return Math.Abs(target - x) + Math.Abs(y);
         }
 
         public override (int cost, SearchNode neighbour)[] GetNeighbours()
