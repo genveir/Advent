@@ -21,6 +21,7 @@ namespace Advent2019.Advent5
         public string GetResult1()
         {
             Console.WriteLine("result1: ");
+            executor.program.Verbose = true;
             executor.Execute();
             return "";
         }

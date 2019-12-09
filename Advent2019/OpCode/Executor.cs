@@ -25,11 +25,13 @@ namespace Advent2019.OpCode
         public long lastBreakPosition;
         public bool Break { get; set; }
         public long PrintIndex { get; set; } = -1;
+        public bool SkipZeroNops { get; set; }
         public void DoBreak()
         {
             Console.Clear();
             Print();
             Console.WriteLine("[C]ontinue operation, [I]gnore breakpoint this run, [D]elete breakpoint, or [Enter] for step");
+            Console.WriteLine("Number to start printing at that number, negative for instructionpointer. IN0 to toggle ignore 0 NOPS");
             var action = Console.ReadLine();
 
             switch(action)
@@ -49,6 +51,9 @@ namespace Advent2019.OpCode
                     startProgram.RemoveBreakpoint(lastBreakPosition);
                     Break = false;
                     break;
+                case "IN0":
+                case "in0":
+                    SkipZeroNops = !SkipZeroNops; break;
                 default:
                     long indexnum;
                     if (long.TryParse(action, out indexnum))
@@ -101,12 +106,23 @@ namespace Advent2019.OpCode
             long startIndex = copy.instructionPointer;
             if (PrintIndex >= 0) startIndex = PrintIndex;
 
+            int numLines = 0;
+
             copy.instructionPointer = startIndex;
-            while (copy.instructionPointer < copy.program.Length && copy.instructionPointer - startIndex < 150)
+            while (copy.instructionPointer < copy.program.Length && numLines < 65)
             {
                 bool atPointer = copy.instructionPointer == program.instructionPointer;
 
                 var op = Operator.GetCurrent(copy);
+
+                if (SkipZeroNops)
+                {
+                    if (copy.IGetAt(copy.instructionPointer) == 0)
+                    {
+                        copy.instructionPointer++;
+                        continue;
+                    }
+                }
 
                 for (int n = 0; n < op.OpLength; n++)
                 {
@@ -126,7 +142,7 @@ namespace Advent2019.OpCode
                 Console.Write(op);
                 Console.Write(atPointer ? "]" : " ");
                 Console.WriteLine();
-
+                numLines++;
 
                 copy.instructionPointer += op.OpLength;
             }
