@@ -22,8 +22,9 @@ namespace Advent2019.OpCode
             lastPrint = null;
         }
 
-        public int lastBreakPosition;
+        public long lastBreakPosition;
         public bool Break { get; set; }
+        public long PrintIndex { get; set; } = -1;
         public void DoBreak()
         {
             Console.Clear();
@@ -47,6 +48,14 @@ namespace Advent2019.OpCode
                     program.RemoveBreakpoint(lastBreakPosition);
                     startProgram.RemoveBreakpoint(lastBreakPosition);
                     Break = false;
+                    break;
+                default:
+                    long indexnum;
+                    if (long.TryParse(action, out indexnum))
+                    {
+                        PrintIndex = indexnum;
+                        DoBreak();
+                    }
                     break;
             }
         }
@@ -86,9 +95,14 @@ namespace Advent2019.OpCode
             if (program.Name != null) Console.Title = program.Name;
             else Console.Title = "Unnamed IntCode program";
 
+            Console.WriteLine("Relative Base: " + program.relativeBase);
             var copy = program.Copy();
-            //copy.instructionPointer = 0;
-            while (copy.instructionPointer < copy.program.Length && copy.instructionPointer - program.instructionPointer < 150)
+
+            long startIndex = copy.instructionPointer;
+            if (PrintIndex >= 0) startIndex = PrintIndex;
+
+            copy.instructionPointer = startIndex;
+            while (copy.instructionPointer < copy.program.Length && copy.instructionPointer - startIndex < 150)
             {
                 bool atPointer = copy.instructionPointer == program.instructionPointer;
 

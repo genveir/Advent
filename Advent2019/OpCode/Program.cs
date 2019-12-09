@@ -13,7 +13,8 @@ namespace Advent2019.OpCode
 
         public bool Stop { get; set; } = false;
 
-        public int instructionPointer;
+        public long instructionPointer;
+        public long relativeBase;
 
         public Queue<string> inputs;
 
@@ -46,55 +47,62 @@ namespace Advent2019.OpCode
         {
             return SafeGet(instructionPointer);
         }
-        public int IAtPointer()
+        public long IAtPointer()
         {
             return IntGet(instructionPointer);
         }
 
-        public string AtOffset(int offset)
+        public string AtOffset(long offset)
         {
             return SafeGet(instructionPointer + offset);
         }
-        public int IAtOffset(int offset)
+        public long IAtOffset(long offset)
         {
             return IntGet(instructionPointer + offset);
         }
 
-        public string GetAt(int position)
+        public string GetAt(long position)
         {
             return SafeGet(position);
         }
-        public int IGetAt(int position)
+        public long IGetAt(long position)
         {
             return IntGet(position);
         }
 
-        public void SetAt(int position, string value)
+        public void SetAt(long position, string value)
         {
             var hasBreak = SafeGet(position)?.Contains("B") ?? false;
             if (position >= program.Length)
             {
-                var newLength = Math.Min(int.MaxValue, Math.Max(position, program.LongLength * 2L));
+                var newLength = Math.Min(int.MaxValue, position * 2);
                 var buffer = new string[newLength];
                 program.CopyTo(buffer, 0);
                 program = buffer;
             }
             program[position] = value + (hasBreak ? "B" : "");
         }
-        public void ISetAt(int position, int value)
+        public void ISetAt(long position, long value)
         {
             SetAt(position, value.ToString());
         }
 
 
-        public int IntGet(int position) { return int.Parse(SafeGet(position).Replace("B", "")); }
-        public string SafeGet(int position)
+        public long IntGet(long position) { return long.Parse(SafeGet(position).Replace("B", "")); }
+        public string SafeGet(long position)
         {
             if (position < 0 || position >= program.Length) return "0";
-            else return program[position];
+            else
+            {
+                if (program[position] == null) program[position] = "0";
+
+                var trimmed = program[position].TrimStart('0');
+                if (trimmed.Length == 0) return "0";
+                else return trimmed;
+            }
         }
 
-        public void RemoveBreakpoint(int position)
+        public void RemoveBreakpoint(long position)
         {
             string noBreak = SafeGet(position).Replace("B", "");
             program[position] = noBreak;

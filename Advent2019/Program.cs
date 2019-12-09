@@ -12,12 +12,12 @@ namespace Advent2019
             var stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            int numRuns = 1;
+            int numRuns = 100;
             string result1 = "";
             string result2 = "";
             for (int n = 0; n < numRuns; n++)
             {
-                ISolution solution = new Advent8.Solution();
+                ISolution solution = new Advent9.Solution();
 
                 result1 = solution.GetResult1();
                 result2 = solution.GetResult2();

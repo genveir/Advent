@@ -5,6 +5,8 @@ using System.Text;
 
 namespace Advent2019.OpCode
 {
+    public enum OpMode { Pos, Int, Rel }
+
     public abstract class Operator
     {
         public Program program;
@@ -15,7 +17,7 @@ namespace Advent2019.OpCode
             this.program = program;
         }
 
-        public static Operator Get(Program program, int position)
+        public static Operator Get(Program program, long position)
         {
             bool breakOp = false;
 
@@ -27,15 +29,21 @@ namespace Advent2019.OpCode
                 breakOp = true;
             }
 
-            bool[] isRef = new bool[3] { true, true, true };
+            OpMode[] opMode = new OpMode[3] { OpMode.Pos, OpMode.Pos, OpMode.Pos };
 
             var broken = instruction.ToCharArray().Select(c => c - 48).ToArray(); ;
             int counter = 0;
+
             if (broken.Length < 6)
             {
                 for (int n = broken.Length - 3; n >= 0; n--)
                 {
-                    isRef[counter++] = broken[n] == 0;
+                    switch(broken[n])
+                    {
+                        case 0: opMode[counter++] = OpMode.Pos;break;
+                        case 1: opMode[counter++] = OpMode.Int; break;
+                        case 2: opMode[counter++] = OpMode.Rel; break;
+                    }
                 }
             }
 
@@ -56,11 +64,12 @@ namespace Advent2019.OpCode
                 case "6": op = new JumpIfFalse(program); break;
                 case "7": op = new Less(program); break;
                 case "8": op = new Equal(program); break;
+                case "9": op = new AdjustRelativeBase(program); break;
                 case "99": op = new Stop(program); break;                
                     
                 default: op = new NotAnOp(program); break;
             }
-            op.Ref = isRef;
+            op.OpModes = opMode;
 
             op.Break = breakOp;
             return op;
@@ -71,10 +80,60 @@ namespace Advent2019.OpCode
             return Get(program, program.instructionPointer);
         }
 
-        public bool[] Ref;
-        protected int param1 { get { return Ref[0] ? program.IGetAt(program.IAtOffset(1)) : program.IAtOffset(1); } }
-        protected int param2 { get { return Ref[1] ? program.IGetAt(program.IAtOffset(2)) : program.IAtOffset(2); } }
-        protected int param3 { get { return Ref[2] ? program.IGetAt(program.IAtOffset(3)) : program.IAtOffset(3); } }
+        public OpMode[] OpModes;
+
+        protected virtual long GetParam(int paramIndex, bool IndexParam = false)
+        {
+            if (IndexParam)
+            {
+                switch (OpModes[paramIndex])
+                {
+                    case OpMode.Pos: return program.IAtOffset(paramIndex + 1);
+                    case OpMode.Int: throw new NotImplementedException();
+                    case OpMode.Rel:
+                        long relBase = program.relativeBase;
+                        long add = program.IAtOffset(paramIndex + 1);
+                        return relBase + add;
+                    default: throw new Exception("user your enum Geerten");
+                }
+            }
+            else
+            {
+                switch (OpModes[paramIndex])
+                {
+                    case OpMode.Pos: return program.IGetAt(program.IAtOffset(paramIndex + 1));
+                    case OpMode.Int: return program.IAtOffset(paramIndex + 1);
+                    case OpMode.Rel:
+                        long relBase = program.relativeBase;
+                        long add = program.IAtOffset(paramIndex + 1);
+                        return program.IGetAt(relBase + add);
+                    default: throw new Exception("user your enum Geerten");
+                }
+            }
+        }
+
+        protected long param1 { get { return GetParam(0); } }
+        protected long param2 { get { return GetParam(1); } }
+        protected long param3 { get { return GetParam(2); } }
+
+        protected long relParam1 { get { return GetParam(0, true); } }
+        protected long relParam2 { get { return GetParam(1, true); } }
+        protected long relParam3 { get { return GetParam(2, true); } }
+    
+        protected string FormatParams(params OpMode[] opModes)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach(var opMode in opModes)
+            {
+                switch(opMode)
+                {
+                    case OpMode.Pos: sb.Append("P"); break;
+                    case OpMode.Int: sb.Append("I"); break;
+                    case OpMode.Rel: sb.Append("R"); break;
+                }
+            }
+            return sb.ToString();
+        }
 
         public abstract void Execute();
         public abstract int OpLength { get; }
@@ -86,14 +145,13 @@ namespace Advent2019.OpCode
         public BaseTwoPlaceOperator(Program program) : base(program) { }
         public override int OpLength => 2;
 
-        protected int input { get { return param1; } }
+        protected long input { get { return param1; } }
+        protected long relInput { get { return relParam1; } }
 
         protected string Format()
         {
-            bool inputIsRef = Ref[0];
-
             return OpName + ":" +
-                (inputIsRef ? "ref(" : "") + program.IAtOffset(1) + (inputIsRef ? ")" : "");
+                (OpModes[0].ToString() + "(" + program.IAtOffset(1) + ")");
         }
     }
 
@@ -102,17 +160,18 @@ namespace Advent2019.OpCode
         public BaseThreePlaceOperator(Program program) : base(program) { }
         public override int OpLength => 3;
 
-        protected int input { get { return param1; } }
-        protected int output { get { return param2; } }
+        protected long input { get { return param1; } }
+        protected long relInput { get { return relParam1; } }
+
+        protected long output { get { return param2; } }
+        protected long relOutput { get { return relParam2; } }
 
         protected string Format()
         {
-            bool inputIsRef = Ref[0];
-
             return OpName + ":" +
-                (inputIsRef ? "ref(" : "") + program.IAtOffset(1) + (inputIsRef ? ")" : "") +
+                OpModes[0].ToString() + "(" + program.IAtOffset(1) + ")" +
                 " = " +
-                (inputIsRef ? program.IGetAt(input).ToString() : input.ToString()) +
+                param1.ToString() +
                 " => ref(" + output + ")";
         }
     }
@@ -122,24 +181,26 @@ namespace Advent2019.OpCode
         public BaseFourPlaceOperator(Program program) : base(program) { }
         public override int OpLength => 4;
 
-        protected int input1 { get { return param1; } }
-        protected int input2 { get { return param2; } }
-        protected int outputRef { get { return program.IAtOffset(3); } }
+        protected long input1 { get { return param1; } }
+        protected long relInput1 { get { return relParam1; } }
+
+        protected long input2 { get { return param2; } }
+        protected long relInput2 { get { return relParam2; } }
+
+        protected long output { get { return param3; } }
+        protected long relOutput { get { return relParam3; } }
 
         protected string Format(string op)
         {
-            bool input1IsRef = Ref[0];
-            bool input2IsRef = Ref[1];
-
             return OpName + ":" +
-                (input1IsRef ? "ref(" : "") + program.IAtOffset(1) + (input1IsRef ? ")" : "") +
+                OpModes[0].ToString() + "(" + program.IAtOffset(1) + ")" +
                 " " + op + " " +
-                (input2IsRef ? "ref(" : "") + program.IAtOffset(2) + (input1IsRef ? ")" : "") +
-                "  = " + 
-                (input1IsRef ? program.IGetAt(input1).ToString() : input1.ToString()) + 
+                OpModes[1].ToString() + "(" + program.IAtOffset(2) + ")" +
+                "  = " +
+                param1.ToString() +
                 " " + op + " " +
-                (input2IsRef ? program.IGetAt(input2).ToString() : input2.ToString()) +
-                " => ref(" + outputRef + ")";
+                param2.ToString() +
+                " => ref(" + output + ")";
         }
     }
 
@@ -150,7 +211,6 @@ namespace Advent2019.OpCode
 
         public override void Execute()
         {
-            Ref[0] = false;
             string val;
             if (program.inputs.Count == 0)
             {
@@ -162,7 +222,7 @@ namespace Advent2019.OpCode
                 val = program.inputs.Dequeue();
             }
 
-            program.SetAt(input, val);
+            program.SetAt(relInput, val);
         }
 
         public override string ToString()
@@ -190,14 +250,30 @@ namespace Advent2019.OpCode
         }
     }
 
-    public class Add : BaseFourPlaceOperator
+    public class AdjustRelativeBase : BaseTwoPlaceOperator
     {
-        public Add(Program program) : base(program) { }
-        public override string OpName => "Add" + (Ref[0] ? "R" : "I") + (Ref[1] ? "R" : "I");
+        public AdjustRelativeBase(Program program) : base(program) { }
+        public override string OpName => "ARB" + FormatParams(OpModes[0]);
 
         public override void Execute()
         {
-            program.ISetAt(outputRef, input1 + input2);
+            program.relativeBase += param1;
+        }
+
+        public override string ToString()
+        {
+            return Format();
+        }
+    }
+
+    public class Add : BaseFourPlaceOperator
+    {
+        public Add(Program program) : base(program) { }
+        public override string OpName => "Add" + FormatParams(OpModes[0], OpModes[1]);
+
+        public override void Execute()
+        {
+            program.ISetAt(relOutput, input1 + input2);
         }
 
         public override string ToString()
@@ -210,11 +286,11 @@ namespace Advent2019.OpCode
     public class Multiply : BaseFourPlaceOperator
     {
         public Multiply(Program program) : base(program) { }
-        public override string OpName => "Mul" + (Ref[0] ? "R" : "I") + (Ref[1] ? "R" : "I");
+        public override string OpName => "Mul" + FormatParams(OpModes[0], OpModes[1]);
 
         public override void Execute()
         {
-            program.ISetAt(outputRef, input1 * input2);
+            program.ISetAt(relOutput, input1 * input2);
         }
 
         public override string ToString()
@@ -226,7 +302,7 @@ namespace Advent2019.OpCode
     public class JumpIfTrue : BaseThreePlaceOperator
     {
         public JumpIfTrue(Program program) : base(program) { }
-        public override string OpName => "JIT" + (Ref[0] ? "R" : "I");
+        public override string OpName => "JIT" + FormatParams(OpModes[0]);
 
         public override void Execute()
         {
@@ -242,7 +318,7 @@ namespace Advent2019.OpCode
     public class JumpIfFalse : BaseThreePlaceOperator
     {
         public JumpIfFalse(Program program) : base(program) { }
-        public override string OpName => "JIF" + (Ref[0] ? "R" : "I");
+        public override string OpName => "JIF" + FormatParams(OpModes[0]);
 
         public override void Execute()
         {
@@ -258,12 +334,12 @@ namespace Advent2019.OpCode
     public class Less : BaseFourPlaceOperator
     {
         public Less(Program program): base(program) { }
-        public override string OpName => "Les" + (Ref[0] ? "R" : "I") + (Ref[1] ? "R" : "I");
+        public override string OpName => "Les" + FormatParams(OpModes[0], OpModes[1]);
 
         public override void Execute()
         {
-            if (input1 < input2) program.ISetAt(outputRef, 1);
-            else program.ISetAt(outputRef, 0);
+            if (input1 < input2) program.ISetAt(relOutput, 1);
+            else program.ISetAt(relOutput, 0);
         }
 
         public override string ToString()
@@ -275,12 +351,12 @@ namespace Advent2019.OpCode
     public class Equal : BaseFourPlaceOperator
     {
         public Equal(Program program) : base(program) { }
-        public override string OpName => "Eq" + (Ref[0] ? "R" : "I") + (Ref[1] ? "R" : "I");
+        public override string OpName => "Eq" + FormatParams(OpModes[0], OpModes[1]);
 
         public override void Execute()
         {
-            if (input1 == input2) program.ISetAt(outputRef, 1);
-            else program.ISetAt(outputRef, 0);
+            if (input1 == input2) program.ISetAt(relOutput, 1);
+            else program.ISetAt(relOutput, 0);
         }
 
         public override string ToString()
@@ -306,14 +382,20 @@ namespace Advent2019.OpCode
         }
     }
 
-    public class NotAnOp : Stop
+    public class NotAnOp : Operator
     {
         public NotAnOp(Program program) : base(program) { }
         public override string OpName => "NOP(" + program.AtPointer() + ")";
+        public override int OpLength => 1;
 
         public override string ToString()
         {
             return OpName;
+        }
+
+        public override void Execute()
+        {
+            throw new NotImplementedException("Cannot execute NotOps");
         }
     }
 }
