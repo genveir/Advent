@@ -9,11 +9,10 @@ namespace Advent2019.Shared.Search
 {
     public class Search
     {
-        public SearchNode Execute(SearchNode baseNode)
+        public SearchNode Execute(SearchNode baseNode, int dequeueSize = 100)
         {
             var expanded = new ConcurrentDictionary<SearchNode, int>();
 
-            var dequeueSize = 5;
             var pQueue = new ConcurrentPriorityQueue(baseNode.Cost, dequeueSize);
             pQueue.Enqueue(baseNode);
             while (pQueue.Count > 0)

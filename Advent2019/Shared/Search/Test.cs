@@ -11,11 +11,11 @@ namespace Advent2019.Shared.Search
         [Test]
         public void SingleStep()
         {
-            var baseNode = new GridNode(new ConcurrentDictionary<SearchNode, int>(), 0, 0, 0, 2);
+            var baseNode = new GridNode(new ConcurrentDictionary<SearchNode, int>(), 0, 0, 0, 1);
 
             var result = new Search().Execute(baseNode) as GridNode;
 
-            Assert.AreEqual(2, result.x);
+            Assert.AreEqual(1, result.x);
             Assert.AreEqual(1, result.Cost);
         }
 
@@ -24,6 +24,10 @@ namespace Advent2019.Shared.Search
         {
             var baseNode = new GridNode(new ConcurrentDictionary<SearchNode, int>(), 0, 0, 0, 1000000);
 
+            var result = new Search().Execute(baseNode) as GridNode;
+
+            Assert.AreEqual(1000000, result.x);
+            Assert.AreEqual(1000000, result.Cost);
         }
     }
 
@@ -42,17 +46,17 @@ namespace Advent2019.Shared.Search
 
         public override int GetHeuristicDistance()
         {
-            return (target - x) / 2;
+            return target - x + y;
         }
 
         public override (int cost, SearchNode neighbour)[] GetNeighbours()
         {
-            var neighbours = new (int cost, SearchNode neighbour)[4];
-            for (int xShift = 0; xShift < 2; xShift++)
+            var neighbours = new (int cost, SearchNode neighbour)[9];
+            for (int xShift = -1; xShift <= 1; xShift++)
             {
-                for (int yShift = 0; yShift < 2; yShift++)
+                for (int yShift = -1; yShift <= 1; yShift++)
                 {
-                    neighbours[xShift * 2 + yShift] = (1, new GridNode(expanded, Cost + 1, x + xShift, y + yShift, target));
+                    neighbours[(xShift + 1) * 3 + (yShift + 1)] = (1, new GridNode(expanded, Cost + 1, x + xShift, y + yShift, target));
                 }
             }
 
@@ -61,7 +65,7 @@ namespace Advent2019.Shared.Search
 
         public override bool IsAtTarget()
         {
-            return x == target;
+            return x == target && y == 0;
         }
 
         public override int GetHashCode()
@@ -75,6 +79,11 @@ namespace Advent2019.Shared.Search
             var other = obj as GridNode;
             if (other == null) return false;
             return other.x == this.x && other.y == this.y && other.target == this.target;
+        }
+
+        public override string ToString()
+        {
+            return "GridNode " + x + ", " + y;
         }
     }
 }
