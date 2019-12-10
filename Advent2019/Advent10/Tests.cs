@@ -63,10 +63,20 @@ namespace Advent2019.Advent10
 ..#.....X...###..
 ..#.#.....#....##";
 
+        const string testHorizontal = "########";
+        const string testVertical = @"#
+#
+#
+#
+#
+#";
+
         [TestCase(testCase1, "8")]
         [TestCase(testCase2, "33")]
         [TestCase(testCase3, "41")]
         [TestCase(testCase4, "210")]
+        [TestCase(testHorizontal, "2")]
+        [TestCase(testVertical, "2")]
         public void Test1(string input, string output)
         {
             var sol = new Solution(Shared.Input.InputMode.String, input);
