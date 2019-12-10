@@ -65,11 +65,14 @@ namespace Advent2019.Shared
 
         public static int Non1GCD(int first, int second)
         {
-            if (second == 0) return first;
-            if (first == 0) return second;
+            while (first != 0 && second != 0)
+            {
+                if (first > second) first = first % second;
+                else second = second % first;
+            }
 
-            if (first > second) return Non1GCD(first % second, second);
-            return Non1GCD(first, second % first);
+            if (second == 0) return first;
+            return second;
         }
 
         public static double GetAngle((int x, int y) from, (int x, int y) target)
