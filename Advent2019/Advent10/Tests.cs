@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Advent2019.Shared;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -76,23 +77,19 @@ namespace Advent2019.Advent10
         [Test]
         public void GCDTest()
         {
-            var sol = new Solution();
-
-            Assert.AreEqual(4, sol.GetGCD(100, 4));
-            Assert.AreEqual(4, sol.GetGCD(4, 100));
-            Assert.AreEqual(4, sol.GetGCD(0, 4));
-            Assert.AreEqual(21, sol.GetGCD(1071, 462));
+            Assert.AreEqual(4, Helper.GCD(100, 4));
+            Assert.AreEqual(4, Helper.GCD(4, 100));
+            Assert.AreEqual(4, Helper.GCD(0, 4));
+            Assert.AreEqual(21, Helper.GCD(1071, 462));
         }
 
         [Test]
         public void AngleTest()
         {
-            var sol = new Solution();
-
-            Assert.AreEqual(0.0d * Math.PI, sol.GetAngle(0, -1));
-            Assert.AreEqual(0.5d * Math.PI, sol.GetAngle(1, 0));
-            Assert.AreEqual(1.0d * Math.PI, sol.GetAngle(0, 1));
-            Assert.AreEqual(1.5d * Math.PI, sol.GetAngle(-1, 0));
+            Assert.AreEqual(0.0d * Math.PI, Helper.GetAngle(0, -1));
+            Assert.AreEqual(0.5d * Math.PI, Helper.GetAngle(1, 0));
+            Assert.AreEqual(1.0d * Math.PI, Helper.GetAngle(0, 1));
+            Assert.AreEqual(1.5d * Math.PI, Helper.GetAngle(-1, 0));
         }
 
         [TestCase(testCase4, "802")]

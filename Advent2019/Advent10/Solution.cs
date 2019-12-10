@@ -57,21 +57,7 @@ namespace Advent2019.Advent10
             }
         }
 
-        public int GetGCD(int first, int second)
-        {
-            if (first == 1 || second == 1) return 1;
-
-            return GetNon1GCD(first, second);
-        }
-
-        public int GetNon1GCD(int first, int second)
-        {
-            if (second == 0) return first;
-            if (first == 0) return second;
-
-            if (second > first) return GetNon1GCD(second % first, first);
-            return GetNon1GCD(first, first % second);
-        }
+        
 
         public void SetVisible (int asteroidIndex)
         {
@@ -86,7 +72,7 @@ namespace Advent2019.Advent10
                 var xShift = asteroids[secondIndex].X - asteroids[asteroidIndex].X;
                 var yShift = asteroids[secondIndex].Y - asteroids[asteroidIndex].Y;
 
-                var GCD = GetGCD(Math.Abs(xShift), Math.Abs(yShift));
+                var GCD = Helper.GCD(Math.Abs(xShift), Math.Abs(yShift));
 
                 xShift = xShift == 0 ? 0 : xShift / GCD;
                 yShift = yShift == 0 ? 0 : yShift / GCD;
@@ -110,19 +96,13 @@ namespace Advent2019.Advent10
             }
         }
 
-        public double GetAngle(int X, int Y)
-        {
-            var angle = ((Math.Atan2(Y, X) + 0.5 * Math.PI) + 2.0d * Math.PI) % (2.0d * Math.PI);
-            return angle;
-        }
-
         public void SetAngles(int asteroidIndex)
         {
             var stationAst = asteroids[asteroidIndex];
 
             foreach (var visible in stationAst.Visible)
             {
-                visible.AngleFromStation = GetAngle(visible.X - stationAst.X, visible.Y - stationAst.Y);
+                visible.AngleFromStation = Helper.GetAngle((stationAst.X, stationAst.Y), (visible.X, visible.Y));
             }
         }
 

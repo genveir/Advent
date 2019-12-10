@@ -55,5 +55,32 @@ namespace Advent2019.Shared
 
             return inputWithoutNth;
         }
+
+        public static int GCD(int first, int second)
+        {
+            if (first == 1 || second == 1) return 1;
+
+            return Non1GCD(first, second);
+        }
+
+        public static int Non1GCD(int first, int second)
+        {
+            if (second == 0) return first;
+            if (first == 0) return second;
+
+            if (first > second) return Non1GCD(first % second, second);
+            return Non1GCD(first, second % first);
+        }
+
+        public static double GetAngle((int x, int y) from, (int x, int y) target)
+        {
+            return GetAngle(target.x - from.x, target.y - from.y);
+        }
+
+        public static double GetAngle(int X, int Y)
+        {
+            var angle = ((Math.Atan2(Y, X) + 0.5 * Math.PI) + 2.0d * Math.PI) % (2.0d * Math.PI);
+            return angle;
+        }
     }
 }
