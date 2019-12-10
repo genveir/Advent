@@ -12,7 +12,7 @@ namespace Advent2019
             var stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            int numRuns = 1;
+            int numRuns = 1000;
             string result1 = "";
             string result2 = "";
             for (int n = 0; n < numRuns; n++)

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Advent2019.Advent10
 {
@@ -121,7 +122,7 @@ namespace Advent2019.Advent10
         int station = -1;
         public void FindStation()
         {
-            for (int firstIndex = 0; firstIndex < asteroids.Count; firstIndex++)
+            Parallel.For(0, asteroids.Count, (firstIndex) =>
             {
                 SetVisible(firstIndex);
                 if (asteroids[firstIndex].Visible.Count > highestVisible)
@@ -129,7 +130,7 @@ namespace Advent2019.Advent10
                     highestVisible = asteroids[firstIndex].Visible.Count;
                     station = firstIndex;
                 }
-            }
+            });
         }
 
         Asteroid asteroid200;
