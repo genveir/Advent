@@ -56,7 +56,19 @@ namespace Advent2019.Advent10
             }
         }
 
-        
+        private int[] GCDs = new int[5000];
+        private int GetGCD(int xShift, int yShift)
+        {
+            int key = xShift * 100 + yShift;
+            int result = GCDs[key];
+            if (result == 0)
+            {
+                result = Helper.GCD(xShift, yShift);
+                GCDs[key] = result;
+            }
+            return result;
+        }
+
 
         public void SetVisible (int asteroidIndex)
         {
@@ -71,7 +83,7 @@ namespace Advent2019.Advent10
                 var xShift = asteroids[secondIndex].X - asteroids[asteroidIndex].X;
                 var yShift = asteroids[secondIndex].Y - asteroids[asteroidIndex].Y;
 
-                var GCD = Helper.GCD(Math.Abs(xShift), Math.Abs(yShift));
+                var GCD = GetGCD(Math.Abs(xShift), Math.Abs(yShift));
 
                 xShift = xShift == 0 ? 0 : xShift / GCD;
                 yShift = yShift == 0 ? 0 : yShift / GCD;
