@@ -60,7 +60,7 @@ namespace Advent2019.Advent10
 
         public void SetVisible (int asteroidIndex)
         {
-            var handled = new HashSet<int>();
+            var handled = new bool[10000];
 
             asteroids[asteroidIndex].Visible.Clear();
 
@@ -76,8 +76,8 @@ namespace Advent2019.Advent10
                 xShift = xShift == 0 ? 0 : xShift / GCD;
                 yShift = yShift == 0 ? 0 : yShift / GCD;
 
-                if (handled.Contains(xShift * 100 +  yShift)) continue;
-                handled.Add(xShift * 100 +  yShift);
+                if (handled[(xShift + 40) * 100 +  yShift]) continue;
+                handled[(xShift + 40) * 100 +  yShift] = true;
 
                 int newX = asteroids[asteroidIndex].X + xShift;
                 int newY = asteroids[asteroidIndex].Y + yShift;
