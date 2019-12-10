@@ -57,11 +57,15 @@ namespace Advent2019.Advent10
             }
         }
 
-        public int GetGCD(int first, int second)
+        public int GetGCD(int first, int second, bool log = true)
         {
+            if (first == 1 || second == 1) return 1;
+
             if (second == 0) return first;
-            if (second > first) return GetGCD(second, first);
-            return GetGCD(first - second, second);
+            if (first == 0) return second;
+
+            else if (second > first) return GetGCD(second % first, first);
+            else return GetGCD(first, first % second);
         }
 
         public void SetVisible (int asteroidIndex)
