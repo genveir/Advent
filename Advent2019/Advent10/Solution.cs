@@ -64,12 +64,6 @@ namespace Advent2019.Advent10
             return GetGCD(first - second, second);
         }
 
-        public double GetAngle(int X, int Y)
-        {
-            var angle = ((Math.Atan2(Y, X) + 0.5 * Math.PI) + 2.0d * Math.PI) % (2.0d * Math.PI);
-            return angle;
-        }
-
         public void SetVisible (int asteroidIndex)
         {
             var handled = new HashSet<(int, int)>();
@@ -105,6 +99,12 @@ namespace Advent2019.Advent10
                     newY += yShift;
                 }
             }
+        }
+
+        public double GetAngle(int X, int Y)
+        {
+            var angle = ((Math.Atan2(Y, X) + 0.5 * Math.PI) + 2.0d * Math.PI) % (2.0d * Math.PI);
+            return angle;
         }
 
         public void SetAngles(int asteroidIndex)
