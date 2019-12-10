@@ -9,15 +9,14 @@ namespace Advent2019.Advent10
     public class Solution : ISolution
     {
         public List<Asteroid> asteroids;
-        public Dictionary<(int x, int y), Asteroid> locations;
+        bool[] locations = new bool[5000];
 
         public Solution(Input.InputMode inputMode, string input)
         {
             var lines = Input.GetInputLines(inputMode, input).ToArray();
 
             asteroids = Asteroid.Parse(lines);
-            locations = new Dictionary<(int x, int y), Asteroid>();
-            foreach (var asteroid in asteroids) locations.Add((asteroid.X, asteroid.Y), asteroid);
+            foreach (var asteroid in asteroids) locations[asteroid.X * 100 + asteroid.Y] = true;
 
             FindStation();
             Find200th();
@@ -61,7 +60,7 @@ namespace Advent2019.Advent10
 
         public void SetVisible (int asteroidIndex)
         {
-            var handled = new HashSet<(int, int)>();
+            var handled = new HashSet<int>();
 
             asteroids[asteroidIndex].Visible.Clear();
 
@@ -77,14 +76,14 @@ namespace Advent2019.Advent10
                 xShift = xShift == 0 ? 0 : xShift / GCD;
                 yShift = yShift == 0 ? 0 : yShift / GCD;
 
-                if (handled.Contains((xShift, yShift))) continue;
-                handled.Add((xShift, yShift));
+                if (handled.Contains(xShift * 100 +  yShift)) continue;
+                handled.Add(xShift * 100 +  yShift);
 
                 int newX = asteroids[asteroidIndex].X + xShift;
                 int newY = asteroids[asteroidIndex].Y + yShift;
                 for (int n = 0; n < GCD; n++)
                 {
-                    if (locations.ContainsKey((newX, newY)))
+                    if (locations[newX * 100 + newY])
                     {
                         asteroids[asteroidIndex].Visible.Add(asteroids[secondIndex]);
                         break;

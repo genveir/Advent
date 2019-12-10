@@ -58,17 +58,29 @@ namespace Advent2019.Shared
 
         public static int GCD(int first, int second)
         {
+            if (first == 0) return second;
+            if (second == 0) return first;
             if (first == 1 || second == 1) return 1;
+
+            if (first == 2) return Non1GCD(second, first);
 
             return Non1GCD(first, second);
         }
 
         public static int Non1GCD(int first, int second)
         {
-            while (first != 0 && second != 0)
+            while (true)
             {
-                if (first > second) first = first % second;
-                else second = second % first;
+                if (first > second)
+                {
+                    first = first % second;
+                    if (first == 0) break;
+                }
+                else
+                {
+                    second = second % first;
+                    if (second == 0) break;
+                }
             }
 
             if (second == 0) return first;
