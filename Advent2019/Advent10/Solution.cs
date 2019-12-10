@@ -87,7 +87,7 @@ namespace Advent2019.Advent10
 
                 int newX = asteroids[asteroidIndex].X + xShift;
                 int newY = asteroids[asteroidIndex].Y + yShift;
-                for (int n = 0; n < 50; n++)
+                for (int n = 0; n < GCD; n++)
                 {
                     if (locations.ContainsKey((newX, newY)))
                     {
