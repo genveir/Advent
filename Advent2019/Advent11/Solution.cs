@@ -138,7 +138,7 @@ namespace Advent2019.Advent11
             var bot = new Bot();
             
             bot.Run(executor, true);
-            ;
+            
             var byY = paintedAtAll.GroupBy(paa => paa.Y).OrderBy(group => group.Key);
             for (int y = byY.First().Key; y <= byY.Last().Key; y++)
             {
