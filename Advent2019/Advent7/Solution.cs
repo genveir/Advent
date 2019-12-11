@@ -34,14 +34,14 @@ namespace Advent2019.Advent7
             public void Start(int phaseSetting)
             {
                 executor.Reset();
-                executor.program.inputs.Enqueue(phaseSetting.ToString());
+                executor.AddInput(phaseSetting);
                 executor.program.Name = name + " running phase setting " + phaseSetting;
             }
 
             private int lastOutput = -1;
             public int GetOutput(int input)
             {
-                executor.program.inputs.Enqueue(input.ToString());
+                executor.AddInput(input);
                 executor.ExecuteToOutput();
                 if (executor.program.output.Count > 0) lastOutput = int.Parse(executor.program.output.Dequeue());
 
@@ -92,7 +92,6 @@ namespace Advent2019.Advent7
                 for (int n = 0; n < 5; n++) amplifiers[n].Start(permutation[n]);
                 int fifth = 0;
 
-                List<int> eenskijken = new List<int>();
                 do
                 {
                     var first = amplifiers[0].GetOutput(fifth);

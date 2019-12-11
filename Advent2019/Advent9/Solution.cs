@@ -21,7 +21,7 @@ namespace Advent2019.Advent9
         public string GetResult1()
         {
             executor.Reset();
-            executor.program.inputs.Enqueue("1");
+            executor.AddInput(1);
             executor.Execute();
 
             var sb = new StringBuilder();
@@ -37,7 +37,7 @@ namespace Advent2019.Advent9
         public string GetResult2()
         {
             executor.Reset();
-            executor.program.inputs.Enqueue("2");
+            executor.AddInput(2);
             executor.Execute();
 
             var sb = new StringBuilder();

@@ -22,6 +22,11 @@ namespace Advent2019.OpCode
             lastPrint = null;
         }
 
+        public void AddInput(long input)
+        {
+            program.inputs.Enqueue(input.ToString());
+        }
+
         public long lastBreakPosition;
         public bool Break { get; set; }
         public long PrintIndex { get; set; } = -1;

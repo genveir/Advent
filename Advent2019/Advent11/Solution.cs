@@ -74,11 +74,11 @@ namespace Advent2019.Advent11
                 {
                     if (firstInput == null)
                     {
-                        executor.program.inputs.Enqueue(GetPanelIsWhite() ? "1" : "0");
+                        executor.AddInput(GetPanelIsWhite() ? 1 : 0);
                     }
                     else
                     {
-                        executor.program.inputs.Enqueue(firstInput.Value ? "1" : "0");
+                        executor.AddInput(firstInput.Value ? 1 : 0);
                         firstInput = null;
                     }
 
