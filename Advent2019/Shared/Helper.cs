@@ -97,5 +97,7 @@ namespace Advent2019.Shared
             var angle = ((Math.Atan2(Y, X) + 0.5 * Math.PI) + 2.0d * Math.PI) % (2.0d * Math.PI);
             return angle;
         }
+
+        public const string BLOCK = "\U00002588";
     }
 }

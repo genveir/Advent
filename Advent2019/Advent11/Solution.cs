@@ -18,39 +18,21 @@ namespace Advent2019.Advent11
         }
         public Solution() : this(Input.InputMode.Embedded, "Input") { }
 
-        static Dictionary<(int X, int Y), bool> panels = new Dictionary<(int X, int Y), bool>();
+        static Dictionary<(long X, long Y), bool> panels = new Dictionary<(long X, long Y), bool>();
         static HashSet<Coordinate> paintedAtAll = new HashSet<Coordinate>();
 
-        public class Coordinate
-        {
-            public Coordinate(int x, int y) { this.X = x; this.Y = y; }
-
-            public int X;
-            public int Y;
-
-            public override int GetHashCode()
-            {
-                return X.GetHashCode() + Y.GetHashCode();
-            }
-
-            public override bool Equals(object obj)
-            {
-                var other = obj as Coordinate;
-                if (other == null) return false;
-                return other.X == X && other.Y == Y;
-            }
-        }
+        
 
         public class Bot
         {
-            public const int FACING_UP = 0;
-            public const int FACING_RIGHT = 1;
-            public const int FACING_DOWN = 2;
-            public const int FACING_LEFT = 3;
+            public const long FACING_UP = 0;
+            public const long FACING_RIGHT = 1;
+            public const long FACING_DOWN = 2;
+            public const long FACING_LEFT = 3;
 
-            public int facing = 0;
-            public int x = 0;
-            public int y = 0;
+            public long facing = 0;
+            public long x = 0;
+            public long y = 0;
 
             public void TurnRight()
             {
@@ -120,7 +102,7 @@ namespace Advent2019.Advent11
         public string GetResult1()
         {
             executor.Reset();
-            panels = new Dictionary<(int X, int Y), bool>();
+            panels = new Dictionary<(long X, long Y), bool>();
             paintedAtAll = new HashSet<Coordinate>();
 
             var bot = new Bot();
@@ -132,31 +114,35 @@ namespace Advent2019.Advent11
         public string GetResult2()
         {
             executor.Reset();
-            panels = new Dictionary<(int X, int Y), bool>();
+            panels = new Dictionary<(long X, long Y), bool>();
             paintedAtAll = new HashSet<Coordinate>();
 
             var bot = new Bot();
             
             bot.Run(executor, true);
-            
+
+            long minX = paintedAtAll.Select(c => c.X).Min() - 1;
+
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine();
             var byY = paintedAtAll.GroupBy(paa => paa.Y).OrderBy(group => group.Key);
-            for (int y = byY.First().Key; y <= byY.Last().Key; y++)
+            for (long y = byY.First().Key; y <= byY.Last().Key; y++)
             {
                 var yGroup = byY.Where(group => group.Key == y).SingleOrDefault();
                 if (yGroup == null) continue;
 
                 var byX = yGroup.OrderBy(val => val.X);
-                for (int x =0; x <= byX.Last().X; x++)
+                for (long x = minX; x <= byX.Last().X; x++)
                 {
                     bool value;
                     panels.TryGetValue((x, y), out value);
-                    if (value) Console.Write("X");
-                    else Console.Write(" ");
+                    if (value) sb.Append(Helper.BLOCK);
+                    else sb.Append(" ");
                 }
-                Console.WriteLine();
+                sb.AppendLine();
             }
 
-            return "";
+            return sb.ToString();
         }
     }
 }

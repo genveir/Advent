@@ -1,4 +1,5 @@
 ﻿using Advent2019.Shared;
+using Advent2019.OpCode;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ namespace Advent2019.AdventBase
 {
     public class Solution : ISolution
     {
+        public Executor executor;
         IEnumerable<ParsedInput> modules;
 
         public Solution(Input.InputMode inputMode, string input)
