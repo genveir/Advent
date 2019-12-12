@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 
 namespace Advent2019.Shared
@@ -21,7 +22,7 @@ namespace Advent2019.Shared
             if (input.Length == 1) result.Add(input);
             else
             {
-                for (int n = 0; n < input.Length; n++)
+                for (long n = 0; n < input.Length; n++)
                 {
                     var inputWithoutNth = input.WithoutNth(n);
 
@@ -41,13 +42,13 @@ namespace Advent2019.Shared
             return result.ToArray();
         }
 
-        public static int Factorial(int n)
+        public static long Factorial(long n)
         {
             if (n == 1) return 1;
             return n + Factorial(n - 1);
         }
 
-        public static T[] WithoutNth<T>(this T[] input, int n)
+        public static T[] WithoutNth<T>(this T[] input, long n)
         {
             var inputWithoutNth = new T[input.Length - 1];
             Array.Copy(input, 0, inputWithoutNth, 0, n);
@@ -56,7 +57,16 @@ namespace Advent2019.Shared
             return inputWithoutNth;
         }
 
-        public static int GCD(int first, int second)
+        public static long LCM(long first, long second)
+        {
+            BigInteger product = first * second;
+            BigInteger gcd = GCD(first, second);
+            var result = product / gcd;
+
+            return (long)result;
+        }
+
+        public static long GCD(long first, long second)
         {
             if (first == 0) return second;
             if (second == 0) return first;
@@ -67,7 +77,7 @@ namespace Advent2019.Shared
             return Non1GCD(first, second);
         }
 
-        public static int Non1GCD(int first, int second)
+        public static long Non1GCD(long first, long second)
         {
             while (true)
             {
@@ -87,12 +97,12 @@ namespace Advent2019.Shared
             return second;
         }
 
-        public static double GetAngle((int x, int y) from, (int x, int y) target)
+        public static double GetAngle((long x, long y) from, (long x, long y) target)
         {
             return GetAngle(target.x - from.x, target.y - from.y);
         }
 
-        public static double GetAngle(int X, int Y)
+        public static double GetAngle(long X, long Y)
         {
             var angle = ((Math.Atan2(Y, X) + 0.5 * Math.PI) + 2.0d * Math.PI) % (2.0d * Math.PI);
             return angle;

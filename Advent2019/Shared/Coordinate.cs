@@ -36,7 +36,7 @@ namespace Advent2019.Shared
         public override string ToString()
         {
             return "(" + X + ", " + Y +
-                (Z.HasValue ? (Z.Value + ", ") : "") +
+                (Z.HasValue ? (", " + Z.Value) : "") +
                 ")";
         }
 

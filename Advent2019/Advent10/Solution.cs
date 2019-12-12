@@ -64,7 +64,7 @@ namespace Advent2019.Advent10
             int result = GCDs[key];
             if (result == 0)
             {
-                result = Helper.GCD(xShift, yShift);
+                result = (int)Helper.GCD(xShift, yShift);
                 GCDs[key] = result;
             }
             return result;
