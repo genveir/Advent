@@ -149,21 +149,21 @@ namespace Advent2019.Advent12
             }
         }
 
-        public Coordinate periods;
-
         public void SetPeriods()
         {
             long counter = 0;
 
-            periods = new Coordinate(0, 0, 0);
-            while (periods.X == 0 || periods.Y == 0 || periods.Z == 0)
+            while (moons.Any(moon => moon.periods.X == 0 || moon.periods.Y == 0 || moon.periods.Z == 0))
             {
                 SimulateStep();
                 counter++;
-
-                if (periods.X == 0 && moons.All(moon => moon.originalCoordinate.X == moon.coordinate.X && moon.velocity.X == 0)) periods.X = counter;
-                if (periods.Y == 0 && moons.All(moon => moon.originalCoordinate.Y == moon.coordinate.Y && moon.velocity.Y == 0)) periods.Y = counter;
-                if (periods.Z == 0 && moons.All(moon => moon.originalCoordinate.Z == moon.coordinate.Z && moon.velocity.Z == 0)) periods.Z = counter;
+             
+                foreach(var moon in moons)
+                {
+                    if (moon.periods.X == 0 && moon.originalCoordinate.X == moon.coordinate.X && moon.velocity.X == 0) moon.periods.X = counter;
+                    if (moon.periods.Y == 0 && moon.originalCoordinate.Y == moon.coordinate.Y && moon.velocity.Y == 0) moon.periods.Y = counter;
+                    if (moon.periods.Z == 0 && moon.originalCoordinate.Z == moon.coordinate.Z && moon.velocity.Z == 0) moon.periods.Z = counter;
+                }
             }
         }
 
@@ -183,8 +183,49 @@ namespace Advent2019.Advent12
 
             SetPeriods();
 
-            var totalLCM = Helper.LCM(periods.X, periods.Y);
-            totalLCM = Helper.LCM(totalLCM, periods.Z.Value);
+            var xPeriods = moons.OrderBy(m => m.periods.X).Select(m => m.periods.X).ToArray();
+            var yPeriods = moons.OrderBy(m => m.periods.Y).Select(m => m.periods.Y).ToArray();
+            var zPeriods = moons.OrderBy(m => m.periods.Z).Select(m => m.periods.Z.Value).ToArray();
+
+            var xLCM = Helper.LCM(xPeriods[0], xPeriods[1]);
+            xLCM = Helper.LCM(xLCM, xPeriods[2]);
+            xLCM = Helper.LCM(xLCM, xPeriods[3]);
+
+            Parse();
+            for (int n = 0; n < xLCM; n++)
+            {
+                SimulateStep();
+                if (n > 0 && moons.All(moon => moon.originalCoordinate.X == moon.coordinate.X && moon.velocity.X == 0)) xLCM = n + 1;
+            }
+            Console.WriteLine(xLCM);
+            foreach (var moon in moons) Console.WriteLine(moon);
+
+            var yLCM = Helper.LCM(yPeriods[0], yPeriods[1]);
+            yLCM = Helper.LCM(yLCM, yPeriods[2]);
+            yLCM = Helper.LCM(yLCM, yPeriods[3]);
+
+            Parse();
+            for (int n = 0; n < yLCM; n++)
+            {
+                if (n > 0 && moons.All(moon => moon.originalCoordinate.Y == moon.coordinate.Y && moon.velocity.Y == 0)) yLCM = n;
+                SimulateStep();
+            }
+            foreach (var moon in moons) Console.WriteLine(moon);
+
+            var zLCM = Helper.LCM(zPeriods[0], zPeriods[1]);
+            zLCM = Helper.LCM(zLCM, zPeriods[2]);
+            zLCM = Helper.LCM(zLCM, zPeriods[3]);
+
+            Parse();
+            for (int n = 0; n < zLCM; n++)
+            {
+                if (n > 0 && moons.All(moon => moon.originalCoordinate.Z == moon.coordinate.Z && moon.velocity.Z == 0)) zLCM = n;
+                SimulateStep();
+            }
+            foreach (var moon in moons) Console.WriteLine(moon);
+
+            var totalLCM = Helper.LCM(xLCM, yLCM);
+            totalLCM = Helper.LCM(totalLCM, zLCM);
 
             return totalLCM.ToString();
             // not 64704171707646560
