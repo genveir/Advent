@@ -214,15 +214,14 @@ namespace Advent2019.OpCode
             string val;
             if (program.inputs.Count == 0)
             {
-                Console.Write("inp: ");
-                val = Console.ReadLine();
+                program.Blocked = true;
+                program.instructionPointer -= OpLength;
             }
             else
             {
                 val = program.inputs.Dequeue();
+                program.SetAt(relInput, val);
             }
-
-            program.SetAt(relInput, val);
         }
 
         public override string ToString()

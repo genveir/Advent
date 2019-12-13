@@ -25,6 +25,12 @@ namespace Advent2019.OpCode
         public void AddInput(long input)
         {
             program.inputs.Enqueue(input.ToString());
+
+            if (program.Blocked)
+            {
+                program.Blocked = false;
+                Execute();
+            }
         }
 
         public long lastBreakPosition;
@@ -84,7 +90,7 @@ namespace Advent2019.OpCode
 
         public void Execute()
         {
-            while (!program.Stop)
+            while (!program.Stop && !program.Blocked)
             {
                 Step();
             }
@@ -92,7 +98,7 @@ namespace Advent2019.OpCode
 
         public void ExecuteToOutput()
         {
-            while (!program.Stop && program.output.Count == 0)
+            while (!program.Stop && !program.Blocked && program.output.Count == 0)
             {
                 Step();
             }

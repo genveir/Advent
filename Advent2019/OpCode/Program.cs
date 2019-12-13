@@ -12,6 +12,7 @@ namespace Advent2019.OpCode
         public string[] program;
 
         public bool Stop { get; set; } = false;
+        public bool Blocked { get; set; } = false;
 
         public long instructionPointer;
         public long relativeBase;
@@ -37,6 +38,7 @@ namespace Advent2019.OpCode
             var newProgram = new Program(program);
             newProgram.Stop = this.Stop;
             newProgram.instructionPointer = this.instructionPointer;
+            newProgram.relativeBase = this.relativeBase;
             newProgram.inputs = new Queue<string>(inputs);
             newProgram.output = new Queue<string>(output);
 
