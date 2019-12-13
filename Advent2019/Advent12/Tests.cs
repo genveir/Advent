@@ -41,7 +41,7 @@ namespace Advent2019.Advent12
         {
             var sol = new Solution(Shared.Input.InputMode.String, testCase1);
 
-            foreach (var moon in Solution.moons) Assert.That(moon.MatchesStart);
+            foreach (var moon in sol.moons) Assert.That(moon.MatchesStart);
         }
     }
 }

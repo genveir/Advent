@@ -9,19 +9,9 @@ namespace Advent2019.Advent12
 {
     public class Solution : ISolution
     {
-        public static Moon[] moons;
-
-        private Input.InputMode inputMode;
-        private string input;
+        public Moon[] moons;
 
         public Solution(Input.InputMode inputMode, string input)
-        {
-            this.inputMode = inputMode;
-            this.input = input;
-
-            Parse();
-        }
-        public void Parse()
         {
             var lines = Input.GetInputLines(inputMode, input).ToArray();
 
@@ -32,6 +22,14 @@ namespace Advent2019.Advent12
 
         public int numSteps = 1000;
 
+        public void Reset()
+        {
+            foreach(var moon in moons)
+            {
+                moon.Reset();
+            }
+        }
+
 
         public class Moon
         {
@@ -40,8 +38,6 @@ namespace Advent2019.Advent12
             public Coordinate velocity;
 
             public Coordinate originalCoordinate;
-
-            public Coordinate periods;
 
             public static IEnumerable<Moon> Parse(IEnumerable<string> lines)
             {
@@ -58,7 +54,6 @@ namespace Advent2019.Advent12
                         coordinate = new Coordinate(coords[0], coords[1], coords[2]),
                         originalCoordinate = new Coordinate(coords[0], coords[1], coords[2]),
                         velocity = new Coordinate(0, 0, 0),
-                        periods = new Coordinate(0, 0, 0),
                         Id = id++
                     };
 
@@ -68,7 +63,15 @@ namespace Advent2019.Advent12
                 return parsedInputs;
             }
 
-            public void ApplyGravity()
+            public void Reset()
+            {
+                coordinate.X = originalCoordinate.X;
+                coordinate.Y = originalCoordinate.Y;
+                coordinate.Z = originalCoordinate.Z;
+                velocity = new Coordinate(0, 0, 0);
+            }
+
+            public void ApplyGravity(Moon[] moons)
             {
                 foreach(var moon in moons)
                 {
@@ -136,17 +139,10 @@ namespace Advent2019.Advent12
             }
         }
 
-        public void SimulateStep(bool verbose = false)
+        public void SimulateStep()
         {
-            foreach (var moon in moons) moon.ApplyGravity();
+            foreach (var moon in moons) moon.ApplyGravity(moons);
             foreach (var moon in moons) moon.ApplyVelocity();
-
-            if (verbose)
-            {
-                foreach (var moon in moons) Console.WriteLine(moon);
-                Console.WriteLine();
-                Console.ReadLine();
-            }
         }
 
         public Coordinate periods;
@@ -179,7 +175,7 @@ namespace Advent2019.Advent12
 
         public string GetResult2()
         {
-            Parse();
+            Reset();
 
             SetPeriods();
 
