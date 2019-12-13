@@ -114,7 +114,7 @@ namespace Advent2019.OpCode
             int numLines = 0;
 
             copy.instructionPointer = startIndex;
-            while (copy.instructionPointer < copy.program.Length && numLines < 65)
+            while (copy.instructionPointer < copy.program.Length && numLines < 60)
             {
                 bool atPointer = copy.instructionPointer == program.instructionPointer;
 
