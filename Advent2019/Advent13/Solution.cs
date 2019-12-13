@@ -130,6 +130,11 @@ namespace Advent2019.Advent13
             return BlockCount.ToString();
         }
 
+        public long GetInput()
+        {
+            return PaddleX == BallX ? 0 : (PaddleX < BallX ? 1 : -1);
+        }
+
         public string GetResult2()
         {
             ResetState();
@@ -138,17 +143,12 @@ namespace Advent2019.Advent13
             executor.program.ISetAt(0, 2);
 
             executor.Execute();
-            UpdateState();
-
             while (executor.program.Blocked)
             {
-                long input = PaddleX == BallX ? 0 : (PaddleX < BallX ? 1 : -1);
-
-                executor.AddInput(input);
                 UpdateState();
-
-                //Print(); Console.ReadLine();
+                executor.AddInput(GetInput());
             }
+            UpdateState();
 
             return Score.ToString();
         }
