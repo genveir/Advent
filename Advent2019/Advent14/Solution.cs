@@ -169,8 +169,8 @@ namespace Advent2019.Advent14
         {
             long trillion = 1000000000000L;
 
-            var guess = trillion / 2; // gotta be less than a trillion
-            var lastGuess = 0L; // gotta be more than 0
+            long guess = (long)Math.Pow(2, 40);
+            var lastGuess = 0L;
 
             while (lastGuess != guess)
             {
@@ -182,10 +182,7 @@ namespace Advent2019.Advent14
                 if (required > trillion) guess = guess -= stepSize;
                 else guess = guess += stepSize;
             }
-            // stepsizes aren't exact powers of two, so we have to account for these cases.
-            if (GetRequiredOre(guess) > trillion) guess--; 
-            if (GetRequiredOre(guess + 1) < trillion) guess++;
-            
+            if (GetRequiredOre(guess) > trillion) guess--;
 
             return guess.ToString();
         }

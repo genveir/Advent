@@ -7,6 +7,8 @@ namespace Advent2019.Advent14
 {
     class Tests
     {
+        const string case1 = "1 ORE => 1 FUEL";
+
         const string case31 = @"10 ORE => 10 A
 1 ORE => 1 B
 7 A, 1 B => 1 C
@@ -60,6 +62,7 @@ namespace Advent2019.Advent14
 7 XCVML => 6 RJRHP
 5 BHXH, 4 VRPVC => 5 LTCX";
 
+        [TestCase(case1, "1")]
         [TestCase(case31, "31")]
         [TestCase(case165, "165")]
         [TestCase(case13312, "13312")]
@@ -72,6 +75,7 @@ namespace Advent2019.Advent14
             Assert.AreEqual(output, sol.GetResult1());
         }
 
+        [TestCase(case1, "1000000000000")]
         [TestCase(case13312, "82892753")]
         [TestCase(case180697, "5586022")]
         [TestCase(case2210736, "460664")]
