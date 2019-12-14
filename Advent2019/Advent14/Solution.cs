@@ -149,29 +149,45 @@ namespace Advent2019.Advent14
             }
         }
 
-        public string GetResult1()
+        public long GetRequiredOre(long fuelAmount)
         {
             var root = ReactionWithOutput["FUEL"];
             root.Reset();
-            root.Build(1);
+            root.Build(fuelAmount);
             var ore = ReactionWithOutput["ORE"];
 
-            return ore.Required.ToString();
+            return ore.Required;
+        }
+
+        public string GetResult1()
+        {
+            return GetRequiredOre(1).ToString();
             // 101755 too high
         }
 
         public string GetResult2()
         {
-            var root = ReactionWithOutput["FUEL"];
-            root.Reset();
-            root.Build(13108426); // just searched by hand. Probably faster than implementing a binary search.
-            var ore = ReactionWithOutput["ORE"];
+            long trillion = 1000000000000L;
 
-            Console.WriteLine("1000000000000");
-            Console.WriteLine(ore.Required);
+            var guess = trillion / 2; // gotta be less than a trillion
+            var lastGuess = 0L; // gotta be more than 0
+
+            while (lastGuess != guess)
+            {
+                var required = GetRequiredOre(guess);
+
+                var stepSize = Math.Abs(lastGuess - guess) / 2;
+
+                lastGuess = guess;
+                if (required > trillion) guess = guess -= stepSize;
+                else guess = guess += stepSize;
+            }
+            // stepsizes aren't exact powers of two, so we have to account for these cases.
+            if (GetRequiredOre(guess) > trillion) guess--; 
+            if (GetRequiredOre(guess + 1) < trillion) guess++;
             
 
-            return ore.Required.ToString();
+            return guess.ToString();
         }
     }
 }

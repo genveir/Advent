@@ -7,20 +7,21 @@ namespace Advent2019.Advent14
 {
     class Tests
     {
-        [TestCase(@"10 ORE => 10 A
+        const string case31 = @"10 ORE => 10 A
 1 ORE => 1 B
 7 A, 1 B => 1 C
 7 A, 1 C => 1 D
 7 A, 1 D => 1 E
-7 A, 1 E => 1 FUEL", "31")]
-        [TestCase(@"9 ORE => 2 A
+7 A, 1 E => 1 FUEL";
+
+        const string case165 = @"9 ORE => 2 A
 8 ORE => 3 B
 7 ORE => 5 C
 3 A, 4 B => 1 AB
 5 B, 7 C => 1 BC
 4 C, 1 A => 1 CA
-2 AB, 3 BC, 4 CA => 1 FUEL", "165")]
-        [TestCase(@"157 ORE => 5 NZVS
+2 AB, 3 BC, 4 CA => 1 FUEL";
+        const string case13312 = @"157 ORE => 5 NZVS
 165 ORE => 6 DCFZ
 44 XJWVT, 5 KHKGT, 1 QDVJ, 29 NZVS, 9 GPVTF, 48 HKGWZ => 1 FUEL
 12 HKGWZ, 1 GPVTF, 8 PSHF => 9 QDVJ
@@ -28,8 +29,8 @@ namespace Advent2019.Advent14
 177 ORE => 5 HKGWZ
 7 DCFZ, 7 PSHF => 2 XJWVT
 165 ORE => 2 GPVTF
-3 DCFZ, 7 NZVS, 5 HKGWZ, 10 PSHF => 8 KHKGT", "13312")]
-        [TestCase(@"2 VPVL, 7 FWMGM, 2 CXFTF, 11 MNCFX => 1 STKFG
+3 DCFZ, 7 NZVS, 5 HKGWZ, 10 PSHF => 8 KHKGT";
+        const string case180697 = @"2 VPVL, 7 FWMGM, 2 CXFTF, 11 MNCFX => 1 STKFG
 17 NVRVD, 3 JNWZP => 8 VPVL
 53 STKFG, 6 MNCFX, 46 VJHF, 81 HVMC, 68 CXFTF, 25 GNMV => 1 FUEL
 22 VJHF, 37 MNCFX => 5 FWMGM
@@ -40,8 +41,8 @@ namespace Advent2019.Advent14
 145 ORE => 6 MNCFX
 1 NVRVD => 8 CXFTF
 1 VJHF, 6 MNCFX => 4 RFSQX
-176 ORE => 6 VJHF", "180697")]
-        [TestCase(@"171 ORE => 8 CNZTR
+176 ORE => 6 VJHF";
+        const string case2210736 = @"171 ORE => 8 CNZTR
 7 ZLQW, 3 BMBT, 9 XCVML, 26 XMNCP, 1 WPTQ, 2 MZWV, 1 RJRHP => 4 PLWSL
 114 ORE => 4 BHXH
 14 VRPVC => 6 BMBT
@@ -57,7 +58,13 @@ namespace Advent2019.Advent14
 3 BHXH, 2 VRPVC => 7 MZWV
 121 ORE => 7 VRPVC
 7 XCVML => 6 RJRHP
-5 BHXH, 4 VRPVC => 5 LTCX", "2210736")]
+5 BHXH, 4 VRPVC => 5 LTCX";
+
+        [TestCase(case31, "31")]
+        [TestCase(case165, "165")]
+        [TestCase(case13312, "13312")]
+        [TestCase(case180697, "180697")]
+        [TestCase(case2210736, "2210736")]
         public void Test1(string input, string output)
         {
             var sol = new Solution(Shared.Input.InputMode.String, input);
@@ -65,7 +72,9 @@ namespace Advent2019.Advent14
             Assert.AreEqual(output, sol.GetResult1());
         }
 
-        [TestCase("", "")]
+        [TestCase(case13312, "82892753")]
+        [TestCase(case180697, "5586022")]
+        [TestCase(case2210736, "460664")]
         public void Test2(string input, string output)
         {
             var sol = new Solution(Shared.Input.InputMode.String, input);
