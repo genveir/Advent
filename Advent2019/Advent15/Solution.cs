@@ -15,13 +15,8 @@ namespace Advent2019.Advent15
         {
             var startProg = Input.GetInputLines(inputMode, input, new char[] { ',' }).ToArray();
             executor = new Executor(startProg);
-
-            Explored = new HashSet<(long, long)>();
         }
         public Solution() : this(Input.InputMode.Embedded, "Input") { }
-
-        HashSet<(long, long)> Explored;
-        HashSet<(long, long)> Open;
 
         public class Bot
         {
@@ -32,14 +27,12 @@ namespace Advent2019.Advent15
             public Bot(Coordinate coordinate, OpCode.Program program, bool atTarget = false)
             {
                 this.coordinate = coordinate;
-                this.program = program.Copy();
+                this.program = program;
                 this.AtTarget = atTarget;
             }
 
             public Bot Move(int direction, HashSet<(long, long)> explored)
             {
-                var executor = new Executor(program);
-
                 var nextCoord = new Coordinate(coordinate.X, coordinate.Y, coordinate.Z.Value + 1);
                 switch(direction)
                 {
@@ -51,6 +44,8 @@ namespace Advent2019.Advent15
 
                 if (explored.Contains((nextCoord.X, nextCoord.Y))) return null;
                 explored.Add((nextCoord.X, nextCoord.Y));
+
+                var executor = new Executor(program);
 
                 executor.AddInput(direction);
                 var output = executor.program.output.Dequeue();
@@ -66,20 +61,21 @@ namespace Advent2019.Advent15
 
         public string GetResult1()
         {
+            var explored = new HashSet<(long, long)>();
             executor.Execute();
-
-            var positions = new Queue<Bot>();
 
             var bot = new Bot(new Coordinate(0, 0, 0), executor.program);
 
+            var positions = new Queue<Bot>();
             positions.Enqueue(bot);
+
             while(positions.Count > 0)
             {
                 var head = positions.Dequeue();
 
                 for (int n = 1; n <= 4; n++)
                 {
-                    var newBot = head.Move(n, Explored);
+                    var newBot = head.Move(n, explored);
                     if (newBot == null) continue;
                     if (newBot.AtTarget)
                     {
@@ -103,12 +99,10 @@ namespace Advent2019.Advent15
 
         public string RunBack(Bot bot)
         {
-            Explored = new HashSet<(long, long)>();
-
+            var explored = new HashSet<(long, long)>();
             bot.coordinate = new Coordinate(bot.coordinate.X, bot.coordinate.Y, 0);
 
             var positions = new Queue<Bot>();
-
             positions.Enqueue(bot);
 
             Bot head = null;
@@ -118,7 +112,7 @@ namespace Advent2019.Advent15
 
                 for (int n = 1; n <= 4; n++)
                 {
-                    var newBot = head.Move(n, Explored);
+                    var newBot = head.Move(n, explored);
                     if (newBot == null) continue;
 
                     positions.Enqueue(newBot);
