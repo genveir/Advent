@@ -15,8 +15,8 @@ namespace Advent2018.Advent12
 
         void ParseInput()
         {
-            string resourceName = "Advent.Advent12.Input.txt";
-            //resourceName = "Advent.Advent12.Test.txt";
+            string resourceName = "Advent2018.Advent12.Input.txt";
+            //resourceName = "Advent2018.Advent12.Test.txt";
             var input = typeof(Program).Assembly.GetManifestResourceStream(resourceName);
 
             powers = new int[5];

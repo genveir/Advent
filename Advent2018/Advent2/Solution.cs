@@ -11,7 +11,7 @@ namespace Advent2018.Advent2
         private List<char[]> GetInput()
         {
             var adventNum = this.GetType().Name.ToCharArray().Last();
-            var input = typeof(Program).Assembly.GetManifestResourceStream("Advent.Advent2.Input.txt");
+            var input = typeof(Program).Assembly.GetManifestResourceStream("Advent2018.Advent2.Input.txt");
 
             var vals = new List<char[]>();
 

@@ -12,7 +12,7 @@ namespace Advent2018.Advent1
         private List<long> GetInput()
         {
             var adventNum = this.GetType().Name.ToCharArray().Last();
-            var input = this.GetType().Assembly.GetManifestResourceStream("Advent.Advent1.Input.txt");
+            var input = this.GetType().Assembly.GetManifestResourceStream("Advent2018.Advent1.Input.txt");
 
             var vals = new List<long>();
 

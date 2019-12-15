@@ -10,7 +10,7 @@ namespace Advent2018.Advent8
     {
         private TreeNode GetInput()
         {
-            string resourceName = "Advent.Advent8.Input.txt";
+            string resourceName = "Advent2018.Advent8.Input.txt";
             var input = typeof(Program).Assembly.GetManifestResourceStream(resourceName);
 
             int[] inputInts;

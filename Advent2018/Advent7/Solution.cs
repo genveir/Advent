@@ -11,7 +11,7 @@ namespace Advent2018.Advent7
         private List<Prereq> GetInput()
         {
             var adventNum = this.GetType().Name.ToCharArray().Last();
-            string resourceName = "Advent.Advent7.Input.txt";
+            string resourceName = "Advent2018.Advent7.Input.txt";
             var input = this.GetType().Assembly.GetManifestResourceStream(resourceName);
 
             var vals = new List<Prereq>();

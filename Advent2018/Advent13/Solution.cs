@@ -28,8 +28,8 @@ namespace Advent2018.Advent13
 
         void ParseInput()
         {
-            string resourceName = "Advent.Advent13.Input.txt";
-            //resourceName = "Advent.Input.a13test.txt";
+            string resourceName = "Advent2018.Advent13.Input.txt";
+            //resourceName = "Advent2018.Input.a13test.txt";
             var input = this.GetType().Assembly.GetManifestResourceStream(resourceName);
 
             var factory = new TrackFactory();

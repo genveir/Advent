@@ -22,7 +22,7 @@ namespace Advent2018.Advent24
 
         private void ParseInput(string fileName)
         {
-            string resourceName = "Advent.Advent24." + fileName + ".txt";
+            string resourceName = "Advent2018.Advent24." + fileName + ".txt";
             var inputFile = this.GetType().Assembly.GetManifestResourceStream(resourceName);
 
             string input;

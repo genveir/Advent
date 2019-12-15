@@ -11,7 +11,7 @@ namespace Advent2018.Advent4
         private List<Event> GetInput()
         {
             var adventNum = this.GetType().Name.ToCharArray().Last();
-            var input = typeof(Program).Assembly.GetManifestResourceStream("Advent.Advent4.Input.txt");
+            var input = typeof(Program).Assembly.GetManifestResourceStream("Advent2018.Advent4.Input.txt");
 
             var vals = new List<Event>();
             using (var txt = new StreamReader(input))

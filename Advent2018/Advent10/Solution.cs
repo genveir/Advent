@@ -10,7 +10,7 @@ namespace Advent2018.Advent10
     {
         List<Vector> GetInput()
         {
-            string resourceName = "Advent.Advent10.Input.txt";
+            string resourceName = "Advent2018.Advent10.Input.txt";
             var input = typeof(Program).Assembly.GetManifestResourceStream(resourceName);
 
             var vectors = new List<Vector>();
