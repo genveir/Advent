@@ -37,6 +37,7 @@ namespace Advent2019.OpCode
         {
             var newProgram = new Program(program);
             newProgram.Stop = this.Stop;
+            newProgram.Blocked = this.Blocked;
             newProgram.instructionPointer = this.instructionPointer;
             newProgram.relativeBase = this.relativeBase;
             newProgram.inputs = new Queue<string>(inputs);
