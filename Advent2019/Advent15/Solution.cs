@@ -62,6 +62,8 @@ namespace Advent2019.Advent15
             }
         }
 
+        Bot botAtTarget;
+
         public string GetResult1()
         {
             executor.Execute();
@@ -81,6 +83,7 @@ namespace Advent2019.Advent15
                     if (newBot == null) continue;
                     if (newBot.AtTarget)
                     {
+                        botAtTarget = newBot;
                         return newBot.coordinate.Z.ToString();
                     }
 
@@ -93,30 +96,9 @@ namespace Advent2019.Advent15
 
         public string GetResult2()
         {
-            executor.Reset();
-            executor.Execute();
-            Explored = new HashSet<(long, long)>();
+            if (botAtTarget == null) GetResult1();
 
-            var positions = new Queue<Bot>();
-
-            var bot = new Bot(new Coordinate(0, 0, 0), executor.program);
-
-            positions.Enqueue(bot);
-            while (positions.Count > 0)
-            {
-                var head = positions.Dequeue();
-
-                for (int n = 1; n <= 4; n++)
-                {
-                    var newBot = head.Move(n, Explored);
-                    if (newBot == null) continue;
-                    if (newBot.AtTarget) return RunBack(newBot);
-
-                    positions.Enqueue(newBot);
-                }
-            }
-
-            return "no result";
+            return RunBack(botAtTarget);
         }
 
         public string RunBack(Bot bot)
