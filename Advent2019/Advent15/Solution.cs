@@ -21,6 +21,7 @@ namespace Advent2019.Advent15
         public Solution() : this(Input.InputMode.Embedded, "Input") { }
 
         HashSet<(long, long)> Explored;
+        HashSet<(long, long)> Open;
 
         public class Bot
         {
@@ -78,7 +79,10 @@ namespace Advent2019.Advent15
                 {
                     var newBot = head.Move(n, Explored);
                     if (newBot == null) continue;
-                    if (newBot.AtTarget) return newBot.coordinate.Z.ToString();
+                    if (newBot.AtTarget)
+                    {
+                        return newBot.coordinate.Z.ToString();
+                    }
 
                     positions.Enqueue(newBot);
                 }
@@ -89,7 +93,57 @@ namespace Advent2019.Advent15
 
         public string GetResult2()
         {
-            return "";
+            executor.Reset();
+            executor.Execute();
+            Explored = new HashSet<(long, long)>();
+
+            var positions = new Queue<Bot>();
+
+            var bot = new Bot(new Coordinate(0, 0, 0), executor.program);
+
+            positions.Enqueue(bot);
+            while (positions.Count > 0)
+            {
+                var head = positions.Dequeue();
+
+                for (int n = 1; n <= 4; n++)
+                {
+                    var newBot = head.Move(n, Explored);
+                    if (newBot == null) continue;
+                    if (newBot.AtTarget) return RunBack(newBot);
+
+                    positions.Enqueue(newBot);
+                }
+            }
+
+            return "no result";
+        }
+
+        public string RunBack(Bot bot)
+        {
+            Explored = new HashSet<(long, long)>();
+
+            bot.coordinate = new Coordinate(bot.coordinate.X, bot.coordinate.Y, 0);
+
+            var positions = new Queue<Bot>();
+
+            positions.Enqueue(bot);
+
+            Bot head = null;
+            while(positions.Count > 0)
+            {
+                head = positions.Dequeue();
+
+                for (int n = 1; n <= 4; n++)
+                {
+                    var newBot = head.Move(n, Explored);
+                    if (newBot == null) continue;
+
+                    positions.Enqueue(newBot);
+                }
+            }
+
+            return head.coordinate.Z.ToString();
         }
     }
 }
