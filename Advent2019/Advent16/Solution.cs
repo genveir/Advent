@@ -127,5 +127,46 @@ namespace Advent2019.Advent16
         // eennalaatste is wat hij was + laatste % 10
         // YESSS geldt voor de rest. lineair.
         // geeeen idee hoe dit met de pattern te maken heeft, maar is regelmatig dus het zal wel kloppen.
+
+
+        // ENGLISH TRANSLATION OF OBSERVATIONS:
+
+        // observation: 
+        // last character never changes, period in front is short, longer in front, then increasing
+        // offset is 5979191 out of total length 6500000
+        // pattern at the end is not dependent on the length of the program
+        // pattern at the end is not dependent on the start of the program (??)
+        // 00000000000000000000000000000595 and 80871224585914546619083218645595 have the same 3 characters at the end
+        // 99999999999999999999999999999595 too
+        // 595 doesn't
+        // 45595 does (!)
+
+        // 1 is enough for 1
+        // 0 is too little for 1
+
+        // 3 is enough for 2
+        // 2 is too little for 2
+
+        // 5 is enough for 3
+        // 4 is too little for 3
+
+        // 7 is enough for 4
+        // 6 is too little for 4
+
+        // 2 * n - 1 is enough for n
+
+        // start: 945/895/245
+        // end: 4295/0645/5595
+
+        // at the test inputs for part2 the offset is about 90% of the program length
+        // similar for the real problem
+
+        // so you start in -1 land. how many times do you do -1 and how many times do you do 1?
+
+        // Pattern!!
+        // last stays the same
+        // second to last is what it was + last % 10
+        // YESSS goes for the rest. linear.
+        // noooo idea what this has to do with the pattern, but it's consistent so it's probably right.
     }
 }
