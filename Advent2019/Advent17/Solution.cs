@@ -72,68 +72,82 @@ namespace Advent2019.Advent17
             return sum.ToString();
         }
 
-        //string routeByHand = "L,10,R,8,R,8,L,10,R,8,R,8,L,10,L,12,R,8,R,10,R,10,L,12,R,10,L,10,L,12,R,8,R,10,R,10,L,12,R,10,L,10,L,12,R,8,R,10,R,10,L,12,R,10,R,10,L,12,R,10,L,10,R,8,R,8";
-        string routeByHand = "R,8,R,8,R,4,R,4,R,8,L,6,L,2,R,4,R,4,R,8,R,8,R,8,L,6,L,2";
-
-        public string SplitHandRoute()
-        {
-            var splitRoute = routeByHand.Split(',');
-
-            List<string> parts = new List<string>();
-            foreach (var str in splitRoute)
-            {
-                if (str == "L") parts.Add("L");
-                else if (str == "R") parts.Add("R");
-                else
-                {
-                    var num = int.Parse(str);
-                    for (int n = 0; n < num; n++) parts.Add("1");
-                }
-            }
-
-            return string.Join(',', parts);
-        }
-
         public string GetResult2()
         {
-            SetScaffold();
-            Console.WriteLine(scaffoldString);
-
             executor.Reset();
             executor.program.SetAt(0, "2");
             executor.Execute();
 
-            var splitroute = SplitHandRoute();
-            for (int first = 1; first < splitroute.Length; first++)
-            {
-                var newSplit = SplitHandRoute();
-                var substr1 = splitroute.Substring(0, first).TrimEnd(',');
+            var A = "L,10,R,8,R,8\n";
+            var B = "L,10,L,12,R,8,R,10\n";
+            var C = "R,10,L,12,R,10\n";
 
-                newSplit = newSplit.Replace(substr1, "A");
+            var total = "A,A,B,C,B,C,B,C,C,A\n";
 
-                for (int second = 1; second < newSplit.Length; second++)
-                {
-                    var level2Copy = new string(newSplit);
-                    var substr2 = level2Copy.Substring(first, second).Trim(',');
+            InputString(total);
+            InputString(A);
+            InputString(B);
+            InputString(C);
 
-                    if (substr2.Length == 0) continue;
-                    if (substr2.Contains("A")) break;
+            executor.AddInput('n');
+            executor.AddInput('\n');
 
-                    level2Copy = level2Copy.Replace(substr2, "B");
+            var outputs = executor.program.output;
 
-                    var thirdLevel = level2Copy.Split(new char[] { 'A', 'B' }, StringSplitOptions.RemoveEmptyEntries).Select(tl => tl.TrimEnd(','));
-                    var tl1 = thirdLevel.First();
-                    if (thirdLevel.All(tl => tl == tl1))
-                    {
-                        Console.WriteLine("match");
-                        Console.WriteLine("A: " + substr1);
-                        Console.WriteLine("B: " + substr2);
-                        Console.WriteLine("C: " + tl1);
-                    }
-                }
-            }
-
-            return "";
+            return outputs.Last();
         }
+
+        public void InputString(string input)
+        {
+            if (!executor.program.Blocked) throw new Exception("huh hij moet input pakken");
+            foreach (var ch in input.ToCharArray()) executor.AddInput(ch);
+        }
+
+        // L,10,R,8,R,8,L,10,R,8,R,8,L,10,L,12,R,8,R,10,R,10,L,12,R,10,L,10,L,12,R,8,R,10,R,10,L,12,R,10,L,10,L,12,R,8,R,10,R,10,L,12,R,10,R,10,L,12,R,10,L,10,R,8,R,8
+
+        //L,10, P
+        //R,8,  Q
+        //R,8,  Q
+
+        //L,10, P
+        //R,8,  Q
+        //R,8,  Q
+
+        //L,10, P
+        //L,12, R
+        //R,8,  Q
+        //R,10, S
+
+        //R,10, S
+        //L,12, R
+        //R,10, S
+
+        //L,10, P
+        //L,12, R
+        //R,8,  Q
+        //R,10, S
+
+        //R,10, S
+        //L,12, R
+        //R,10, S
+
+        //L,10, P
+        //L,12, R
+        //R,8,  Q
+        //R,10, S
+
+        //R,10, S
+        //L,12, R
+        //R,10, S
+
+        //R,10, S
+        //L,12, R
+        //R,10, S
+
+        //L,10, P
+        //R,8,  Q
+        //R,8   Q
+
+        //PQQ PQQ PRQS SRS PRQS SRS PRQS SRS SRS PQQ
     }
 }
