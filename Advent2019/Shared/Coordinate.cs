@@ -28,7 +28,11 @@ namespace Advent2019.Shared
         {
             long zVal = z.HasValue ? z.Value : 0;
             long ZVal = Z.HasValue ? Z.Value : 0;
-            var squared = Math.Abs(X - x) + Math.Abs(Y - y) + Math.Abs(ZVal - zVal);
+
+            var squared =
+                Math.Abs(X - x) * Math.Abs(X - x) + 
+                Math.Abs(Y - y) * Math.Abs(Y - y) + 
+                Math.Abs(ZVal - zVal) * Math.Abs(ZVal - zVal);
 
             return Math.Sqrt(squared);
         }
