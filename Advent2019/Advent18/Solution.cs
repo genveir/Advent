@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using Advent2019.Shared.Search;
 using System.Collections.Concurrent;
+using Collections.Generic;
 
 namespace Advent2019.Advent18
 {
@@ -32,7 +33,7 @@ namespace Advent2019.Advent18
             for (int y = 0; y < lines.Length; y++)
             {
                 var line = lines[y];
-                
+
                 for (int x = 0; x < line.Length; x++)
                 {
                     var c = line[x];
@@ -60,9 +61,11 @@ namespace Advent2019.Advent18
                     if (tile.HasKey != null) keyTiles.Add(tile);
 
                     if (allTiles.ContainsKey((x - 1, y))) tile.Link(allTiles[(x - 1, y)]);
-                    if (allTiles.ContainsKey((x, y - 1))) tile.Link(allTiles[(x , y - 1)]);
+                    if (allTiles.ContainsKey((x, y - 1))) tile.Link(allTiles[(x, y - 1)]);
                 }
             }
+
+            SetKeyRoutes();
         }
 
         public class Tile
@@ -71,6 +74,10 @@ namespace Advent2019.Advent18
             public Coordinate coord;
             public string HasKey;
             public string LockedBy;
+
+            public long searchNum;
+            public long searchDist;
+            public HashSet<string> searchBlockers = new HashSet<string>();
 
             public Tile(Coordinate coord)
             {
@@ -84,103 +91,210 @@ namespace Advent2019.Advent18
                 toLink.linked.Add(this);
             }
 
+            public bool CanGoHere(List<string> keys)
+            {
+                if (LockedBy == null) return true;
+                else return keys.Contains(LockedBy);
+            }
+
             public override string ToString()
             {
                 return "Tile " + coord + " " + (HasKey == null ? "" : HasKey) + (LockedBy == null ? "" : LockedBy.ToUpper());
             }
         }
 
-        public class TileNode : SearchNode
+        public static Dictionary<string, Dictionary<string, KeyAndDist>> KeyRoutes;
+
+        public void SetKeyRoutes()
+        {
+            KeyRoutes = new Dictionary<string, Dictionary<string, KeyAndDist>>();
+
+            keyTiles = keyTiles.OrderBy(kt => kt.HasKey).ToList();
+            for (int kr1 = 0; kr1 < keyTiles.Count; kr1++)
+            {
+                var kti = keyTiles[kr1];
+
+
+                var state = new State(kti, keyTiles.Where(kt => kt != kti).ToList(), keyTiles.Select(kt => kt.HasKey).Where(kt => kt != kti.HasKey).ToList(), 0);
+
+                var keyRoutes = state.GetAll();
+
+                KeyRoutes.Add(kti.HasKey, new Dictionary<string, KeyAndDist>());
+                foreach (var route in keyRoutes)
+                {
+                    KeyRoutes[kti.HasKey].Add (route.Key, route);
+                }
+            }
+        }
+
+        public class KeyAndDist
+        {
+            public KeyAndDist()
+            {
+                Blockers = new HashSet<string>();
+            }
+
+            public string Key;
+            public long Distance;
+            public HashSet<string> Blockers;
+        }
+
+        public class State
         {
             public Tile currentTile;
             public List<Tile> keyTiles;
+            public List<string> keys;
+            public long DistanceSoFar;
 
-            public TileNode(ConcurrentDictionary<SearchNode, int> expanded, int time) : base(expanded, time)
+            public static long searchNum = 0;
+
+            public State(Tile currentTile, List<Tile> keyTiles, List<string> keys, long totalDistance)
             {
-
+                this.currentTile = currentTile;
+                this.keyTiles = keyTiles;
+                this.keys = keys;
+                this.DistanceSoFar = totalDistance;
             }
 
-            int _heuristicDistance = -1;
-            public override int GetHeuristicDistance()
+            public List<KeyAndDist> GetAll()
             {
-                if (_heuristicDistance == -1)
+                searchNum = searchNum + 1;
+                var tilesToSearch = new Queue<Tile>();
+
+                var keyDistances = new List<KeyAndDist>();
+
+                currentTile.searchNum = searchNum;
+                currentTile.searchDist = 0;
+                tilesToSearch.Enqueue(currentTile);
+                while (tilesToSearch.Count > 0)
                 {
-                    if (keyTiles.Count == 0) return 0;
+                    var tile = tilesToSearch.Dequeue();
 
-                    var distances = keyTiles.Select(kt => kt.coord.IntegerDistance(currentTile.coord));
+                    var linked = tile.linked;
 
-                    _heuristicDistance = (int)distances.Sum();
-                }
-                return _heuristicDistance;
-            }
-
-            public override (int cost, SearchNode neighbour)[] GetNeighbours()
-            {
-                var result = new List<(int cost, SearchNode neighbour)>();
-
-                var linked = currentTile.linked;
-                var keys = keyTiles.Select(kt => kt.HasKey);
-                for (int n = 0; n < linked.Count; n++)
-                {
-                    if (keys.Contains(linked[n].LockedBy)) continue;
-
-                    var newNode = new TileNode(expanded, time + 1);
-                    newNode.currentTile = currentTile.linked[n];
-                    newNode.keyTiles = new List<Tile>();
-
-                    foreach (var kt in keyTiles)
+                    foreach (var link in linked)
                     {
-                        if (kt != newNode.currentTile) newNode.keyTiles.Add(kt);
-                    }
+                        if (link.searchNum == searchNum) continue;
+                        link.searchNum = searchNum;
 
-                    result.Add((1, newNode));
+                        link.searchDist = tile.searchDist + 1;
+                        link.searchBlockers = new HashSet<string>(tile.searchBlockers);
+
+                        if (link.LockedBy != null) link.searchBlockers.Add(link.LockedBy);
+
+                        if (keyTiles.Contains(link)) keyDistances.Add(new KeyAndDist() { Key = link.HasKey, Distance = link.searchDist, Blockers = link.searchBlockers  });
+
+                        tilesToSearch.Enqueue(link);
+                    }
                 }
 
-                return result.ToArray();
+                return keyDistances;
             }
 
-            public override bool IsAtTarget()
+            public List<KeyAndDist> GetCachedReachable()
             {
-                return keyTiles.Count == 0;
+                // return KeyDistances waar blockers.execpt(keys) leeg is
+                var kds = KeyRoutes[currentTile.HasKey];
+
+                return kds.Values.Where(kd => kd.Blockers.Except(keys).Count() == 0).ToList();
             }
 
-            public override int GetHashCode()
+            public List<KeyAndDist> GetReachable()
             {
-                var keys = keyTiles.Sum(kt => kt.GetHashCode());
-                return keys.GetHashCode() + currentTile.coord.GetHashCode() + time;
+                if (currentTile.HasKey != null) return GetCachedReachable();
+
+                searchNum = searchNum + 1;
+                var tilesToSearch = new Queue<Tile>();
+
+                var reachable = new List<KeyAndDist>();
+
+                currentTile.searchNum = searchNum++;
+                currentTile.searchDist = 0;
+                tilesToSearch.Enqueue(currentTile);
+                while (tilesToSearch.Count > 0)
+                {
+                    var tile = tilesToSearch.Dequeue();
+
+                    var linked = tile.linked;
+
+                    foreach(var link in linked)
+                    {
+                        if (link.searchNum == searchNum) continue;
+                        link.searchNum = searchNum;
+                        link.searchBlockers = new HashSet<string>();
+
+                        if (!link.CanGoHere(keys)) continue;
+
+                        link.searchDist = tile.searchDist + 1;
+
+                        if (keyTiles.Contains(link)) reachable.Add(new KeyAndDist() { Key = link.HasKey, Distance = link.searchDist });
+
+                        tilesToSearch.Enqueue(link);
+                    }
+                }
+
+                return reachable;
             }
 
-            public override bool Equals(object obj)
+            public List<State> GetNextStates()
             {
-                if (ReferenceEquals(obj, this)) return true;
-                var other = obj as TileNode;
-                if (other == null) return false;
-                if (!other.currentTile.coord.Equals(this.currentTile.coord)) return false;
-                if (!other.keyTiles.SequenceEqual(this.keyTiles)) return false;
+                var reachable = GetReachable();
 
-                return true;
+                var states = new List<State>();
+
+                foreach(var reached in reachable)
+                {
+                    var newKeys = new List<string>(keys);
+                    newKeys.Add(reached.Key);
+
+                    var newTile = keyTiles.Single(kt => kt.HasKey == reached.Key);
+
+                    var newKeyTiles = new List<Tile>(keyTiles);
+                    newKeyTiles.Remove(newTile);
+
+                    var newState = new State(newTile, newKeyTiles, newKeys, DistanceSoFar + reached.Distance);
+                    states.Add(newState);
+                }
+
+                return states;
             }
 
             public override string ToString()
             {
-                return "TileNode " + "(" + Cost + ")" + currentTile.ToString();
+                return (DistanceSoFar + " [").PadLeft(6) + string.Join(' ', keys) + "] at " + currentTile;
             }
         }
 
+        public State GetRoute(State state)
+        {
+            var prioQueue = new BinaryHeap<long, State>();
+
+            prioQueue.Enqueue(0, state);
+
+            while (!prioQueue.IsEmpty)
+            {
+                var currentState = prioQueue.Dequeue().Value;
+
+                if (currentState.keyTiles.Count == 0) return currentState;
+
+                var newStates = currentState.GetNextStates();
+
+                foreach (var newState in newStates)
+                {
+                    prioQueue.Enqueue(newState.DistanceSoFar, newState);
+                }
+            }
+
+            return null;
+        }
+        
         public string GetResult1()
         {
-            var search = new Search();
+            var state = new State(start, keyTiles, new List<string>(), 0);
 
-            var expanded = new ConcurrentDictionary<SearchNode, int>();
-            var baseNode = new TileNode(expanded, 0);
-            baseNode.currentTile = start;
-            baseNode.keyTiles = keyTiles;
+            var route = GetRoute(state);
 
-            var result = new Search().Execute(baseNode);
-
-            ;
-
-            return result.Cost.ToString();
+            return route.DistanceSoFar.ToString();
         }
 
         public string GetResult2()
