@@ -188,7 +188,11 @@ namespace Advent2019.Advent18
 
                         if (link.LockedBy != null) link.searchBlockers.Add(link.LockedBy);
 
-                        if (keyTiles.Contains(link)) keyDistances.Add(new KeyAndDist() { Key = link.HasKey, Distance = link.searchDist, Blockers = link.searchBlockers  });
+                        if (link.HasKey != null)
+                        {
+                            keyDistances.Add(new KeyAndDist() { Key = link.HasKey, Distance = link.searchDist, Blockers = new HashSet<string>(link.searchBlockers) });
+                            link.searchBlockers.Add(link.HasKey);
+                        }
 
                         tilesToSearch.Enqueue(link);
                     }
