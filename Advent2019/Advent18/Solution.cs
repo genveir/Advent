@@ -113,7 +113,7 @@ namespace Advent2019.Advent18
             for (int kr1 = 0; kr1 < keyTiles.Count; kr1++)
             {
                 var kti = keyTiles[kr1];
-
+                if (kti.HasKey == "c") ;
 
                 var state = new State(kti, keyTiles.Where(kt => kt != kti).ToList(), keyTiles.Select(kt => kt.HasKey).Where(kt => kt != kti.HasKey).ToList(), 0);
 
@@ -137,6 +137,11 @@ namespace Advent2019.Advent18
             public string Key;
             public long Distance;
             public HashSet<string> Blockers;
+
+            public override string ToString()
+            {
+                return Key + " " + Distance + "[" + string.Join(",", Blockers) + "]";
+            }
         }
 
         public class State
@@ -165,6 +170,7 @@ namespace Advent2019.Advent18
 
                 currentTile.searchNum = searchNum;
                 currentTile.searchDist = 0;
+                currentTile.searchBlockers = new HashSet<string>();
                 tilesToSearch.Enqueue(currentTile);
                 while (tilesToSearch.Count > 0)
                 {
@@ -196,7 +202,13 @@ namespace Advent2019.Advent18
                 // return KeyDistances waar blockers.execpt(keys) leeg is
                 var kds = KeyRoutes[currentTile.HasKey];
 
-                return kds.Values.Where(kd => kd.Blockers.Except(keys).Count() == 0).ToList();
+                var validKeys = keyTiles.Select(t => t.HasKey);
+
+                return kds
+                    .Values
+                    .Where(kd => kd.Blockers.Except(keys).Count() == 0)
+                    .Where(kd => validKeys.Contains(kd.Key))
+                    .ToList();
             }
 
             public List<KeyAndDist> GetReachable()
@@ -271,6 +283,8 @@ namespace Advent2019.Advent18
 
             prioQueue.Enqueue(0, state);
 
+            HashSet<string> handled = new HashSet<string>();
+
             while (!prioQueue.IsEmpty)
             {
                 var currentState = prioQueue.Dequeue().Value;
@@ -281,6 +295,14 @@ namespace Advent2019.Advent18
 
                 foreach (var newState in newStates)
                 {
+                    newState.keys.Sort();
+                    var dist = newState.DistanceSoFar;
+                    var tile = newState.currentTile.HasKey;
+                    var sumKey = string.Concat(newState.keys) + dist.ToString() + tile;
+
+                    if (handled.Contains(sumKey)) continue;
+                    handled.Add(sumKey);
+
                     prioQueue.Enqueue(newState.DistanceSoFar, newState);
                 }
             }
