@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Advent18\Input21.txt" />
+    <None Remove="Advent18\Input22.txt" />
+    <None Remove="Advent18\Input23.txt" />
+    <None Remove="Advent18\Input24.txt" />
     <None Remove="Advent1\Input.txt" />
     <None Remove="Advent3\Input.txt" />
     <None Remove="Advent4\Input.txt" />
@@ -34,6 +38,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Advent18\Input21.txt" />
+    <EmbeddedResource Include="Advent18\Input22.txt" />
+    <EmbeddedResource Include="Advent18\Input23.txt" />
+    <EmbeddedResource Include="Advent18\Input24.txt" />
     <EmbeddedResource Include="Advent1\Input.txt" />
     <EmbeddedResource Include="Advent3\Input.txt" />
     <EmbeddedResource Include="Advent4\Input.txt" />

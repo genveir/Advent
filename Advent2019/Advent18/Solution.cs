@@ -18,18 +18,20 @@ namespace Advent2019.Advent18
 
         public Solution(Input.InputMode inputMode, string input)
         {
-            var lines = Input.GetInputLines(inputMode, input).ToArray();
-
-            Parse(lines);
+            Parse(inputMode, input);
         }
         public Solution() : this(Input.InputMode.Embedded, "Input") { }
 
-        public void Parse(string[] lines)
+        public void Parse(Input.InputMode inputMode, string input)
         {
+            var lines = Input.GetInputLines(inputMode, input).ToArray();
+
             tiles = new List<Tile>();
             keyTiles = new List<Tile>();
             var allTiles = new Dictionary<(int x, int y), Tile>();
 
+            var allKeys = new List<string>();
+            var doorTiles = new List<Tile>();
             for (int y = 0; y < lines.Length; y++)
             {
                 var line = lines[y];
@@ -46,6 +48,7 @@ namespace Advent2019.Advent18
                     if (c - 'a' < 26 && c - 'a' >= 0)
                     {
                         hasKey = c.ToString();
+                        allKeys.Add(hasKey);
                     }
 
                     var coord = new Coordinate(x, y);
@@ -53,6 +56,7 @@ namespace Advent2019.Advent18
                     var tile = new Tile(coord);
                     tile.HasKey = hasKey;
                     tile.LockedBy = lockedBy;
+                    doorTiles.Add(tile);
 
                     if (c == '@') start = tile;
 
@@ -63,6 +67,11 @@ namespace Advent2019.Advent18
                     if (allTiles.ContainsKey((x - 1, y))) tile.Link(allTiles[(x - 1, y)]);
                     if (allTiles.ContainsKey((x, y - 1))) tile.Link(allTiles[(x, y - 1)]);
                 }
+            }
+
+            foreach(var door in doorTiles)
+            {
+                if (!allKeys.Contains(door.LockedBy)) door.LockedBy = null;
             }
 
             SetKeyRoutes();
@@ -113,7 +122,6 @@ namespace Advent2019.Advent18
             for (int kr1 = 0; kr1 < keyTiles.Count; kr1++)
             {
                 var kti = keyTiles[kr1];
-                if (kti.HasKey == "c") ;
 
                 var state = new State(kti, keyTiles.Where(kt => kt != kti).ToList(), keyTiles.Select(kt => kt.HasKey).Where(kt => kt != kti.HasKey).ToList(), 0);
 
@@ -313,19 +321,36 @@ namespace Advent2019.Advent18
 
             return null;
         }
-        
-        public string GetResult1()
+
+        public long GetDistance()
         {
             var state = new State(start, keyTiles, new List<string>(), 0);
 
             var route = GetRoute(state);
 
-            return route.DistanceSoFar.ToString();
+            return route.DistanceSoFar;
+        }
+        
+        public string GetResult1()
+        {
+            return GetDistance().ToString();
         }
 
         public string GetResult2()
         {
-            return "";
+            Parse(Input.InputMode.Embedded, "Input21");
+            var route1 = GetDistance();
+
+            Parse(Input.InputMode.Embedded, "Input22");
+            var route2 = GetDistance();
+
+            Parse(Input.InputMode.Embedded, "Input23");
+            var route3 = GetDistance();
+
+            Parse(Input.InputMode.Embedded, "Input24");
+            var route4 = GetDistance();
+
+            return (route1 + route2 + route3 + route4).ToString();
         }
     }
 }
