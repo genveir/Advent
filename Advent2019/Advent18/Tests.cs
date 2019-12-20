@@ -52,7 +52,7 @@ namespace Advent2019.Advent18
             Assert.AreEqual(output, sol.GetResult1());
         }
 
-        [TestCase("", "")]
+        [TestCase("", "2140")]
         public void Test2(string input, string output)
         {
             var sol = new Solution(Shared.Input.InputMode.String, input);
