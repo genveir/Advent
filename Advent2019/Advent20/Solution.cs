@@ -12,15 +12,17 @@ namespace Advent2019.Advent20
         Tile start;
         Tile end;
 
+        string[] lines;
+
+        List<ProvisionalPortal> provPortals;
+
         public Solution(Input.InputMode inputMode, string input)
         {
-            var lines = Input.GetInputLines(inputMode, input).ToArray();
-
-            Parse(lines);
+            lines = Input.GetInputLines(inputMode, input).ToArray();
         }
         public Solution() : this(Input.InputMode.Embedded, "Input") { }
 
-        public void Parse(string[] lines)
+        public void Parse(bool levelZero, bool recursive)
         {
             var allTiles = new Dictionary<Coordinate, Tile>();
             var partialPortals = new List<PortalTile>();
@@ -58,6 +60,18 @@ namespace Advent2019.Advent20
                 }
             }
 
+            if (recursive)
+            {
+                ParseRecursePortals(partialPortals, levelZero);
+            }
+            else
+            {
+                ParseRegularPortals(partialPortals);
+            }
+        }
+
+        public void ParseRegularPortals(List<PortalTile> partialPortals)
+        {
             var actualPortals = partialPortals.Where(pp => pp.name.Length == 2);
             var groupedPortals = actualPortals.GroupBy(ap => ap.name);
 
@@ -86,89 +100,79 @@ namespace Advent2019.Advent20
             }
         }
 
-        public abstract class Tile
+        public void ParseRecursePortals(List<PortalTile> partialPortals, bool levelZero)
         {
-            public Coordinate coord;
-            public List<Tile> neighbours;
-            public int searchnum;
-            public int distance;
+            var actualPortals = partialPortals.Where(pp => pp.name.Length == 2);
 
-            public Tile()
+            var minY = actualPortals.Min(ap => ap.coord.Y);
+            var maxY = actualPortals.Max(ap => ap.coord.Y);
+            var minX = actualPortals.Min(ap => ap.coord.X);
+            var maxX = actualPortals.Max(ap => ap.coord.X);
+
+            var outerPortals = actualPortals.Where(ap =>
+                ap.coord.X == minX || ap.coord.X == maxX ||
+                ap.coord.Y == minY || ap.coord.Y == maxY)
+                .ToList();
+
+            foreach (var portal in outerPortals)
             {
-                this.neighbours = new List<Tile>();
-            }
-
-            public virtual void LinkTo(Tile tile)
-            {
-                neighbours.Add(tile);
-                tile.neighbours.Add(this);
-            }
-        }
-
-        public class RegularTile : Tile
-        {
-            public RegularTile(Coordinate coord) : base()
-            {
-                this.coord = coord;       
-            }
-
-            public override string ToString()
-            {
-                return "Tile: " + coord.ToString();
-            }
-        }
-
-        public class PortalTile : RegularTile
-        {
-            public string name;
-
-            public PortalTile(Coordinate coord, char name) : base(coord)
-            {
-                this.name = name.ToString();
-            }
-
-            public override void LinkTo(Tile tile)
-            {
-                var other = tile as PortalTile;
-                if (other != null)
+                if (portal.name == "AA")
                 {
-                    this.name = other.name + this.name;
-                    this.neighbours.AddRange(other.neighbours);
-                    other.DeLink();
-                }
-                else base.LinkTo(tile);
-            }
+                    if (levelZero) start = portal.neighbours.Single();
 
-            public void DeLink()
-            {
-                foreach(var neighbour in neighbours)
+                    portal.DeLink();
+                }
+                else if (portal.name == "ZZ")
                 {
-                    neighbour.neighbours.Remove(this);
+                    if (levelZero) end = portal.neighbours.Single();
+                    portal.DeLink();
                 }
-                this.neighbours = null;
+                else
+                {
+                    if (levelZero) portal.DeLink();
+                    else
+                    {
+                        var provPortal = provPortals.Single(pp => pp.name == portal.name);
+                        portal.LinkTo(provPortal);
+
+                        var neighbours = portal.neighbours.ToList();
+                        neighbours[0].LinkTo(neighbours[1]);
+                        portal.DeLink();
+                    }
+                }
             }
 
-            public override string ToString()
+            provPortals = new List<ProvisionalPortal>();
+            var innerPortals = actualPortals.Except(outerPortals);
+
+            foreach(var portal in innerPortals)
             {
-                return "PortalTile " + name;
+                var provPortal = new ProvisionalPortal(portal);
+                portal.DeLink();
+                provPortals.Add(provPortal);
             }
         }
+
+        
 
         public static int searchnum = 1;
-
-        public string GetResult1()
+        public int Search(bool recurse)
         {
+            Parse(true, recurse);
+
             var tiles = new Queue<Tile>();
             start.searchnum = ++searchnum;
             tiles.Enqueue(start);
-            
+
             while (tiles.Count > 0)
             {
                 var tile = tiles.Dequeue();
 
-                if (tile.coord == end.coord) return tile.distance.ToString();
+                if (tile.coord == end.coord) return tile.distance;
 
-                foreach(var neighbour in tile.neighbours)
+                if (tile.neighbours.Any(n => n is ProvisionalPortal)) Parse(false, true);
+
+                foreach (var neighbour in tile.neighbours)
                 {
                     if (neighbour.searchnum != searchnum)
                     {
@@ -179,14 +183,18 @@ namespace Advent2019.Advent20
                 }
             }
 
-            // not 4610
+            return -1;
+        }
 
-            return "no result";
+
+        public string GetResult1()
+        {
+            return Search(false).ToString();
         }
 
         public string GetResult2()
         {
-            return "";
+            return Search(true).ToString();
         }
     }
 }

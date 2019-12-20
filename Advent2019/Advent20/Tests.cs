@@ -113,6 +113,7 @@ RE....#.#                           #......RF
                A O F   N                     
                A A D   M                     ";
 
+        [TestCase(small, "26")]
         [TestCase(recurseMaze, "396")]
         public void Test2(string input, string output)
         {
