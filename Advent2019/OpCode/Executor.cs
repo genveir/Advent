@@ -33,6 +33,28 @@ namespace Advent2019.OpCode
             }
         }
 
+        public void AddAscInput(string input)
+        {
+            input = input.Replace("\r", "").TrimStart('\n');
+
+            foreach (var ch in input) AddInput(ch);
+            AddInput(10);
+        }
+
+        public string GetAscOutput()
+        {
+            var sb = new StringBuilder();
+            while (program.output.Count > 0)
+            {
+                var output = program.output.Dequeue();
+                var iOutput = int.Parse(output);
+
+                if (iOutput > 256) sb.Append(iOutput);
+                else sb.Append((char)iOutput);
+            }
+            return sb.ToString();
+        }
+
         public long lastBreakPosition;
         public bool Break { get; set; }
         public long PrintIndex { get; set; } = -1;
