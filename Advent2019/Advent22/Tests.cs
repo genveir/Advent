@@ -36,7 +36,7 @@ namespace Advent2019.Advent22
         {
             var cards = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-            var res1 = new Deal("3").Apply(cards);
+            var res1 = new Deal("3", 10).Apply(cards);
             var expected = new int[] { 0, 7, 4, 1, 8, 5, 2, 9, 6, 3 };
 
             for (int n = 0; n < cards.Length; n++)
@@ -52,9 +52,8 @@ deal into new stack";
         [Test]
         public void Example1()
         {
-            Solution.numCards = 10;
-
             var sol = new Solution(Shared.Input.InputMode.String, example1);
+            sol.Setup(10);
             sol.ResetDeck();
             sol.ApplyTechniques();
 
@@ -71,9 +70,9 @@ deal into new stack";
         public void DoingThisRight()
         {
             long numCards = 10337; // iets grotere prime, willekeurig gekozen
-            Solution.numCards = numCards;
 
             var sol = new Solution();
+            sol.Setup(10337);
             sol.ResetDeck();
 
             int[] at0 = null;
@@ -97,10 +96,8 @@ deal into new stack";
         [Test]
         public void DoingThisRightPt2()
         {
-            long numCards = 10007;
-            Solution.numCards = numCards;
-
             var sol = new Solution();
+            sol.Setup(10007);
 
             var res = sol.BackTrack(4775);
 
@@ -110,10 +107,8 @@ deal into new stack";
         [Test] // time test
         public void DoingThisRightPt3()
         {
-            long numCards = 10007;
-            Solution.numCards = numCards;
-
             var sol = new Solution();
+            sol.Setup(10007);
 
             var res = sol.BackTrack(1, 100060000000);
             var res2 = sol.BackTrack(4775, 100060000001);
@@ -183,17 +178,16 @@ deal into new stack";
         [Test]
         public void TestBackTrackDeal()
         {
-            Solution.numCards = 11;
             var cards = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
             for (int i = 1; i < 11; i++)
             {
-                var dealed = new Deal(i.ToString()).Apply(cards);
+                var dealed = new Deal(i.ToString(), 11).Apply(cards);
 
                 for (int n = 0; n < cards.Length; n++)
                 {
                     var indexInDealt = n;
-                    var indexInCards = new Deal(i.ToString()).BackTrack(indexInDealt, 11);
+                    var indexInCards = new Deal(i.ToString(), 11).BackTrack(indexInDealt, 11);
 
                     Assert.AreEqual(indexInCards, dealed[indexInDealt]);
                 }

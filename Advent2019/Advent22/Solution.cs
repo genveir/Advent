@@ -12,18 +12,24 @@ namespace Advent2019.Advent22
     {
         public Technique[] techniques;
 
-        public static long numCards = 10007;
+        public long numCards = 10007;
         public int[] cards;
 
         public string[] lines;
 
         public Solution(Input.InputMode inputMode, string input)
         {
-            var lines = Input.GetInputLines(inputMode, input).ToArray();
-
-            techniques = Technique.Parse(lines, numCards);
+            lines = Input.GetInputLines(inputMode, input).ToArray();
         }
         public Solution() : this(Input.InputMode.Embedded, "Input") { }
+
+        public void Setup(long numCards)
+        {
+            this.numCards = numCards;
+            techniques = Technique.Parse(lines, numCards);
+
+            _CombinedFunction = (1, 0);
+        }
 
         public abstract class Technique
         {
@@ -49,7 +55,7 @@ namespace Advent2019.Advent22
                     else if (split[0] == "deal")
                     {
                         if (split[3] == "stack") pi = new Revert();
-                        else pi = new Deal(split[3]);
+                        else pi = new Deal(split[3], numCards);
                     }
                     else throw new Exception("unparseable line");
 
@@ -123,7 +129,7 @@ namespace Advent2019.Advent22
             public int increment;
             public long multInv;
 
-            public Deal(string increment)
+            public Deal(string increment, long numCards)
             {
                 this.increment = int.Parse(increment);
                 multInv = GroupPower(this.increment, numCards - 2, numCards);
@@ -275,7 +281,8 @@ namespace Advent2019.Advent22
 
         public string GetResult1()
         {
-            numCards = 10007;
+            Setup(10007);
+
             ResetDeck();
             ApplyTechniques();
 
@@ -289,7 +296,7 @@ namespace Advent2019.Advent22
 
         public string GetResult2()
         {
-            numCards = 119315717514047;
+            Setup(119315717514047);
 
             return BackTrack(2020, 101741582076661).ToString();
         }
