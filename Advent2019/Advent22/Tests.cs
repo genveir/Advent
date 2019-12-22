@@ -99,7 +99,7 @@ deal into new stack";
             var sol = new Solution();
             sol.Setup(10007);
 
-            var res = sol.BackTrack(4775);
+            var res = sol.BackTrack(4775, 1);
 
             Assert.AreEqual(2019, res);
         }
@@ -115,6 +115,51 @@ deal into new stack";
 
             Assert.AreEqual(1, res);
             Assert.AreEqual(2019, res2);
+        }
+
+        [TestCase(10007)]
+        [TestCase(22307)]
+        [TestCase(127363)]
+        [TestCase(1573603)]
+        [TestCase(18700529)]
+        [TestCase(216329021)]
+        [TestCase(2453972743)]
+        [TestCase(27426994103)]
+        [TestCase(302990358137)]
+        [TestCase(3315877503149)]
+        [TestCase(119315717514047)]
+        public void DoingThisRightPt4(long testCase)
+        {
+            for (int n = 0; n < 10; n++)
+            {
+                var sol = new Solution();
+                sol.Setup(testCase);
+
+                var res = sol.BackTrack(1, testCase - 1);
+
+                Assert.AreEqual(1, res);
+            }
+        }
+
+        [TestCase(10007)]
+        [TestCase(22307)]
+        [TestCase(127363)]
+        [TestCase(1573603)]
+        [TestCase(18700529)]
+        [TestCase(216329021)]
+        [TestCase(2453972743)]
+        [TestCase(27426994103)]
+        [TestCase(302990358137)]
+        [TestCase(3315877503149)]
+        public void IsPrime(long testCase)
+        {
+            var sqrt = Math.Sqrt(testCase);
+
+            for (int n = 1; n < sqrt; n++)
+            {
+                var GCD = Helper.GCD(n, testCase);
+                Assert.AreEqual(1, GCD);
+            }
         }
 
         public bool AreEqual(int[] first, int[] second)

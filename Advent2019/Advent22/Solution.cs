@@ -28,149 +28,7 @@ namespace Advent2019.Advent22
             this.numCards = numCards;
             techniques = Technique.Parse(lines, numCards);
 
-            _CombinedFunction = (1, 0);
-        }
-
-        public abstract class Technique
-        {
-            public abstract int[] Apply(int[] input);
-            public long BackTrack(long cardIndex, long numCards)
-            {
-                (var mult, var add) = BackTrackForm();
-
-                return (numCards + (mult * cardIndex + add)) % numCards;
-            }
-            public abstract (long mult, long add) BackTrackForm();
-
-            public static Technique[] Parse(IEnumerable<string> lines, long numCards)
-            {
-                var parsedInputs = new List<Technique>();
-
-                foreach (var line in lines)
-                {
-                    var split = line.Split(' ');
-
-                    Technique pi = null;
-                    if (split[0] == "cut") pi = new Cut(split[1], numCards);
-                    else if (split[0] == "deal")
-                    {
-                        if (split[3] == "stack") pi = new Revert();
-                        else pi = new Deal(split[3], numCards);
-                    }
-                    else throw new Exception("unparseable line");
-
-                    parsedInputs.Add(pi);
-                }
-
-                return parsedInputs.ToArray();
-            }
-        }
-
-        public class Revert : Technique
-        {
-            public override int[] Apply(int[] input)
-            {
-                var result = new int[input.Length];
-                for(int n = 0; n < input.Length; n++)
-                {
-                    result[input.Length - 1 - n] = input[n];
-                }
-                return result;
-            }
-
-            public override (long mult, long add) BackTrackForm()
-            {
-                return (-1, -1);
-            }
-
-            public override string ToString()
-            {
-                return "Revert";
-            }
-        }
-
-        public class Cut : Technique
-        {
-            long iVal;
-
-            public Cut(string cutVal, long numCards)
-            {
-                iVal = int.Parse(cutVal);
-                if (iVal < 0)
-                {
-                    iVal = numCards + iVal ;
-                }
-                
-            }
-
-            public override int[] Apply(int[] input)
-            {
-                int[] result = new int[input.Length];
-
-                Array.Copy(input, 0, result, result.Length - iVal, iVal);
-                Array.Copy(input, iVal, result, 0, result.Length - iVal);
-
-                return result;
-            }
-
-            public override (long mult, long add) BackTrackForm()
-            {
-                return (1, iVal);
-            }
-
-            public override string ToString()
-            {
-                return "Cut " + iVal;
-            }
-        }
-
-        public class Deal : Technique
-        {
-            public int increment;
-            public long multInv;
-
-            public Deal(string increment, long numCards)
-            {
-                this.increment = int.Parse(increment);
-                multInv = GroupPower(this.increment, numCards - 2, numCards);
-            }
-
-            public override int[] Apply(int[] input)
-            {
-                var pos = 0;
-                var result = new int[input.Length];
-
-                for (int n = 0; n < input.Length; n++)
-                {
-                    result[pos] = input[n];
-
-                    pos += increment;
-                    pos = pos % input.Length;
-                }
-
-                return result;
-            }
-
-            public override (long mult, long add) BackTrackForm()
-            {
-                return (multInv, 0);
-            }
-
-            public long GroupPower(long num, long exponent, long modulo)
-            {
-                if (exponent == 0) return 1;
-
-                long power = GroupPower(num, exponent / 2, modulo) % modulo;
-                power = (power * power) % modulo;
-
-                if (exponent % 2 == 0) return power;
-                else return (num * power) % modulo;
-            }
-
-            public override string ToString()
-            {
-                return "Deal " + increment;
-            }
+            _CombinedTechniques = (1, 0);
         }
 
         public void ResetDeck()
@@ -192,16 +50,16 @@ namespace Advent2019.Advent22
 
         public (long mult, long add) Combine((long mult, long add) first, (long mult, long add) second)
         {
-            var internalMult = first.mult;
-            var internalAdd = first.add;
-            var externalMult = second.mult;
-            var externalAdd = second.add;
+            BigInteger internalMult = first.mult;
+            BigInteger internalAdd = first.add;
+            BigInteger externalMult = second.mult;
+            BigInteger externalAdd = second.add;
 
             BigInteger newMult = (internalMult * externalMult);
             BigInteger newAdd = (externalMult * internalAdd + externalAdd);
 
-            while (newMult < 0) newMult += numCards;
-            while (newAdd < 0) newAdd += numCards;
+            if (newMult < 0) newMult = (newMult % numCards) + numCards;
+            if (newAdd < 0) newAdd = (newAdd % numCards) + numCards;
 
             newMult = newMult % numCards;
             newAdd = newAdd % numCards;
@@ -212,31 +70,24 @@ namespace Advent2019.Advent22
             return (longMult, longAdd);
         }
 
-        public (long mult, long add) _CombinedFunction = (1,0);
-        public (long mult, long add) CombinedFunction
+        public (long mult, long add) _CombinedTechniques = (1,0);
+        public (long mult, long add) CombinedTechniques
         {
             get
             {
-                if (_CombinedFunction.mult == 1 && _CombinedFunction.add == 0)
+                if (_CombinedTechniques.mult == 1 && _CombinedTechniques.add == 0)
                 {
                     for (int n = techniques.Length - 1; n >= 0; n--)
                     {
                         var technique = techniques[n];
                         var multadd = technique.BackTrackForm();
 
-                        _CombinedFunction = Combine(_CombinedFunction, multadd);
+                        _CombinedTechniques = Combine(_CombinedTechniques, multadd);
                     }
                 }
 
-                return _CombinedFunction;
+                return _CombinedTechniques;
             }
-        }
-
-        public long BackTrack(long cardIndex)
-        {
-            var val = (CombinedFunction.mult * cardIndex + CombinedFunction.add);
-
-            return val % numCards;
         }
 
         public long BackTrack(long cardIndex, long numberOfSteps)
@@ -245,7 +96,7 @@ namespace Advent2019.Advent22
             var requiredFunctions = new (long mult, long add)[maxNeeded];
             var powers = new long[maxNeeded];
 
-            requiredFunctions[0] = CombinedFunction;
+            requiredFunctions[0] = CombinedTechniques;
             powers[0] = 1;
             for (int n = 1; n < maxNeeded; n++)
             {
@@ -303,5 +154,7 @@ namespace Advent2019.Advent22
     }
 
     // 27462094789084 too low
+    // 37889219674304
+    // 99954129567610 "not right"
     // 102460576295153 too high
 }
