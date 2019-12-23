@@ -19,12 +19,6 @@ namespace Advent2019.Advent23
         }
         public Solution() : this(Input.InputMode.Embedded, "Input") { }
 
-        public class NAT
-        {
-            public long x;
-            public long y;
-        }
-
         public string GetResult1()
         {
             Executor[] executors = new Executor[50];
