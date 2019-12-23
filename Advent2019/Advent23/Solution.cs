@@ -47,7 +47,7 @@ namespace Advent2019.Advent23
                         executors[dest].AddInput(y);
                     }
 
-                    if (executors[n].program.Blocked) executors[n].AddInput(-1);
+                    executors[n].AddInput(-1);
                 }
             }
         }
@@ -95,10 +95,7 @@ namespace Advent2019.Advent23
                         isIdle = false;
                     }
 
-                    if (executors[n].program.Blocked)
-                    {
-                        executors[n].AddInput(-1);
-                    }
+                    executors[n].AddInput(-1);
 
                     if (isIdle) numIdle++;
                 }
