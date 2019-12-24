@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Advent2019.AdventBase
+namespace Advent2019.Advent25
 {
     public class Solution : ISolution
     {
@@ -14,8 +14,10 @@ namespace Advent2019.AdventBase
 
         public Solution(Input.InputMode inputMode, string input)
         {
-            var lines = Input.GetInputLines(inputMode, input).ToArray();
+            var startProg = Input.GetInputLines(inputMode, input, new char[] { ',' }).ToArray();
+            executor = new Executor(startProg);
 
+            var lines = Input.GetInputLines(inputMode, input).ToArray();
             modules = ParsedInput.Parse(lines);
         }
         public Solution() : this(Input.InputMode.Embedded, "Input") { }
