@@ -26,8 +26,8 @@ namespace Advent2019.Advent2
 
             if (replace)
             {
-                executor.program.SetAt(1, "12");
-                executor.program.SetAt(2, "2");
+                executor.program.SetAt(1, 12);
+                executor.program.SetAt(2, 2);
             }
 
             executor.Execute();
@@ -43,12 +43,12 @@ namespace Advent2019.Advent2
                 {
                     executor.Reset();
 
-                    executor.program.ISetAt(1, first);
-                    executor.program.ISetAt(2, second);
+                    executor.program.SetAt(1, first);
+                    executor.program.SetAt(2, second);
 
                     executor.Execute();
 
-                    if (executor.program.IGetAt(0) == 19690720) return (100 * first + second).ToString();
+                    if (executor.program.GetAt(0) == 19690720) return (100 * first + second).ToString();
                 }
             }
 

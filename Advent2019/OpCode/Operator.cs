@@ -10,69 +10,51 @@ namespace Advent2019.OpCode
     public abstract class Operator
     {
         public Program program;
-        public bool Break { get; set; }
 
         public Operator(Program program)
         {
             this.program = program;
         }
 
+        public static Dictionary<long, Func<Program, Operator>> _operators = new Dictionary<long, Func<Program, Operator>>();
         public static Operator Get(Program program, long position)
         {
-            bool breakOp = false;
+            var instruction = program.GetAt(position);
 
-            var instruction = program.GetAt(position).Trim();
-
-            if (instruction.Contains("B"))
+            if (!_operators.ContainsKey(instruction))
             {
-                instruction = instruction.Replace("B", "");
-                breakOp = true;
-            }
+                OpMode[] opMode = new OpMode[3] { OpMode.Pos, OpMode.Pos, OpMode.Pos };
 
-            OpMode[] opMode = new OpMode[3] { OpMode.Pos, OpMode.Pos, OpMode.Pos };
-
-            var broken = instruction.ToCharArray().Select(c => c - 48).ToArray(); ;
-            int counter = 0;
-
-            if (broken.Length < 6)
-            {
-                for (int n = broken.Length - 3; n >= 0; n--)
+                int counter = 0;
+                for (int spot = 100; spot < 100000; spot *= 10)
                 {
-                    switch(broken[n])
+                    var digit = (instruction / spot) % 10;
+                    switch (digit)
                     {
-                        case 0: opMode[counter++] = OpMode.Pos;break;
+                        case 0: opMode[counter++] = OpMode.Pos; break;
                         case 1: opMode[counter++] = OpMode.Int; break;
                         case 2: opMode[counter++] = OpMode.Rel; break;
                     }
                 }
+
+                switch (instruction % 100)
+                {
+                    case 1: _operators[instruction] = (p) => { var op = new Add(p); op.OpModes = opMode; return op; }; break;
+                    case 2: _operators[instruction] = (p) => { var op = new Multiply(p); op.OpModes = opMode; return op; }; break;
+                    case 3: _operators[instruction] = (p) => { var op = new In(p); op.OpModes = opMode; return op; }; break;
+                    case 4: _operators[instruction] = (p) => { var op = new Out(p); op.OpModes = opMode; return op; }; break;
+                    case 5: _operators[instruction] = (p) => { var op = new JumpIfTrue(p); op.OpModes = opMode; return op; }; break;
+                    case 6: _operators[instruction] = (p) => { var op = new JumpIfFalse(p); op.OpModes = opMode; return op; }; break;
+                    case 7: _operators[instruction] = (p) => { var op = new Less(p); op.OpModes = opMode; return op; }; break;
+                    case 8: _operators[instruction] = (p) => { var op = new Equal(p); op.OpModes = opMode; return op; }; break;
+                    case 9: _operators[instruction] = (p) => { var op = new AdjustRelativeBase(p); op.OpModes = opMode; return op; }; break;
+                    case 99: _operators[instruction] = (p) => { var op = new Stop(p); op.OpModes = opMode; return op; }; break;
+
+                    default: _operators[instruction] = (p) => { var op = new NotAnOp(p); op.OpModes = opMode; return op; }; break;
+                }
             }
 
-
-            var instructionlength2 = broken.Length > 1;
-            int startindex = broken.Length - (instructionlength2 ? 2 : 1);
-            instruction = instruction.Substring(startindex);
-            instruction = instruction.TrimStart('0');
-
-            Operator op;
-            switch (instruction)
-            {
-                case "1": op = new Add(program); break;
-                case "2": op = new Multiply(program); break;
-                case "3": op = new In(program);break;
-                case "4": op = new Out(program);break;
-                case "5": op = new JumpIfTrue(program); break;
-                case "6": op = new JumpIfFalse(program); break;
-                case "7": op = new Less(program); break;
-                case "8": op = new Equal(program); break;
-                case "9": op = new AdjustRelativeBase(program); break;
-                case "99": op = new Stop(program); break;                
-                    
-                default: op = new NotAnOp(program); break;
-            }
-            op.OpModes = opMode;
-
-            op.Break = breakOp;
-            return op;
+            return _operators[instruction](program);
         }
 
         public static Operator GetCurrent(Program program)
@@ -88,11 +70,11 @@ namespace Advent2019.OpCode
             {
                 switch (OpModes[paramIndex])
                 {
-                    case OpMode.Pos: return program.IAtOffset(paramIndex + 1);
+                    case OpMode.Pos: return program.AtOffset(paramIndex + 1);
                     case OpMode.Int: throw new NotImplementedException();
                     case OpMode.Rel:
                         long relBase = program.relativeBase;
-                        long add = program.IAtOffset(paramIndex + 1);
+                        long add = program.AtOffset(paramIndex + 1);
                         return relBase + add;
                     default: throw new Exception("user your enum Geerten");
                 }
@@ -101,12 +83,12 @@ namespace Advent2019.OpCode
             {
                 switch (OpModes[paramIndex])
                 {
-                    case OpMode.Pos: return program.IGetAt(program.IAtOffset(paramIndex + 1));
-                    case OpMode.Int: return program.IAtOffset(paramIndex + 1);
+                    case OpMode.Pos: return program.GetAt(program.AtOffset(paramIndex + 1));
+                    case OpMode.Int: return program.AtOffset(paramIndex + 1);
                     case OpMode.Rel:
                         long relBase = program.relativeBase;
-                        long add = program.IAtOffset(paramIndex + 1);
-                        return program.IGetAt(relBase + add);
+                        long add = program.AtOffset(paramIndex + 1);
+                        return program.GetAt(relBase + add);
                     default: throw new Exception("user your enum Geerten");
                 }
             }
@@ -151,7 +133,7 @@ namespace Advent2019.OpCode
         protected string Format()
         {
             return OpName + ":" +
-                (OpModes[0].ToString() + "(" + program.IAtOffset(1) + ")");
+                (OpModes[0].ToString() + "(" + program.AtOffset(1) + ")");
         }
     }
 
@@ -169,7 +151,7 @@ namespace Advent2019.OpCode
         protected string Format()
         {
             return OpName + ":" +
-                OpModes[0].ToString() + "(" + program.IAtOffset(1) + ")" +
+                OpModes[0].ToString() + "(" + program.AtOffset(1) + ")" +
                 " = " +
                 param1.ToString() +
                 " => ref(" + output + ")";
@@ -193,9 +175,9 @@ namespace Advent2019.OpCode
         protected string Format(string op)
         {
             return OpName + ":" +
-                OpModes[0].ToString() + "(" + program.IAtOffset(1) + ")" +
+                OpModes[0].ToString() + "(" + program.AtOffset(1) + ")" +
                 " " + op + " " +
-                OpModes[1].ToString() + "(" + program.IAtOffset(2) + ")" +
+                OpModes[1].ToString() + "(" + program.AtOffset(2) + ")" +
                 "  = " +
                 param1.ToString() +
                 " " + op + " " +
@@ -211,7 +193,7 @@ namespace Advent2019.OpCode
 
         public override void Execute()
         {
-            string val;
+            long val;
             if (program.inputs.Count == 0)
             {
                 program.Blocked = true;
@@ -227,8 +209,8 @@ namespace Advent2019.OpCode
         public override string ToString()
         {
             return "Input " +
-                ((program.inputs.Count != 0) ? program.inputs.Peek() : "none") +
-                " => " + program.IAtOffset(1);
+                ((program.inputs.Count != 0) ? program.inputs.Peek().ToString() : "none") +
+                " => " + program.AtOffset(1);
         }
     }
 
@@ -240,7 +222,7 @@ namespace Advent2019.OpCode
         public override void Execute()
         {
             if (program.Verbose) Console.WriteLine("Output: " + param1);
-            program.output.Enqueue(param1.ToString());
+            program.output.Enqueue(param1);
         }
 
         public override string ToString()
@@ -272,7 +254,7 @@ namespace Advent2019.OpCode
 
         public override void Execute()
         {
-            program.ISetAt(relOutput, input1 + input2);
+            program.SetAt(relOutput, input1 + input2);
         }
 
         public override string ToString()
@@ -289,7 +271,7 @@ namespace Advent2019.OpCode
 
         public override void Execute()
         {
-            program.ISetAt(relOutput, input1 * input2);
+            program.SetAt(relOutput, input1 * input2);
         }
 
         public override string ToString()
@@ -337,8 +319,8 @@ namespace Advent2019.OpCode
 
         public override void Execute()
         {
-            if (input1 < input2) program.ISetAt(relOutput, 1);
-            else program.ISetAt(relOutput, 0);
+            if (input1 < input2) program.SetAt(relOutput, 1);
+            else program.SetAt(relOutput, 0);
         }
 
         public override string ToString()
@@ -354,8 +336,8 @@ namespace Advent2019.OpCode
 
         public override void Execute()
         {
-            if (input1 == input2) program.ISetAt(relOutput, 1);
-            else program.ISetAt(relOutput, 0);
+            if (input1 == input2) program.SetAt(relOutput, 1);
+            else program.SetAt(relOutput, 0);
         }
 
         public override string ToString()

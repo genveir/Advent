@@ -50,9 +50,9 @@ namespace Advent2019.Advent15
                 executor.AddInput(direction);
                 var output = executor.program.output.Dequeue();
 
-                if (output == "0") return null;
-                if (output == "2") return new Bot(nextCoord, executor.program, true);
-                if (output == "1") return new Bot(nextCoord, executor.program);
+                if (output == 0) return null;
+                if (output == 2) return new Bot(nextCoord, executor.program, true);
+                if (output == 1) return new Bot(nextCoord, executor.program);
                 else throw new Exception("unexpected output");
             }
         }

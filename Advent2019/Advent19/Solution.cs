@@ -28,7 +28,7 @@ namespace Advent2019.Advent19
 
             var output = executor.program.output.Dequeue();
 
-            return output == "1";
+            return output == 1;
         }
 
         public string GetResult1()

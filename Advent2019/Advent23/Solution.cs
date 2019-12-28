@@ -37,9 +37,9 @@ namespace Advent2019.Advent23
                     var outputs = executors[n].program.output;
                     while (outputs.Count > 0)
                     {
-                        int dest = int.Parse(outputs.Dequeue());
-                        long x = long.Parse(outputs.Dequeue());
-                        long y = long.Parse(outputs.Dequeue());
+                        long dest = outputs.Dequeue();
+                        long x = outputs.Dequeue();
+                        long y = outputs.Dequeue();
 
                         if (dest == 255) return y.ToString();
 
@@ -77,9 +77,9 @@ namespace Advent2019.Advent23
                     var outputs = executors[n].program.output;
                     while (outputs.Count > 0)
                     {
-                        int dest = int.Parse(outputs.Dequeue());
-                        long x = long.Parse(outputs.Dequeue());
-                        long y = long.Parse(outputs.Dequeue());
+                        long dest = outputs.Dequeue();
+                        long x = outputs.Dequeue();
+                        long y = outputs.Dequeue();
 
                         if (dest == 255)
                         {

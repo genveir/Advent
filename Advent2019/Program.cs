@@ -17,7 +17,7 @@ namespace Advent2019
             string result2 = "";
             for (int n = 0; n < numRuns; n++)
             {
-                ISolution solution = new Advent25.Solution();
+                ISolution solution = new Advent2.Solution();
 
                 result1 = solution.GetResult1();
                 result2 = solution.GetResult2();
@@ -29,6 +29,9 @@ namespace Advent2019
             Console.WriteLine(string.Format("Result for part 2: {0}", result2));
             Console.WriteLine();
             Console.WriteLine("Total runtime: " + (stopWatch.ElapsedMilliseconds / numRuns) + "ms");
+
+            Console.WriteLine("Starting benchmark");
+            new Benchmark.IntCodeBenchmark().Run();
 
             Console.ReadLine();
         }

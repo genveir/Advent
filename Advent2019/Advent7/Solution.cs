@@ -38,12 +38,12 @@ namespace Advent2019.Advent7
                 executor.program.Name = name + " running phase setting " + phaseSetting;
             }
 
-            private int lastOutput = -1;
-            public int GetOutput(int input)
+            private long lastOutput = -1;
+            public long GetOutput(long input)
             {
                 executor.AddInput(input);
                 executor.ExecuteToOutput();
-                if (executor.program.output.Count > 0) lastOutput = int.Parse(executor.program.output.Dequeue());
+                if (executor.program.output.Count > 0) lastOutput = executor.program.output.Dequeue();
 
                 return lastOutput;
             }
@@ -63,7 +63,7 @@ namespace Advent2019.Advent7
             int[] settings = new int[5] { 0, 1, 2, 3, 4 };
             int[][] toTry = settings.GetPermutations();
 
-            int bestResult = 0;
+            long bestResult = 0;
             foreach (var permutation in toTry)
             {
                 for (int n = 0; n < 5; n++) amplifiers[n].Start(permutation[n]);
@@ -85,12 +85,12 @@ namespace Advent2019.Advent7
             int[] settings = new int[5] { 5, 6, 7, 8, 9 };
             int[][] toTry = settings.GetPermutations();
 
-            int bestResult = 0;
+            long bestResult = 0;
             amplifiers[4].Verbose = true;
             foreach (var permutation in toTry)
             {
                 for (int n = 0; n < 5; n++) amplifiers[n].Start(permutation[n]);
-                int fifth = 0;
+                long fifth = 0;
 
                 do
                 {

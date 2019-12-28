@@ -68,9 +68,9 @@ namespace Advent2019.Advent13
         {
             while (executor.program.output.Count > 0)
             {
-                var x = long.Parse(executor.program.output.Dequeue());
-                var y = long.Parse(executor.program.output.Dequeue());
-                var tile = long.Parse(executor.program.output.Dequeue());
+                var x = executor.program.output.Dequeue();
+                var y = executor.program.output.Dequeue();
+                var tile = executor.program.output.Dequeue();
 
                 UpdateState(x, y, tile);
             }
@@ -140,7 +140,7 @@ namespace Advent2019.Advent13
             ResetState();
 
             executor.Reset();
-            executor.program.ISetAt(0, 2);
+            executor.program.SetAt(0, 2);
 
             executor.Execute();
             while (executor.program.Blocked)

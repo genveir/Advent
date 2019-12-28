@@ -9,7 +9,7 @@ namespace Advent2019.OpCode
     {
         public string Name { get; set; }
 
-        public string[] program;
+        public long[] program;
 
         public bool Stop { get; set; } = false;
         public bool Blocked { get; set; } = false;
@@ -17,13 +17,13 @@ namespace Advent2019.OpCode
         public long instructionPointer;
         public long relativeBase;
 
-        public Queue<string> inputs;
+        public Queue<long> inputs;
 
         public bool Verbose { get; set; } = false;
-        public Queue<string> output;
+        public Queue<long> output;
 
-        private Program() { inputs = new Queue<string>(); output = new Queue<string>(); }
-        public Program(string[] ops) : this()
+        private Program() { inputs = new Queue<long>(); output = new Queue<long>(); }
+        public Program(long[] ops) : this()
         {
             program = ops.DeepCopy();
             Stop = false;
@@ -40,75 +40,46 @@ namespace Advent2019.OpCode
             newProgram.Blocked = this.Blocked;
             newProgram.instructionPointer = this.instructionPointer;
             newProgram.relativeBase = this.relativeBase;
-            newProgram.inputs = new Queue<string>(inputs);
-            newProgram.output = new Queue<string>(output);
+            newProgram.inputs = new Queue<long>(inputs);
+            newProgram.output = new Queue<long>(output);
 
             return newProgram;
         }
 
-        public string AtPointer()
+        public long AtPointer()
         {
             return SafeGet(instructionPointer);
         }
-        public long IAtPointer()
-        {
-            return IntGet(instructionPointer);
-        }
 
-        public string AtOffset(long offset)
+        public long AtOffset(long offset)
         {
             return SafeGet(instructionPointer + offset);
         }
-        public long IAtOffset(long offset)
-        {
-            return IntGet(instructionPointer + offset);
-        }
 
-        public string GetAt(long position)
+        public long GetAt(long position)
         {
             return SafeGet(position);
         }
-        public long IGetAt(long position)
-        {
-            return IntGet(position);
-        }
 
-        public void SetAt(long position, string value)
+        public void SetAt(long position, long value)
         {
-            var hasBreak = SafeGet(position)?.Contains("B") ?? false;
             if (position >= program.Length)
             {
                 var newLength = Math.Min(int.MaxValue, position * 2);
-                var buffer = new string[newLength];
+                var buffer = new long[newLength];
                 program.CopyTo(buffer, 0);
                 program = buffer;
             }
-            program[position] = value + (hasBreak ? "B" : "");
-        }
-        public void ISetAt(long position, long value)
-        {
-            SetAt(position, value.ToString());
+            program[position] = value;
         }
 
-
-        public long IntGet(long position) { return long.Parse(SafeGet(position).Replace("B", "")); }
-        public string SafeGet(long position)
+        public long SafeGet(long position)
         {
-            if (position < 0 || position >= program.Length) return "0";
+            if (position < 0 || position >= program.Length) return 0;
             else
             {
-                if (program[position] == null) program[position] = "0";
-
-                var trimmed = program[position].TrimStart('0');
-                if (trimmed.Length == 0) return "0";
-                else return trimmed;
+                return program[position];
             }
-        }
-
-        public void RemoveBreakpoint(long position)
-        {
-            string noBreak = SafeGet(position).Replace("B", "");
-            program[position] = noBreak;
         }
     }
 }

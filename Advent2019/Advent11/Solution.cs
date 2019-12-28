@@ -84,11 +84,11 @@ namespace Advent2019.Advent11
 
                     executor.ExecuteToOutput();
                     if (executor.program.Stop) break;
-                    var paintColor = executor.program.output.Dequeue() == "1";
+                    var paintColor = executor.program.output.Dequeue() == 1;
 
                     executor.ExecuteToOutput();
                     if (executor.program.Stop) break;
-                    var turnRight = executor.program.output.Dequeue() == "1";
+                    var turnRight = executor.program.output.Dequeue() == 1;
 
                     PaintPanel(paintColor);
                     if (turnRight) TurnRight();

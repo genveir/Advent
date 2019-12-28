@@ -39,7 +39,7 @@ namespace Advent2019.Advent17
             var outputs = scaffoldExec.program.output;
 
             char[] c = new char[outputs.Count];
-            for (int n = 0; n < c.Length; n++) c[n] = (char)int.Parse(outputs.Dequeue());
+            for (int n = 0; n < c.Length; n++) c[n] = (char)outputs.Dequeue();
 
             scaffoldString = new string(c);
             scaffold = scaffoldString.Split('\n').Select(s => s.ToCharArray()).ToArray();
@@ -75,7 +75,7 @@ namespace Advent2019.Advent17
         public string GetResult2()
         {
             executor.Reset();
-            executor.program.SetAt(0, "2");
+            executor.program.SetAt(0, 2);
             executor.Execute();
 
             var A = "L,10,R,8,R,8\n";
@@ -94,7 +94,7 @@ namespace Advent2019.Advent17
 
             var outputs = executor.program.output;
 
-            return outputs.Last();
+            return outputs.Last().ToString();
         }
 
         public void InputString(string input)
