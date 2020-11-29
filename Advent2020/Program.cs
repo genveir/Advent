@@ -16,7 +16,7 @@ namespace Advent2020
             string result2 = "";
             for (int n = 0; n < numRuns; n++)
             {
-                ISolution solution = new Advent1.Solution("Test");
+                ISolution solution = new Advent1.Solution();
 
                 result1 = solution.GetResult1();
                 result2 = solution.GetResult2();

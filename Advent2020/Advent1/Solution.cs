@@ -8,7 +8,7 @@ namespace Advent2020.Advent1
 {
     public class Solution : ISolution
     {
-        IEnumerable<ParsedInput> modules;
+        List<ParsedInput> modules;
 
         public Solution(string input)
         {
@@ -16,12 +16,12 @@ namespace Advent2020.Advent1
 
             modules = ParsedInput.Parse(lines);
         }
-        public Solution() : this("Input") { }
+        public Solution() : this("Input.txt") { }
 
         public class ParsedInput
         {
 
-            public static IEnumerable<ParsedInput> Parse(IEnumerable<string> lines)
+            public static List<ParsedInput> Parse(IEnumerable<string> lines)
             {
                 var parsedInputs = new List<ParsedInput>();
 

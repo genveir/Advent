@@ -12,13 +12,14 @@ namespace Advent2020.Shared
     {
         public static string GetInput(string input)
         {
+            if (string.IsNullOrEmpty(input)) return input;
+
             Stream inputStream;
 
-            if (GetEmbeddedStream(input) != null) inputStream = GetEmbeddedStream(input);
-            else if (GetFileStream(input) != null) inputStream = GetFileStream(input);
-            else
+            inputStream = GetEmbeddedStream(input) ?? GetFileStream(input);
+            if (inputStream == null)
             {
-                Console.WriteLine("reading input directly");
+                Console.WriteLine("reading Input directly as passed");
                 return input;
             }
 
@@ -35,7 +36,7 @@ namespace Advent2020.Shared
             else
             {
                 var callingClass = GetCallingType();
-                var folder = callingClass.Assembly.CodeBase.Replace("file:///", "").Replace("Advent2020.dll", "");
+                var folder = callingClass.Assembly.Location.Replace("file:///", "").Replace("Advent2020.dll", "");
                 var dir = new DirectoryInfo(folder).Parent.Parent.Parent;
                 var nameSpace = callingClass.Namespace.Split(".");
 
@@ -52,7 +53,6 @@ namespace Advent2020.Shared
 
             if (path == null) return null;
 
-            Console.WriteLine("reading input from file");
             return new FileStream(path, FileMode.Open);
         }
 
@@ -78,7 +78,6 @@ namespace Advent2020.Shared
 
             if (name == null) return null;
 
-            Console.WriteLine("reading input from embedded resource");
             return typeof(Input).Assembly.GetManifestResourceStream(name);
         }
 
@@ -103,6 +102,22 @@ namespace Advent2020.Shared
             var rawInput = GetInput(input);
 
             return rawInput.Split(splitOn, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        public static int[] GetNumbers(string input)
+        {
+            var rawInput = GetInput(input);
+
+            return rawInput.Select(c => c - 48).ToArray();
+        }
+
+        public static int[] GetNumbers(string input, char[] splitOn)
+        {
+            var rawInput = GetInput(input);
+
+            var split = rawInput.Split(splitOn, StringSplitOptions.RemoveEmptyEntries);
+
+            return split.Select(s => int.Parse(s)).ToArray();
         }
     }
 }
