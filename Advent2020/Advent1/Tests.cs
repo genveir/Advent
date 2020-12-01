@@ -7,7 +7,12 @@ namespace Advent2020.Advent1
 {
     class Tests
     {
-        [TestCase("", "")]
+        [TestCase(@"1721
+979
+366
+299
+675
+1456", "514579")]
         public void Test1(string input, string output)
         {
             var sol = new Solution(input);

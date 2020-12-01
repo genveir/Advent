@@ -8,45 +8,46 @@ namespace Advent2020.Advent1
 {
     public class Solution : ISolution
     {
-        List<ParsedInput> modules;
+        List<int> numbers;
 
         public Solution(string input)
         {
             var lines = Input.GetInputLines(input).ToArray();
 
-            modules = ParsedInput.Parse(lines);
+            numbers = lines.Select(l => int.Parse(l)).ToList();
         }
         public Solution() : this("Input.txt") { }
 
-        public class ParsedInput
-        {
-
-            public static List<ParsedInput> Parse(IEnumerable<string> lines)
-            {
-                var parsedInputs = new List<ParsedInput>();
-
-                foreach(var line in lines)
-                {
-                    var pi = new ParsedInput()
-                    {
-
-                    };
-
-                    parsedInputs.Add(pi);
-                }
-
-                return parsedInputs;
-            }
-        }
+        
 
         public string GetResult1()
         {
-            return "";
+            for (int n = 0; n < numbers.Count; n++)
+            {
+                for (int i = 0; i < numbers.Count; i++)
+                {
+                    if (numbers[n] + numbers[i] == 2020) return "" + (numbers[n] * numbers[i]);
+                }
+            }
+
+            return "no solution";
         }
 
         public string GetResult2()
         {
-            return "";
+            for (int n = 0; n < numbers.Count; n++)
+            {
+                for (int i = 0; i < numbers.Count; i++)
+                {
+                    for (int x = 0; x < numbers.Count; x++)
+                    {
+                        if (numbers[n] + numbers[i] + numbers[x] == 2020) return "" + (numbers[n] * numbers[i] * numbers[x]);
+                    }
+                    
+                }
+            }
+
+            return "no solution";
         }
     }
 }
