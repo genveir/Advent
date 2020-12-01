@@ -18,7 +18,6 @@ namespace Advent2020.Advent1
         }
         public Solution() : this("Input.txt") { }
 
-        
 
         public string GetResult1()
         {
@@ -43,7 +42,6 @@ namespace Advent2020.Advent1
                     {
                         if (numbers[n] + numbers[i] + numbers[x] == 2020) return "" + (numbers[n] * numbers[i] * numbers[x]);
                     }
-                    
                 }
             }
 
