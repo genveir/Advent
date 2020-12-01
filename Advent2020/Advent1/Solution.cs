@@ -24,7 +24,7 @@ namespace Advent2020.Advent1
         {
             for (int n = 0; n < numbers.Count; n++)
             {
-                for (int i = 0; i < numbers.Count; i++)
+                for (int i = n; i < numbers.Count; i++)
                 {
                     if (numbers[n] + numbers[i] == 2020) return "" + (numbers[n] * numbers[i]);
                 }
@@ -37,9 +37,9 @@ namespace Advent2020.Advent1
         {
             for (int n = 0; n < numbers.Count; n++)
             {
-                for (int i = 0; i < numbers.Count; i++)
+                for (int i = n; i < numbers.Count; i++)
                 {
-                    for (int x = 0; x < numbers.Count; x++)
+                    for (int x = i; x < numbers.Count; x++)
                     {
                         if (numbers[n] + numbers[i] + numbers[x] == 2020) return "" + (numbers[n] * numbers[i] * numbers[x]);
                     }
