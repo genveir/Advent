@@ -8,18 +8,22 @@ namespace Advent2020.Advent2
 {
     public class Solution : ISolution
     {
-        List<ParsedInput> modules;
+        List<ParsedInput> passwords;
 
         public Solution(string input)
         {
             var lines = Input.GetInputLines(input).ToArray();
 
-            modules = ParsedInput.Parse(lines);
+            passwords = ParsedInput.Parse(lines);
         }
         public Solution() : this("Input.txt") { }
 
         public class ParsedInput
         {
+            public int minimum;
+            public int maximum;
+            public char letter;
+            public string password;
 
             public static List<ParsedInput> Parse(IEnumerable<string> lines)
             {
@@ -27,9 +31,14 @@ namespace Advent2020.Advent2
 
                 foreach(var line in lines)
                 {
+                    var splitline = line.Split(new char[] { ' ', '-', ':' }, StringSplitOptions.RemoveEmptyEntries);
+
                     var pi = new ParsedInput()
                     {
-
+                        minimum = int.Parse(splitline[0]),
+                        maximum = int.Parse(splitline[1]),
+                        letter = splitline[2].ToCharArray().Single(),
+                        password = splitline[3].PadRight(30, '*')
                     };
 
                     parsedInputs.Add(pi);
@@ -37,16 +46,38 @@ namespace Advent2020.Advent2
 
                 return parsedInputs;
             }
+
+            public bool Validate()
+            {
+                int charCount = password.Where(c => c == letter).Count();
+
+                if (charCount < minimum) return false;
+                if (charCount > maximum) return false;
+                return true;
+            }
+
+            public bool ValidateP2()
+            {
+                var minVal = password[minimum - 1] == letter ? 1 : 0;
+                var maxVal = password[maximum - 1] == letter ? 1 : 0;
+
+                return minVal + maxVal == 1;
+            }
         }
+
 
         public string GetResult1()
         {
-            return "";
+            var validPws = passwords.Where(pw => pw.Validate());
+
+            return validPws.Count().ToString();
         }
 
         public string GetResult2()
         {
-            return "";
+            var validPws = passwords.Where(pw => pw.ValidateP2());
+
+            return validPws.Count().ToString();
         }
     }
 }
