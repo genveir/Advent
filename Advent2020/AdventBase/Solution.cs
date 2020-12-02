@@ -20,13 +20,16 @@ namespace Advent2020.AdventBase
 
         public class ParsedInput
         {
-
             public static List<ParsedInput> Parse(IEnumerable<string> lines)
             {
+                var inputParser = new InputParser("");
+
                 var parsedInputs = new List<ParsedInput>();
 
                 foreach(var line in lines)
                 {
+                    var parsed = inputParser.Parse(line);
+
                     var pi = new ParsedInput()
                     {
 
