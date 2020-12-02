@@ -9,12 +9,11 @@ namespace Advent2020.Advent2
     public class Solution : ISolution
     {
         List<ParsedInput> passwords;
-        static InputParser inputParser;
+        static InputParser inputParser = new InputParser("min-max letter: password");
 
         public Solution(string input)
         {
             var lines = Input.GetInputLines(input).ToArray();
-            inputParser = new InputParser("min-max letter: password");
 
             passwords = ParsedInput.Parse(lines);
         }

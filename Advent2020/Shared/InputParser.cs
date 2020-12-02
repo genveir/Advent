@@ -100,6 +100,105 @@ namespace Advent2020.Shared
             return instance;
         }
 
+        public ValueTuple<T1> Parse<T1>(string input)
+        {
+            ValueTuple<string> halfway = Parse(input);
+            ValueTuple<T1> output = new ValueTuple<T1>();
+            output.Item1 = Convert(typeof(T1), halfway.Item1);
+
+            return output;
+        }
+
+        public ValueTuple<T1, T2> Parse<T1, T2>(string input)
+        {
+            ValueTuple<string, string> halfway = Parse(input);
+            ValueTuple<T1, T2> output = new ValueTuple<T1, T2>();
+            output.Item1 = Convert(typeof(T1), halfway.Item1);
+            output.Item2 = Convert(typeof(T2), halfway.Item2);
+
+            return output;
+        }
+
+        public ValueTuple<T1, T2, T3> Parse<T1, T2, T3>(string input)
+        {
+            ValueTuple<string, string, string> halfway = Parse(input);
+            ValueTuple<T1, T2, T3> output = new ValueTuple<T1, T2, T3>();
+            output.Item1 = Convert(typeof(T1), halfway.Item1);
+            output.Item2 = Convert(typeof(T2), halfway.Item2);
+            output.Item3 = Convert(typeof(T3), halfway.Item3);
+
+            return output;
+        }
+
+        public ValueTuple<T1, T2, T3, T4> Parse<T1, T2, T3, T4>(string input)
+        {
+            ValueTuple<string, string, string, string> halfway = Parse(input);
+            ValueTuple<T1, T2, T3, T4> output = new ValueTuple<T1, T2, T3, T4>();
+            output.Item1 = Convert(typeof(T1), halfway.Item1);
+            output.Item2 = Convert(typeof(T2), halfway.Item2);
+            output.Item3 = Convert(typeof(T3), halfway.Item3);
+            output.Item4 = Convert(typeof(T4), halfway.Item4);
+
+            return output;
+        }
+
+        public ValueTuple<T1, T2, T3, T4, T5> Parse<T1, T2, T3, T4, T5>(string input)
+        {
+            ValueTuple<string, string, string, string, string> halfway = Parse(input);
+            ValueTuple<T1, T2, T3, T4, T5> output = new ValueTuple<T1, T2, T3, T4, T5>();
+            output.Item1 = Convert(typeof(T1), halfway.Item1);
+            output.Item2 = Convert(typeof(T2), halfway.Item2);
+            output.Item3 = Convert(typeof(T3), halfway.Item3);
+            output.Item4 = Convert(typeof(T4), halfway.Item4);
+            output.Item5 = Convert(typeof(T5), halfway.Item5);
+
+            return output;
+        }
+
+        public ValueTuple<T1, T2, T3, T4, T5, T6> Parse<T1, T2, T3, T4, T5, T6>(string input)
+        {
+            ValueTuple<string, string, string, string, string, string> halfway = Parse(input);
+            ValueTuple<T1, T2, T3, T4, T5, T6> output = new ValueTuple<T1, T2, T3, T4, T5, T6>();
+            output.Item1 = Convert(typeof(T1), halfway.Item1);
+            output.Item2 = Convert(typeof(T2), halfway.Item2);
+            output.Item3 = Convert(typeof(T3), halfway.Item3);
+            output.Item4 = Convert(typeof(T4), halfway.Item4);
+            output.Item5 = Convert(typeof(T5), halfway.Item5);
+            output.Item6 = Convert(typeof(T6), halfway.Item6);
+
+            return output;
+        }
+
+        public ValueTuple<T1, T2, T3, T4, T5, T6, T7> Parse<T1, T2, T3, T4, T5, T6, T7>(string input)
+        {
+            ValueTuple<string, string, string, string, string, string, string> halfway = Parse(input);
+            ValueTuple<T1, T2, T3, T4, T5, T6, T7> output = new ValueTuple<T1, T2, T3, T4, T5, T6, T7>();
+            output.Item1 = Convert(typeof(T1), halfway.Item1);
+            output.Item2 = Convert(typeof(T2), halfway.Item2);
+            output.Item3 = Convert(typeof(T3), halfway.Item3);
+            output.Item4 = Convert(typeof(T4), halfway.Item4);
+            output.Item5 = Convert(typeof(T5), halfway.Item5);
+            output.Item6 = Convert(typeof(T6), halfway.Item6);
+            output.Item7 = Convert(typeof(T7), halfway.Item7);
+
+            return output;
+        }
+
+        private dynamic Convert(Type t, string input)
+        {
+            if (t == typeof(int)) return int.Parse(input);
+            if (t == typeof(long)) return long.Parse(input);
+            if (t == typeof(char)) return char.Parse(input);
+            if (t == typeof(bool)) return bool.Parse(input);
+            if (t == typeof(string)) return input;
+            else
+            {
+                var conversionMethod = t.GetMethod("FromString", System.Reflection.BindingFlags.Static);
+
+                return conversionMethod.Invoke(null, new object[] { input });
+            }
+        }
+
         private Type GetVTType()
         {
             switch(NumberOfValues)
