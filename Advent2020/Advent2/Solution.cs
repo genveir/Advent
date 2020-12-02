@@ -14,7 +14,14 @@ namespace Advent2020.Advent2
         {
             var lines = Input.GetInputLines(input).ToArray();
 
-            passwords = ParsedInput.Parse(lines);
+            var inputParser = new InputParser<int, int, char, string>("min-max letter: password");
+
+            passwords = lines.Select(line =>
+            {
+                var pi = new ParsedInput();
+                (pi.minimum, pi.maximum, pi.letter, pi.password) = inputParser.Parse(line);
+                return pi;
+            }).ToList();
         }
         public Solution() : this("Input.txt") { }
 
@@ -24,18 +31,6 @@ namespace Advent2020.Advent2
             public int maximum;
             public char letter;
             public string password;
-
-            public static List<ParsedInput> Parse(IEnumerable<string> lines)
-            {
-                var inputParser = new InputParser<int, int, char, string>("min-max letter: password");
-
-                return lines.Select(line =>
-                {
-                    var pi = new ParsedInput();
-                    (pi.minimum, pi.maximum, pi.letter, pi.password) = inputParser.Parse(line);
-                    return pi;
-                }).ToList();
-            }
 
             public bool Validate()
             {
