@@ -9,10 +9,12 @@ namespace Advent2020.Advent2
     public class Solution : ISolution
     {
         List<ParsedInput> passwords;
+        static InputParser inputParser;
 
         public Solution(string input)
         {
             var lines = Input.GetInputLines(input).ToArray();
+            inputParser = new InputParser("min-max letter: password");
 
             passwords = ParsedInput.Parse(lines);
         }
@@ -31,14 +33,14 @@ namespace Advent2020.Advent2
 
                 foreach(var line in lines)
                 {
-                    var splitline = line.Split(new char[] { ' ', '-', ':' }, StringSplitOptions.RemoveEmptyEntries);
+                    (string min, string max, string letter, string pw) vals = inputParser.Parse(line);
 
                     var pi = new ParsedInput()
                     {
-                        minimum = int.Parse(splitline[0]),
-                        maximum = int.Parse(splitline[1]),
-                        letter = splitline[2].ToCharArray().Single(),
-                        password = splitline[3]
+                        minimum = int.Parse(vals.min),
+                        maximum = int.Parse(vals.max),
+                        letter = vals.letter.ToCharArray().First(),
+                        password = vals.pw
                     };
 
                     parsedInputs.Add(pi);

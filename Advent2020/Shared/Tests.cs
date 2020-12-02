@@ -48,5 +48,71 @@ namespace Advent2020.Shared
 
             for (int n = 0; n < 10; n++) Assert.AreEqual(-n, numbers[n]);
         }
+
+        [Test]
+        public void InputParserCanDetectStartWithSeparator()
+        {
+            var parser = new InputParser("<min, max>");
+
+            Assert.That(parser.delimiters.SequenceEqual(new string[] { "<", ", ", ">" }));
+            Assert.AreEqual(2, parser.NumberOfValues);
+        }
+
+        [Test]
+        public void InputParserCanParseDay2Pattern()
+        {
+            var parser = new InputParser("min-max letter: password");
+
+            Assert.AreEqual(4, parser.NumberOfValues);
+            Assert.That(parser.delimiters.SequenceEqual(new string[] { "-", " ", ": " }));
+        }
+
+        [Test]
+        public void InputParserCanParseDay2Input()
+        {
+            var parser = new InputParser(true, 4, new string[] { "-", " ", ": " });
+            (string min, string max, string letter, string password) output = parser.Parse("9-10 d: dddddddddwdldmdddddd");
+
+            Assert.AreEqual("9", output.min);
+            Assert.AreEqual("10", output.max);
+            Assert.AreEqual("d", output.letter);
+            Assert.AreEqual("dddddddddwdldmdddddd", output.password);
+        }
+
+        [Test]
+        public void InputParserCanParseDay2InputFromPattern()
+        {
+            var parser = new InputParser("min-max letter: password");
+            (string min, string max, string letter, string password) output = parser.Parse("9-10 d: dddddddddwdldmdddddd");
+
+            Assert.AreEqual("9", output.min);
+            Assert.AreEqual("10", output.max);
+            Assert.AreEqual("d", output.letter);
+            Assert.AreEqual("dddddddddwdldmdddddd", output.password);
+        }
+
+        [Test]
+        public void InputParserCanParseDay2InputWithStartingDelimiter()
+        {
+            var parser = new InputParser(false, 4, new string[] { ".", "-", " ", ": " });
+            (string min, string max, string letter, string password) output = parser.Parse(".9-10 d: dddddddddwdldmdddddd");
+
+            Assert.AreEqual("9", output.min);
+            Assert.AreEqual("10", output.max);
+            Assert.AreEqual("d", output.letter);
+            Assert.AreEqual("dddddddddwdldmdddddd", output.password);
+        }
+
+        [Test]
+        public void InputParserCanParseDay2InputWithStartingDelimiterFromPattern()
+        {
+            var parser = new InputParser(".min-max letter: password");
+            (string min, string max, string letter, string password) output = parser.Parse(".9-10 d: dddddddddwdldmdddddd");
+
+            Assert.AreEqual("9", output.min);
+            Assert.AreEqual("10", output.max);
+            Assert.AreEqual("d", output.letter);
+            Assert.AreEqual("dddddddddwdldmdddddd", output.password);
+        }
     }
 }
