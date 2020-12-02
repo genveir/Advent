@@ -8,6 +8,8 @@ namespace Advent2020.Shared
 {
     public class InputParser
     {
+        protected InputParser() { }
+
         private bool startsWithValue;
         private int numberOfValues;
         public int NumberOfValues
@@ -191,12 +193,7 @@ namespace Advent2020.Shared
             if (t == typeof(char)) return char.Parse(input);
             if (t == typeof(bool)) return bool.Parse(input);
             if (t == typeof(string)) return input;
-            else
-            {
-                var conversionMethod = t.GetMethod("FromString", System.Reflection.BindingFlags.Static);
-
-                return conversionMethod.Invoke(null, new object[] { input });
-            }
+            else throw new NotImplementedException("cannot convert non-primitive types");
         }
 
         private Type GetVTType()
@@ -212,6 +209,139 @@ namespace Advent2020.Shared
                 case 7: return typeof(ValueTuple<string, string, string, string, string, string, string>);
                 default: throw new NotImplementedException("can't go over 7 fields yet");
             }
+        }
+    }
+
+    public class InputParser<T1> : InputParser
+    {
+        public InputParser(bool startsWithValue, int numberOfValues, IEnumerable<string> delimiters)
+            : base(startsWithValue, numberOfValues, delimiters)
+        {
+            if (NumberOfValues != 1) throw new NotImplementedException("number of values does not match number of type arguments");
+        }
+
+        public InputParser(string pattern) : base(pattern)
+        {
+            if (NumberOfValues != 1) throw new NotImplementedException("number of values does not match number of type arguments");
+        }
+
+        new public ValueTuple<T1> Parse(string input)
+        {
+            return Parse<T1>(input);
+        }
+    }
+
+    public class InputParser<T1, T2> : InputParser
+    {
+        public InputParser(bool startsWithValue, int numberOfValues, IEnumerable<string> delimiters)
+            : base(startsWithValue, numberOfValues, delimiters)
+        {
+            if (NumberOfValues != 2) throw new NotImplementedException("number of values does not match number of type arguments");
+        }
+
+        public InputParser(string pattern) : base(pattern)
+        {
+            if (NumberOfValues != 2) throw new NotImplementedException("number of values does not match number of type arguments");
+        }
+
+        new public ValueTuple<T1, T2> Parse(string input)
+        {
+            return Parse<T1, T2>(input);
+        }
+    }
+
+    public class InputParser<T1, T2, T3> : InputParser
+    {
+        public InputParser(bool startsWithValue, int numberOfValues, IEnumerable<string> delimiters)
+            : base(startsWithValue, numberOfValues, delimiters)
+        {
+            if (NumberOfValues != 3) throw new NotImplementedException("number of values does not match number of type arguments");
+        }
+
+        public InputParser(string pattern) : base(pattern)
+        {
+            if (NumberOfValues != 3) throw new NotImplementedException("number of values does not match number of type arguments");
+        }
+
+        new public ValueTuple<T1, T2, T3> Parse(string input)
+        {
+            return Parse<T1, T2, T3>(input);
+        }
+    }
+
+    public class InputParser<T1, T2, T3, T4> : InputParser
+    {
+        public InputParser(bool startsWithValue, int numberOfValues, IEnumerable<string> delimiters)
+            : base(startsWithValue, numberOfValues, delimiters)
+        {
+            if (NumberOfValues != 4) throw new NotImplementedException("number of values does not match number of type arguments");
+        }
+
+        public InputParser(string pattern) : base(pattern)
+        {
+            if (NumberOfValues != 4) throw new NotImplementedException("number of values does not match number of type arguments");
+        }
+
+        new public ValueTuple<T1, T2, T3, T4> Parse(string input)
+        {
+            return Parse<T1, T2, T3, T4>(input);
+        }
+    }
+
+    public class InputParser<T1, T2, T3, T4, T5> : InputParser
+    {
+        public InputParser(bool startsWithValue, int numberOfValues, IEnumerable<string> delimiters)
+            : base(startsWithValue, numberOfValues, delimiters)
+        {
+            if (NumberOfValues != 5) throw new NotImplementedException("number of values does not match number of type arguments");
+        }
+
+        public InputParser(string pattern) : base(pattern)
+        {
+            if (NumberOfValues != 5) throw new NotImplementedException("number of values does not match number of type arguments");
+        }
+
+        new public ValueTuple<T1, T2, T3, T4, T5> Parse(string input)
+        {
+            return Parse<T1, T2, T3, T4, T5>(input);
+        }
+    }
+
+    public class InputParser<T1, T2, T3, T4, T5, T6> : InputParser
+    {
+        public InputParser(bool startsWithValue, int numberOfValues, IEnumerable<string> delimiters)
+            : base(startsWithValue, numberOfValues, delimiters)
+        {
+            if (NumberOfValues != 6) throw new NotImplementedException("number of values does not match number of type arguments");
+        }
+
+        public InputParser(string pattern) : base(pattern)
+        {
+            if (NumberOfValues != 6) throw new NotImplementedException("number of values does not match number of type arguments");
+        }
+
+        new public ValueTuple<T1, T2, T3, T4, T5, T6> Parse(string input)
+        {
+            return Parse<T1, T2, T3, T4, T5, T6>(input);
+        }
+    }
+
+    public class InputParser<T1, T2, T3, T4, T5, T6, T7> : InputParser
+    {
+        public InputParser(bool startsWithValue, int numberOfValues, IEnumerable<string> delimiters)
+            : base(startsWithValue, numberOfValues, delimiters)
+        {
+            if (NumberOfValues != 7) throw new NotImplementedException("number of values does not match number of type arguments");
+        }
+
+        public InputParser(string pattern) : base(pattern)
+        {
+            if (NumberOfValues != 7) throw new NotImplementedException("number of values does not match number of type arguments");
+        }
+
+        new public ValueTuple<T1, T2, T3, T4, T5, T6, T7> Parse(string input)
+        {
+            return Parse<T1, T2, T3, T4, T5, T6, T7>(input);
         }
     }
 }

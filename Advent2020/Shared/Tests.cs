@@ -126,5 +126,18 @@ namespace Advent2020.Shared
             Assert.AreEqual('d', letter);
             Assert.AreEqual("dddddddddwdldmdddddd", password);
         }
+
+        [Test]
+        public void TypedInputParserCanParseDay2Input()
+        {
+            var parser = new InputParser<int, int, char, string>("min-max letter: password");
+            var (min, max, letter, password) = parser.Parse("9-10 d: dddddddddwdldmdddddd");
+
+            Assert.AreEqual(9, min);
+            Assert.AreEqual(10, max);
+            Assert.AreEqual('d', letter);
+            Assert.AreEqual("dddddddddwdldmdddddd", password);
+        }
+
     }
 }
