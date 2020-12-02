@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Advent2020.AdventBase
+namespace Advent2020.Advent3
 {
     public class Solution : ISolution
     {

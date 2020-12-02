@@ -9,7 +9,6 @@ namespace Advent2020.Advent2
     public class Solution : ISolution
     {
         List<ParsedInput> passwords;
-        static InputParser inputParser = new InputParser("min-max letter: password");
 
         public Solution(string input)
         {
@@ -28,24 +27,14 @@ namespace Advent2020.Advent2
 
             public static List<ParsedInput> Parse(IEnumerable<string> lines)
             {
-                var parsedInputs = new List<ParsedInput>();
+                var inputParser = new InputParser<int, int, char, string>("min-max letter: password");
 
-                foreach(var line in lines)
+                return lines.Select(line =>
                 {
-                    (string min, string max, string letter, string pw) vals = inputParser.Parse(line);
-
-                    var pi = new ParsedInput()
-                    {
-                        minimum = int.Parse(vals.min),
-                        maximum = int.Parse(vals.max),
-                        letter = vals.letter.ToCharArray().First(),
-                        password = vals.pw
-                    };
-
-                    parsedInputs.Add(pi);
-                }
-
-                return parsedInputs;
+                    var pi = new ParsedInput();
+                    (pi.minimum, pi.maximum, pi.letter, pi.password) = inputParser.Parse(line);
+                    return pi;
+                }).ToList();
             }
 
             public bool Validate()

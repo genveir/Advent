@@ -100,11 +100,10 @@ namespace Advent2020.Shared
             return instance;
         }
 
-        public ValueTuple<T1> Parse<T1>(string input)
+        public T1 Parse<T1>(string input)
         {
             ValueTuple<string> halfway = Parse(input);
-            ValueTuple<T1> output = new ValueTuple<T1>();
-            output.Item1 = Convert(typeof(T1), halfway.Item1);
+            T1 output = Convert(typeof(T1), halfway.Item1);
 
             return output;
         }
@@ -267,7 +266,7 @@ namespace Advent2020.Shared
             if (NumberOfValues != 1) throw new NotImplementedException("number of values does not match number of type arguments");
         }
 
-        new public ValueTuple<T1> Parse(string input)
+        new public T1 Parse(string input)
         {
             return Parse<T1>(input);
         }
