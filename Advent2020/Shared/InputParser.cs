@@ -8,8 +8,6 @@ namespace Advent2020.Shared
 {
     public class InputParser
     {
-        protected InputParser() { }
-
         private bool startsWithValue;
         private int numberOfValues;
         public int NumberOfValues
