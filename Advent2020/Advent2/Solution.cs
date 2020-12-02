@@ -38,7 +38,7 @@ namespace Advent2020.Advent2
                         minimum = int.Parse(splitline[0]),
                         maximum = int.Parse(splitline[1]),
                         letter = splitline[2].ToCharArray().Single(),
-                        password = splitline[3].PadRight(30, '*')
+                        password = splitline[3]
                     };
 
                     parsedInputs.Add(pi);
