@@ -139,5 +139,52 @@ namespace Advent2020.Shared
             Assert.AreEqual("dddddddddwdldmdddddd", password);
         }
 
+        [Test]
+        public void CanParseCommaDelimitedArrays()
+        {
+            var parser = new InputParser<int[], long[], bool[], char[], string[]>("array array array array array");
+            var (ints, longs, bools, chars, strings) = parser.Parse("1,2,3,4,5 6,7,8,9,10 true,false y,o hallo,hoi,hee");
+
+            for (int n = 0; n < 5; n++) Assert.AreEqual(ints[n], n + 1);
+
+            for (int n = 0; n < 5; n++) Assert.AreEqual(longs[n], n + 6);
+
+            Assert.IsTrue(bools[0]);
+            Assert.IsFalse(bools[1]);
+
+            Assert.AreEqual('y', chars[0]);
+            Assert.AreEqual('o', chars[1]);
+
+            Assert.AreEqual("hallo", strings[0]);
+            Assert.AreEqual("hoi", strings[1]);
+            Assert.AreEqual("hee", strings[2]);
+        }
+
+        [Test]
+        public void CanSetCustomDelimiters()
+        {
+            var parser = new InputParser<int[], char[], string[]>("array: array array") { ArrayDelimiters = new char[] { '.', '-' } };
+            var (ints, chars, strings) = parser.Parse("1-8: a.b a,b-c,d");
+
+            Assert.AreEqual(1, ints[0]);
+            Assert.AreEqual(8, ints[1]);
+            Assert.AreEqual('a', chars[0]);
+            Assert.AreEqual('b', chars[1]);
+            Assert.AreEqual("a,b", strings[0]);
+            Assert.AreEqual("c,d", strings[1]);
+        }
+
+        [Test]
+        public void CanSetZeroDelimiter()
+        {
+            var parser = new InputParser<int, int, int, int[]>("min-max num: pw") { EmptyArrayDelimiter = true };
+            var (min, max, num, pw) = parser.Parse("1-2 3: 45");
+
+            Assert.AreEqual(1, min);
+            Assert.AreEqual(2, max);
+            Assert.AreEqual(3, num);
+            Assert.AreEqual(4, pw[0]);
+            Assert.AreEqual(5, pw[1]);
+        }
     }
 }

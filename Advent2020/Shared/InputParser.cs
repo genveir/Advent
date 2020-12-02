@@ -193,7 +193,51 @@ namespace Advent2020.Shared
             if (t == typeof(char)) return char.Parse(input);
             if (t == typeof(bool)) return bool.Parse(input);
             if (t == typeof(string)) return input;
+            if (t == typeof(int[])) return ParseIntArray(input);
+            if (t == typeof(long[])) return ParseLongArray(input);
+            if (t == typeof(char[])) return ParseCharArray(input);
+            if (t == typeof(bool[])) return ParseBoolArray(input);
+            if (t == typeof(string[])) return ParseStringArray(input);
             else throw new NotImplementedException("cannot convert non-primitive types");
+        }
+
+        public char[] ArrayDelimiters { get; set; } = new char[] { ',' };
+        public bool EmptyArrayDelimiter = false;
+        private string[] SplitElements(string input)
+        {
+            var elements = input.Split(ArrayDelimiters, StringSplitOptions.RemoveEmptyEntries);
+            if (EmptyArrayDelimiter) elements = elements.SelectMany(el => el.ToCharArray().Select(c => c.ToString())).ToArray();
+
+            return elements;
+        }
+
+        private int[] ParseIntArray(string input) {
+            var elements = SplitElements(input);
+            return elements.Select(el => int.Parse(el)).ToArray();
+        }
+
+        private long[] ParseLongArray(string input)
+        {
+            var elements = SplitElements(input);
+            return elements.Select(el => long.Parse(el)).ToArray();
+        }
+
+        private bool[] ParseBoolArray(string input)
+        {
+            var elements = SplitElements(input);
+            return elements.Select(el => bool.Parse(el)).ToArray();
+        }
+
+        private char[] ParseCharArray(string input)
+        {
+            var elements = SplitElements(input);
+            return elements.Select(el => el[0]).ToArray();
+        }
+
+        private string[] ParseStringArray(string input)
+        {
+            var elements = SplitElements(input);
+            return elements;
         }
 
         private Type GetVTType()
