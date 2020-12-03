@@ -10,6 +10,7 @@
     <None Remove="Advent1\Input.txt" />
     <None Remove="Advent2\Input.txt" />
     <None Remove="Advent3\Input.txt" />
+    <None Remove="Advent4\Input.txt" />
     <None Remove="AdventBase\Input.txt" />
   </ItemGroup>
 
@@ -17,6 +18,7 @@
     <Content Include="Advent1\Input.txt" />
     <EmbeddedResource Include="Advent2\Input.txt" />
     <EmbeddedResource Include="Advent3\Input.txt" />
+    <EmbeddedResource Include="Advent4\Input.txt" />
     <EmbeddedResource Include="AdventBase\Input.txt" />
   </ItemGroup>
 
@@ -27,6 +29,7 @@
 		<PackageReference Include="NUnit" Version="3.12.0" />
 		<PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
 		<PackageReference Include="System.Runtime.Numerics" Version="4.3.0" />
+		<PackageReference Include="TextCopy" Version="4.2.0" />
 	</ItemGroup>
 
 </Project>
