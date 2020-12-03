@@ -31,7 +31,7 @@ namespace Advent2020.Advent4
 
         public string GetResult1()
         {
-            return "123";
+            return "";
         }
 
         public string GetResult2()
