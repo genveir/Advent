@@ -22,7 +22,7 @@ namespace Advent2020
                 result1 = solution.GetResult1();
                 if (!string.IsNullOrEmpty(result1)) ClipboardService.SetText(result1);
                 result2 = solution.GetResult2();
-                if (!string.IsNullOrEmpty(result1)) ClipboardService.SetText(result2);
+                if (!string.IsNullOrEmpty(result2)) ClipboardService.SetText(result2);
             }
 
             stopWatch.Stop();
