@@ -8,25 +8,25 @@ namespace Advent2020.Advent3
 {
     public class Solution : ISolution
     {
-        List<ParsedInput> slopes;
+        List<SlopeLevel> slopeLevels;
 
         public Solution(string input)
         {
             var lines = Input.GetInputLines(input).ToArray();
 
-            slopes = new List<ParsedInput>();
+            slopeLevels = new List<SlopeLevel>();
             for (int n = 0; n < lines.Length; n++)
             {
-                slopes.Add(new ParsedInput(lines[n]));
+                slopeLevels.Add(new SlopeLevel(lines[n]));
             }
         }
         public Solution() : this("Input.txt") { }
 
-        public class ParsedInput
+        public class SlopeLevel
         {
             string rawInput;
 
-            public ParsedInput(string input)
+            public SlopeLevel(string input)
             {
                 rawInput = input;
             }
@@ -37,25 +37,25 @@ namespace Advent2020.Advent3
             }
         }
 
-        public string GetResult1()
-        {
-            return RunSlope(3, 1).ToString();
-        }
-
         private long RunSlope(int xMod, int yMod)
         {
             int x = 0;
             int y = 0;
             int trees = 0;
 
-            for (int n = 0; n < slopes.Count; n++)
+            for (int n = 0; n < slopeLevels.Count; n++)
             {
                 x += xMod;
                 y += yMod;
-                if (y < slopes.Count && slopes[y].HasTree(x)) trees++;
+                if (y < slopeLevels.Count && slopeLevels[y].HasTree(x)) trees++;
             }
 
             return trees;
+        }
+
+        public string GetResult1()
+        {
+            return RunSlope(3, 1).ToString();
         }
 
         public string GetResult2()
