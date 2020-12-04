@@ -15,7 +15,8 @@ namespace Advent2020.Advent4
         {
             var lines = Input.GetInputLines(input).ToArray();
 
-            var inputParser = new InputParser<string, string>("key:value");
+
+            var kvParser = new InputParser<string, string>("key:value");
 
             modules = new List<ParsedInput>();
             ParsedInput currentModule = new ParsedInput();
@@ -30,7 +31,7 @@ namespace Advent2020.Advent4
                 var fields = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 for (int n = 0; n < fields.Length; n++)
                 {
-                    var split = inputParser.Parse(fields[n]);
+                    var split = kvParser.Parse(fields[n]);
                     currentModule.passportValues.Add(split.Item1, split.Item2);
                 }
             }
@@ -99,8 +100,7 @@ namespace Advent2020.Advent4
             private bool ValidHcl()
             {
                 if (!passportValues.ContainsKey("hcl")) return false;
-                var hcl = passportValues["hcl"];
-                return Regex.IsMatch(hcl, "\\#[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]");
+                return Regex.IsMatch(passportValues["hcl"], "^#[0-9a-f]{6}$");
             }
 
             private bool ValidEcl()
