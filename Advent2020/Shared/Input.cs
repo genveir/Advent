@@ -101,7 +101,7 @@ namespace Advent2020.Shared
 
             var rawInput = GetInput(input);
 
-            return rawInput.Split(splitOn, StringSplitOptions.RemoveEmptyEntries);
+            return rawInput.Split("\r\n");
         }
 
         public static int[] GetNumbers(string input)
