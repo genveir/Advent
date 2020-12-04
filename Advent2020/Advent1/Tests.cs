@@ -20,7 +20,7 @@ namespace Advent2020.Advent1
             Assert.AreEqual(output, sol.GetResult1());
         }
 
-        [TestCase("", "")]
+        [TestCase("0", "no solution")]
         public void Test2(string input, string output)
         {
             var sol = new Solution(input);

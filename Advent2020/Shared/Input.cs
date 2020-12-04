@@ -97,11 +97,13 @@ namespace Advent2020.Shared
 
         public static IEnumerable<string> GetInputLines(string input, char[] splitOn = null)
         {
-            if (splitOn == null) splitOn = new char[] { '\r', '\n' };
-
             var rawInput = GetInput(input);
 
-            return rawInput.Split("\r\n");
+            var lines = rawInput.Split(Environment.NewLine);
+
+            if (splitOn != null) lines = lines.SelectMany(l => l.Split(splitOn, StringSplitOptions.RemoveEmptyEntries)).ToArray();
+
+            return lines;
         }
 
         public static int[] GetNumbers(string input)

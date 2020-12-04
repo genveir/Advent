@@ -7,7 +7,7 @@ namespace Advent2020.Advent3
 {
     class Tests
     {
-        [TestCase("", "")]
+        [TestCase("", "0")]
         public void Test1(string input, string output)
         {
             var sol = new Solution(input);
@@ -15,7 +15,7 @@ namespace Advent2020.Advent3
             Assert.AreEqual(output, sol.GetResult1());
         }
 
-        [TestCase("", "")]
+        [TestCase("", "0")]
         public void Test2(string input, string output)
         {
             var sol = new Solution(input);
