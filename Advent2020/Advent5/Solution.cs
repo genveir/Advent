@@ -54,12 +54,12 @@ namespace Advent2020.Advent5
             }
         }
 
-        public string GetResult1()
+        public object GetResult1()
         {
             return modules.Select(m => m.seatId()).Max().ToString();
         }
 
-        public string GetResult2()
+        public object GetResult2()
         {
             var sorted = modules.OrderBy(m => m.seatId()).ToList();
 

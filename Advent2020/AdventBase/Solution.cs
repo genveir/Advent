@@ -29,12 +29,12 @@ namespace Advent2020.AdventBase
         {
         }
 
-        public string GetResult1()
+        public object GetResult1()
         {
             return "";
         }
 
-        public string GetResult2()
+        public object GetResult2()
         {
             return "";
         }

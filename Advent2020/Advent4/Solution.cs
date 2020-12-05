@@ -119,7 +119,7 @@ namespace Advent2020.Advent4
             }
         }
 
-        public string GetResult1()
+        public object GetResult1()
         {
             return modules
                 .Where(m => m.passportValues.ContainsKey("byr"))
@@ -132,7 +132,7 @@ namespace Advent2020.Advent4
                 .Count().ToString();
         }
 
-        public string GetResult2()
+        public object GetResult2()
         {
             return modules.Where(m => m.IsValid())
                 .Count().ToString();

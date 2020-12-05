@@ -51,14 +51,14 @@ namespace Advent2020.Advent2
         }
 
 
-        public string GetResult1()
+        public object GetResult1()
         {
             var validPws = passwords.Where(pw => pw.Validate());
 
             return validPws.Count().ToString();
         }
 
-        public string GetResult2()
+        public object GetResult2()
         {
             var validPws = passwords.Where(pw => pw.ValidateP2());
 

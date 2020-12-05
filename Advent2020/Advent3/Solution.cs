@@ -53,12 +53,12 @@ namespace Advent2020.Advent3
             return trees;
         }
 
-        public string GetResult1()
+        public object GetResult1()
         {
             return RunSlope(3, 1).ToString();
         }
 
-        public string GetResult2()
+        public object GetResult2()
         {
             return
                 (RunSlope(1, 1) * RunSlope(3, 1) * RunSlope(5, 1) * RunSlope(7, 1) * RunSlope(1, 2)).ToString();

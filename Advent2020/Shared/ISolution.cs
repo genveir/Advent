@@ -6,7 +6,7 @@ namespace Advent2020.Shared
 {
     public interface ISolution
     {
-        string GetResult1();
-        string GetResult2();
+        object GetResult1();
+        object GetResult2();
     }
 }

@@ -19,7 +19,7 @@ namespace Advent2020.Advent1
         public Solution() : this("Input.txt") { }
 
 
-        public string GetResult1()
+        public object GetResult1()
         {
             for (int n = 0; n < numbers.Count; n++)
             {
@@ -32,7 +32,7 @@ namespace Advent2020.Advent1
             return "no solution";
         }
 
-        public string GetResult2()
+        public object GetResult2()
         {
             for (int n = 0; n < numbers.Count; n++)
             {
