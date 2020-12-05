@@ -20,8 +20,8 @@ namespace Advent2020.Advent5
         }
         public AltSolution() : this("Input.txt") { }
 
-        public object GetResult1() { return seatIds.Max().ToString(); }
+        public object GetResult1() { return seatIds.Max(); }
 
-        public object GetResult2() { return Enumerable.Range(seatIds.Min(), seatIds.Count).Except(seatIds).Single(); }
+        public object GetResult2() { return Enumerable.Range(seatIds.Min(), seatIds.Count + 1).Except(seatIds).Single(); }
     }
 }
