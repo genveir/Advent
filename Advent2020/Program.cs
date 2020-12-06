@@ -17,7 +17,7 @@ namespace Advent2020
             string result2 = "";
             for (int n = 0; n < numRuns; n++)
             {
-                ISolution solution = new Advent5.AltSolution();
+                ISolution solution = new Advent6.Solution();
 
                 result1 = solution.GetResult1().ToString();
                 if (!string.IsNullOrEmpty(result1)) ClipboardService.SetText(result1);
