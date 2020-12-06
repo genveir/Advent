@@ -1,8 +1,5 @@
 ﻿using Advent2020.Shared;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Advent2020.Advent6
 {
