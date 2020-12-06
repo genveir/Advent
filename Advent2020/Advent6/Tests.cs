@@ -21,8 +21,8 @@ a
 a
 a
 
-b", "11")]
-        public void Test1(string input, string output)
+b", 11)]
+        public void Test1(string input, object output)
         {
             var sol = new Solution(input);
 
@@ -30,7 +30,7 @@ b", "11")]
         }
 
         [TestCase("", "")]
-        public void Test2(string input, string output)
+        public void Test2(string input, object output)
         {
             var sol = new Solution(input);
 
