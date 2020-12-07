@@ -70,25 +70,25 @@ namespace Advent2020.Advent7
             public List<(int num, Bag bag)> Contains = new List<(int num, Bag bag)>();
             public List<Bag> CanBeContainedBy = new List<Bag>();
 
-            public IEnumerable<Bag> TransitiveCanBeContained() =>
-                CanBeContainedBy.Union(CanBeContainedBy.SelectMany(b => b.TransitiveCanBeContained()));
+            public IEnumerable<Bag> TransitiveCanBeContained =>
+                CanBeContainedBy.Union(CanBeContainedBy.SelectMany(b => b.TransitiveCanBeContained));
             
-            public long TransitiveNumInBag() =>
-                1 + Contains.Select(c => c.num * c.bag.TransitiveNumInBag()).Sum();
+            public long TransitiveNumInBag =>
+                1 + Contains.Select(c => c.num * c.bag.TransitiveNumInBag).Sum();
         }
 
         public object GetResult1()
         {
             var shinyGoldBag = GetOrAdd("shiny gold");
 
-            return shinyGoldBag.TransitiveCanBeContained().Count();
+            return shinyGoldBag.TransitiveCanBeContained.Count();
         }
 
         public object GetResult2()
         {
             var shinyGoldBag = GetOrAdd("shiny gold");
 
-            return shinyGoldBag.TransitiveNumInBag() - 1;
+            return shinyGoldBag.TransitiveNumInBag - 1;
         }
     }
 }
