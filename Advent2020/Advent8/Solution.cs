@@ -48,12 +48,12 @@ namespace Advent2020.Advent8
                 if (executor.operators[n] is Nop)
                 {
                     executor.Reset();
-                    executor.operators[n] = new Jmp(executor.operators[n].Argument);
+                    executor.operators[n] = new Jmp(n, executor.operators[n].Argument);
                 }
                 else if (executor.operators[n] is Jmp)
                 {
                     executor.Reset();
-                    executor.operators[n] = new Nop(executor.operators[n].Argument);
+                    executor.operators[n] = new Nop(n, executor.operators[n].Argument);
                 }
                 else continue;
 
