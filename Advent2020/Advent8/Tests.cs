@@ -15,8 +15,16 @@ namespace Advent2020.Advent8
             Assert.AreEqual(output, sol.GetResult1());
         }
 
-        [TestCase("", "")]
-        public void Test2(string input, string output)
+        [TestCase(@"nop +0
+acc +1
+jmp +4
+acc +3
+jmp -3
+acc -99
+acc +1
+jmp -4
+acc +6", 8)]
+        public void Test2(string input, object output)
         {
             var sol = new Solution(input);
 
