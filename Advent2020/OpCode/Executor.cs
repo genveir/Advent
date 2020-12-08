@@ -41,7 +41,7 @@ namespace Advent2020.OpCode
             operators = new List<Operator>();
             for (int n = 0; n < input.Count(); n++)
             {
-                operators.Add(Operator.Parse(input[n]));
+                operators.Add(Operator.Parse(n, input[n]));
             };
 
             instructionIndex = 0;
@@ -51,32 +51,40 @@ namespace Advent2020.OpCode
 
     public abstract class Operator
     {
+        public int Position { get; set; }
+
         public int Argument { get; set; }
 
-        public Operator(int argument)
+        public Operator(int position, int argument)
         {
+            Position = position;
             Argument = argument;
         }
 
-        public static Operator Parse(string opLine)
+        public static Operator Parse(int position, string opLine)
         {
             var op = opLine.Replace("+", "").Split(" ", StringSplitOptions.RemoveEmptyEntries);
             var argument = int.Parse(op[1]);
             switch (op[0])
             {
-                case "nop": return new Nop(argument);
-                case "acc": return new Acc(argument);
-                case "jmp": return new Jmp(argument);
+                case "nop": return new Nop(position, argument);
+                case "acc": return new Acc(position, argument);
+                case "jmp": return new Jmp(position, argument);
                 default: throw new ParseException("could not parse line " + opLine);
             }
         }
 
         public abstract void Execute(Executor executor);
+
+        public virtual int NextPointer()
+        {
+            return this.Position + 1;
+        }
     }
 
     public class Acc : Operator
     {
-        public Acc(int argument) : base(argument) { }
+        public Acc(int position, int argument) : base(position, argument) { }
 
         public override void Execute(Executor executor)
         {
@@ -87,17 +95,22 @@ namespace Advent2020.OpCode
 
     public class Jmp : Operator
     {
-        public Jmp(int argument) : base(argument) { }
+        public Jmp(int position, int argument) : base(position, argument) { }
 
         public override void Execute(Executor executor)
         {
             executor.instructionIndex += Argument;
         }
+
+        public override int NextPointer()
+        {
+            return this.Position + Argument;
+        }
     }
 
     public class Nop : Operator
     {
-        public Nop(int argument) : base(argument) { }
+        public Nop(int position, int argument) : base(position, argument) { }
 
         public override void Execute(Executor executor)
         {
