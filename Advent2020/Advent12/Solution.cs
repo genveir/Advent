@@ -18,7 +18,6 @@ namespace Advent2020.Advent12
         }
         public Solution() : this("Input.txt") { }
 
-        public enum Direction { North, South, East, West, Left, Right, Forward }
         public abstract class Instruction
         {
             public int amount;
