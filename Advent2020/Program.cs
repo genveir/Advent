@@ -20,17 +20,19 @@ namespace Advent2020
                 ISolution solution = new Advent12.Solution();
 
                 result1 = solution.GetResult1().ToString();
-                if (!string.IsNullOrEmpty(result1)) ClipboardService.SetText(result1);
                 result2 = solution.GetResult2().ToString();
-                if (!string.IsNullOrEmpty(result2)) ClipboardService.SetText(result2);
             }
 
             stopWatch.Stop();
 
+            if (!string.IsNullOrEmpty(result1)) ClipboardService.SetText(result1);
+            if (!string.IsNullOrEmpty(result2)) ClipboardService.SetText(result2);
+
             Console.WriteLine(string.Format("Result for part 1: {0}", result1));
             Console.WriteLine(string.Format("Result for part 2: {0}", result2));
             Console.WriteLine();
-            Console.WriteLine("Total runtime: " + (stopWatch.ElapsedMilliseconds / numRuns) + "ms");
+            Console.WriteLine("Total runtime: " + stopWatch.ElapsedMilliseconds + "ms");
+            Console.WriteLine("Average runtime: " + (stopWatch.ElapsedMilliseconds / numRuns) + "ms");
 
             Console.ReadLine();
         }
