@@ -10,11 +10,12 @@ namespace Advent2020
         static void Main(string[] args)
         {
             var stopWatch = new Stopwatch();
-            stopWatch.Start();
-
+            
             int numRuns = 1;
             string result1 = "";
             string result2 = "";
+
+            stopWatch.Start();
             for (int n = 0; n < numRuns; n++)
             {
                 ISolution solution = new Advent12.Solution();
@@ -22,7 +23,6 @@ namespace Advent2020
                 result1 = solution.GetResult1().ToString();
                 result2 = solution.GetResult2().ToString();
             }
-
             stopWatch.Stop();
 
             if (!string.IsNullOrEmpty(result1)) ClipboardService.SetText(result1);
