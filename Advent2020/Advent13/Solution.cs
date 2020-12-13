@@ -76,9 +76,6 @@ namespace Advent2020.Advent13
 
         private Bus CreateMagicCombinerBus(Bus one, Bus two)
         {
-            Console.WriteLine("checking " + one);
-            Console.WriteLine("against " + two);
-
             long timeStamp = one.firstMomentItCanLeave;
             while(true)
             {
@@ -86,8 +83,6 @@ namespace Advent2020.Advent13
                 if (timeTowait == two.leaveOffset) break;
 
                 timeStamp += one.period;
-
-                if (timeStamp > 10_000_000_000_000_000) return null;
             }
 
             var period = one.period * two.period;
