@@ -34,12 +34,16 @@ namespace Advent2020.Advent13
         const string sample6 = @"0
 1789,37,47,1889";
 
+        const string test = @"0
+3,x,x,x,x,x,x,x,x,x,x,x,x,x,11";
+
         [TestCase(sample1, 1068781)]
         [TestCase(sample2, 3417)]
         [TestCase(sample3, 754018)]
         [TestCase(sample4, 779210)]
         [TestCase(sample5, 1261476)]
         [TestCase(sample6, 1202161486)]
+        [TestCase(test, 30)]
         public void Test2(string input, object output)
         {
             var sol = new Solution(input);

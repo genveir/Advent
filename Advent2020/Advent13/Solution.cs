@@ -34,7 +34,7 @@ namespace Advent2020.Advent13
             public Bus(long period, long leaveOffset)
             {
                 this.period = period;
-                this.leaveOffset = leaveOffset;
+                this.leaveOffset = leaveOffset % period;
             }
 
             public long GetTimeToWait(long timeStamp)
