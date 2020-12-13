@@ -6,6 +6,10 @@
     <StartupObject>Advent2020.Program</StartupObject>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="Advent1\Input.txt" />
     <None Remove="Advent2\Input.txt" />

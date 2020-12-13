@@ -95,6 +95,24 @@ namespace Advent2020.Shared
             return null;
         }
 
+        public static byte[] GetBytes(string input)
+        {
+            var inputStream = GetEmbeddedStream(input) ?? GetFileStream(input);
+            if (inputStream == null)
+            {
+                return new byte[0];
+            }
+
+            byte[] bytes;
+            using (var reader = new StreamReader(inputStream))
+            {
+                bytes = new byte[reader.BaseStream.Length];
+
+                reader.BaseStream.Read(bytes, 0, bytes.Length);
+            }
+            return bytes;
+        }
+
         public static IEnumerable<string> GetInputLines(string input, char[] splitOn = null)
         {
             var rawInput = GetInput(input);
