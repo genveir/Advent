@@ -8,7 +8,7 @@ namespace Advent2020.AdventBase
     class Tests
     {
         [TestCase("", "")]
-        public void Test1(string input, string output)
+        public void Test1(string input, object output)
         {
             var sol = new Solution(input);
 
@@ -16,7 +16,7 @@ namespace Advent2020.AdventBase
         }
 
         [TestCase("", "")]
-        public void Test2(string input, string output)
+        public void Test2(string input, object output)
         {
             var sol = new Solution(input);
 
