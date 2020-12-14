@@ -22,7 +22,7 @@ namespace Advent2020.Advent14.Tree
 
             topNode.SetValue(memPos, 0, MemoryValue.FromLong(1));
 
-            Assert.AreEqual(37, topNode.GetTreeSize());
+            Assert.AreEqual(36, topNode.GetTreeSize());
         }
 
         [Test]
