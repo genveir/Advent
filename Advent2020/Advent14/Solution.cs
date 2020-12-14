@@ -76,7 +76,7 @@ namespace Advent2020.Advent14
             }
         }
 
-        public long RunProgram(int chipVersion)
+        public Memory RunProgram(int chipVersion)
         {
             Memory memory = new Memory(chipVersion);
 
@@ -85,17 +85,17 @@ namespace Advent2020.Advent14
                 instructions[n].Execute(memory);
             }
 
-            return memory.GetSummedValue();
+            return memory;
         }
 
         public object GetResult1()
         {
-            return RunProgram(1);
+            return RunProgram(1).GetSummedValue();
         }
 
         public object GetResult2()
         {
-            return RunProgram(2);
+            return RunProgram(2).GetSummedValue();
         }
     }
 }

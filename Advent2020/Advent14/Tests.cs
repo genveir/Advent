@@ -36,5 +36,13 @@ mem[42] = 100";
 
             Assert.AreEqual(output, sol.GetResult2());
         }
+
+        [Test]
+        public void EvenKijkenHoor()
+        {
+            var sol = new Solution();
+
+            Assert.AreEqual(72978, sol.RunProgram(2).memRoot.GetTreeSize());
+        }
     }
 }
