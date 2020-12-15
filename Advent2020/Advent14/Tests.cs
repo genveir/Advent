@@ -28,6 +28,7 @@ mem[42] = 100";
             Assert.AreEqual(output, sol.GetResult1());
         }
 
+        [TestCase(sample, 1735166787584)]
         [TestCase(sample2, 208)]
         [TestCase(evenSmaller, 400)]
         public void Test2(string input, object output)
