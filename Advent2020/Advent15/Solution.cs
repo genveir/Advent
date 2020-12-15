@@ -8,10 +8,9 @@ namespace Advent2020.Advent15
 {
     public class Solution : ISolution
     {
-        int[] s2;
-        int[] s1;
-        int t;
-        int l;
+        int[] spoken2;
+        int turn;
+        int last;
 
         public Solution(string input)
         {
@@ -21,34 +20,29 @@ namespace Advent2020.Advent15
 
             var nums = inputParser.Parse(lines[0]);
 
-            s2 = new int[30000000];
-            s1 = new int[30000000];
+            spoken2 = new int[30000000];
 
-            for (t = 1; t < nums.Length; t++)
+            for (turn = 1; turn < nums.Length; turn++)
             {
-                l = nums[t - 1];
+                last = nums[turn - 1];
 
-                s1[l] = s2[l];
-                s2[l] = t;
-
-                if (s1[l] == 0) l = 0;
-                else l = s2[l] - s1[l];
+                spoken2[last] = turn;
             }
-            l = nums.Last();
+            last = nums.Last();
         }
         public Solution() : this("Input.txt") { }
 
-        public unsafe void go(int xt)
+        public unsafe void go(int targetTurn)
         {
-            fixed (int* s10 = s2, s20 = s1)
+            fixed (int* spoken2Zero = spoken2)
             {
-                for (; t < xt; t++)
+                for (; turn < targetTurn; turn++)
                 {
-                    int v = s10[l];
+                    int value = spoken2Zero[last];
 
-                    s20[l] = v; s10[l] = t;
+                    spoken2Zero[last] = turn;
 
-                    l = (v == 0) ? 0 : t - v;
+                    last = (value == 0) ? 0 : turn - value;
                 }
             }
         }
@@ -57,14 +51,14 @@ namespace Advent2020.Advent15
         {
             go(2020);
 
-            return l;
+            return last;
         }
 
         public object GetResult2()
         {
             go(30000000);
 
-            return l;
+            return last;
         }
     }
 }
