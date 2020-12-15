@@ -48,7 +48,7 @@ namespace Advent2020.Advent15
 
                     s20[l] = v; s10[l] = t;
 
-                    l = (v == 0) ? v : t - v;
+                    l = (v == 0) ? 0 : t - v;
                 }
             }
         }
