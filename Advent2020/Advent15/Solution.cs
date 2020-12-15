@@ -8,7 +8,7 @@ namespace Advent2020.Advent15
 {
     public class Solution : ISolution
     {
-        int[] spoken2;
+        int[] spoken;
         int turn;
         int last;
 
@@ -20,21 +20,21 @@ namespace Advent2020.Advent15
 
             var nums = inputParser.Parse(lines[0]);
 
-            spoken2 = new int[30000000];
+            spoken = new int[30000000];
 
             for (turn = 1; turn < nums.Length; turn++)
             {
                 last = nums[turn - 1];
 
-                spoken2[last] = turn;
+                spoken[last] = turn;
             }
             last = nums.Last();
         }
         public Solution() : this("Input.txt") { }
 
-        public unsafe void go(int targetTurn)
+        public unsafe void RunUntilTurn(int targetTurn)
         {
-            fixed (int* spoken2Zero = spoken2)
+            fixed (int* spoken2Zero = spoken)
             {
                 for (; turn < targetTurn; turn++)
                 {
@@ -49,14 +49,14 @@ namespace Advent2020.Advent15
 
         public object GetResult1()
         {
-            go(2020);
+            RunUntilTurn(2020);
 
             return last;
         }
 
         public object GetResult2()
         {
-            go(30000000);
+            RunUntilTurn(30000000);
 
             return last;
         }
