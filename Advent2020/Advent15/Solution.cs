@@ -8,10 +8,10 @@ namespace Advent2020.Advent15
 {
     public class Solution : ISolution
     {
-        int[] spoken1;
-        int[] spoken2;
-        int turn;
-        int last;
+        int[] s2;
+        int[] s1;
+        int t;
+        int l;
 
         public Solution(string input)
         {
@@ -21,54 +21,54 @@ namespace Advent2020.Advent15
 
             var nums = inputParser.Parse(lines[0]);
 
-            spoken1 = new int[30000000];
-            spoken2 = new int[30000000];
+            s2 = new int[30000000];
+            s1 = new int[30000000];
 
-            for (turn = 1; turn < nums.Length; turn++)
+            for (t = 1; t < nums.Length; t++)
             {
-                last = nums[turn - 1];
+                l = nums[t - 1];
 
-                spoken2[last] = spoken1[last];
-                spoken1[last] = turn;
+                s1[l] = s2[l];
+                s2[l] = t;
 
-                if (spoken2[last] == 0) last = 0;
-                else last = spoken1[last] - spoken2[last];
+                if (s1[l] == 0) l = 0;
+                else l = s2[l] - s1[l];
             }
-            last = nums.Last();
+            l = nums.Last();
         }
         public Solution() : this("Input.txt") { }
 
-        public unsafe void SimulateSteps(int targetTurn)
+        public unsafe void go(int xt)
         {
-            fixed (int* s10 = spoken1, s20 = spoken2)
+            fixed (int* s10 = s2, s20 = s1)
             {
-                while (turn < targetTurn)
+                while (t < xt)
                 {
-                    int v = s10[last];
+                    int v = s10[l];
 
-                    s20[last] = v;
-                    s10[last] = turn;
+                    s20[l] = v;
+                    s10[l] = t;
 
-                    if (v == 0) last = 0;
-                    else last = turn - v;
+                    if (v == 0) l = 0;
+                    else l = t - v;
 
-                    turn++;
+                    t++;
                 }
             }
         }
 
         public object GetResult1()
         {
-            SimulateSteps(2020);
+            go(2020);
 
-            return last;
+            return l;
         }
 
         public object GetResult2()
         {
-            SimulateSteps(30000000);
+            go(30000000);
 
-            return last;
+            return l;
         }
     }
 }
