@@ -42,17 +42,13 @@ namespace Advent2020.Advent15
         {
             fixed (int* s10 = s2, s20 = s1)
             {
-                while (t < xt)
+                for (; t < xt; t++)
                 {
                     int v = s10[l];
 
-                    s20[l] = v;
-                    s10[l] = t;
+                    s20[l] = v; s10[l] = t;
 
-                    if (v == 0) l = 0;
-                    else l = t - v;
-
-                    t++;
+                    l = (v == 0) ? v : t - v;
                 }
             }
         }
