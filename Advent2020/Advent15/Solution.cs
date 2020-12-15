@@ -10,7 +10,7 @@ namespace Advent2020.Advent15
     {
         int[] spoken;
         int turn;
-        int last;
+        int spokenLast;
 
         public Solution(string input)
         {
@@ -24,25 +24,25 @@ namespace Advent2020.Advent15
 
             for (turn = 1; turn < nums.Length; turn++)
             {
-                last = nums[turn - 1];
+                spokenLast = nums[turn - 1];
 
-                spoken[last] = turn;
+                spoken[spokenLast] = turn;
             }
-            last = nums.Last();
+            spokenLast = nums.Last();
         }
         public Solution() : this("Input.txt") { }
 
         public unsafe void RunUntilTurn(int targetTurn)
         {
-            fixed (int* spoken2Zero = spoken)
+            fixed (int* spokenPtr = spoken)
             {
                 for (; turn < targetTurn; turn++)
                 {
-                    int value = spoken2Zero[last];
+                    int value = spokenPtr[spokenLast];
 
-                    spoken2Zero[last] = turn;
+                    spokenPtr[spokenLast] = turn;
 
-                    last = (value == 0) ? 0 : turn - value;
+                    spokenLast = (value == 0) ? 0 : turn - value;
                 }
             }
         }
@@ -51,14 +51,14 @@ namespace Advent2020.Advent15
         {
             RunUntilTurn(2020);
 
-            return last;
+            return spokenLast;
         }
 
         public object GetResult2()
         {
             RunUntilTurn(30000000);
 
-            return last;
+            return spokenLast;
         }
     }
 }
