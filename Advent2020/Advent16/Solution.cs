@@ -190,7 +190,6 @@ namespace Advent2020.Advent16
             var assignments = new int[rules.Length];
             for (int n = 0; n < assignments.Length; n++) assignments[n] = -1;
 
-            hitBefore = new bool[20];
             if (MatchResults(assignments, 0, rules))
             {
                 return (true, rules, assignments);
@@ -198,14 +197,8 @@ namespace Advent2020.Advent16
             else return (false, rules, assignments);
         }
 
-        bool[] hitBefore = new bool[20];
         public bool MatchResults(int[] ruleAssignments, int columnToSet, ScanRule[] rules)
         {
-            if (!hitBefore[columnToSet])
-            {
-                hitBefore[columnToSet] = true;
-            }
-
             ruleAssignments[columnToSet] = -1;
             for (int ruleNum = 0; ruleNum < rules.Length; ruleNum++)
             {
