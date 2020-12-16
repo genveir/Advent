@@ -10,6 +10,10 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="Advent1\Input.txt" />
     <None Remove="Advent2\Input.txt" />
@@ -26,6 +30,7 @@
     <None Remove="Advent13\Input.txt" />
     <None Remove="Advent14\Input.txt" />
     <None Remove="Advent15\Input.txt" />
+    <None Remove="Advent16\Input.txt" />
     <None Remove="AdventBase\Input.txt" />
   </ItemGroup>
 
@@ -45,6 +50,7 @@
     <EmbeddedResource Include="Advent13\Input.txt" />
     <EmbeddedResource Include="Advent14\Input.txt" />
     <EmbeddedResource Include="Advent15\Input.txt" />
+    <EmbeddedResource Include="Advent16\Input.txt" />
     <EmbeddedResource Include="AdventBase\Input.txt" />
   </ItemGroup>
 
