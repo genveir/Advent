@@ -1,6 +1,8 @@
-﻿using NUnit.Framework;
+﻿using Advent2020.Shared;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Advent2020.AdventBase

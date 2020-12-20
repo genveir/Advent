@@ -124,6 +124,15 @@ namespace Advent2020.Shared
             return lines;
         }
 
+        public static string[][] GetBlockLines(string input)
+        {
+            var rawInput = GetInput(input);
+
+            var blocks = rawInput.Split(Environment.NewLine + Environment.NewLine);
+
+            return blocks.Select(block => block.Split(Environment.NewLine)).ToArray();
+        }
+
         public static int[] GetNumbers(string input)
         {
             var rawInput = GetInput(input);
