@@ -17,10 +17,20 @@ namespace Advent2020.Shared
         public long Y;
         public long? Z;
 
+        public Coordinate ShiftX(int shift) => new Coordinate(this.X + shift, this.Y, this.Z);
+        public Coordinate ShiftY(int shift) => new Coordinate(this.X, this.Y + shift, this.Z);
+        public Coordinate ShiftZ(int shift) => new Coordinate(this.X, this.Y, this.Z + shift);
+
+
         public long IntegerDistance(Coordinate second) { return (long)Distance(second); }
         public double Distance(Coordinate second)
         {
             return Distance(second.X, second.Y, second.Z);
+        }
+
+        public long ManhattanDistance(Coordinate second)
+        {
+            return Math.Abs(this.X - second.X) + Math.Abs(this.Y - second.Y) + Math.Abs(this.Z ?? 0 - second.Z ?? 0);
         }
 
         public long IntegerDistance(long x, long y, long z) { return (long)Distance(x, y, z); }

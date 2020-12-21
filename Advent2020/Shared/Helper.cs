@@ -7,6 +7,41 @@ namespace Advent2020.Shared
 {
     public static class Helper
     {
+        public static string StrReverse(this string input)
+        {
+            return new string(ArrReverse<char>(input.ToCharArray()));
+        }
+
+        public static T[] ArrReverse<T>(this T[] input)
+        {
+            var result = new T[input.Length];
+            for (int n = 0; n < input.Length; n++)
+            {
+                result[n] = input[input.Length - n - 1];
+            }
+            return result;
+        }
+
+        public static T[] Segment<T>(this T[] input, int startIndex, int length)
+        {
+            var result = new T[length];
+            Array.Copy(input, startIndex, result, 0, length);
+            return result;
+        }
+
+        public static T[] Rotate<T>(this T[] input, int rotation)
+        {
+            var positiveRotation = rotation % input.Length;
+            positiveRotation += input.Length;
+            positiveRotation = positiveRotation % input.Length;
+
+            var result = new T[input.Length];
+            Array.Copy(input, 0, result, positiveRotation, input.Length - positiveRotation);
+            Array.Copy(input, input.Length - 1 - positiveRotation, result, 0, positiveRotation);
+
+            return result;
+        }
+
         public static T[] DeepCopy<T>(this T[] input)
         {
             var result = new T[input.Length];
