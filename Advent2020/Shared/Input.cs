@@ -133,20 +133,20 @@ namespace Advent2020.Shared
             return blocks.Select(block => block.Split(Environment.NewLine)).ToArray();
         }
 
-        public static int[] GetNumbers(string input)
+        public static long[] GetNumbers(string input)
         {
             var rawInput = GetInput(input);
 
-            return rawInput.Select(c => c - 48).ToArray();
+            return rawInput.Select(c => c - 48L).ToArray();
         }
 
-        public static int[] GetNumbers(string input, char[] splitOn)
+        public static long[] GetNumbers(string input, char[] splitOn)
         {
             var rawInput = GetInput(input);
 
             var split = rawInput.Split(splitOn, StringSplitOptions.RemoveEmptyEntries);
 
-            return split.Select(s => int.Parse(s)).ToArray();
+            return split.Select(s => long.Parse(s)).ToArray();
         }
     }
 }
