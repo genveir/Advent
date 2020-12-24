@@ -150,16 +150,11 @@ namespace Advent2020.Advent24
                 if (turn == checkedFlip) return;
                 checkedFlip = turn;
 
-                bool shouldFlip;
                 var blackNeighbours = Neighbours.Where(nb => nb.IsBlack).Count();
-                if (IsBlack)
-                {
-                    shouldFlip = blackNeighbours == 0 || blackNeighbours > 2;
-                }
-                else
-                {
-                    shouldFlip = blackNeighbours == 2;
-                }
+
+                bool shouldFlip;
+                if (IsBlack) shouldFlip = blackNeighbours == 0 || blackNeighbours > 2;
+                else shouldFlip = blackNeighbours == 2;
 
                 if (shouldFlip) flipTiles.Add(this);
             }
@@ -174,9 +169,9 @@ namespace Advent2020.Advent24
         {
             var floor = new TileFloor();
 
-            for (int n = 0; n < Routes.Count(); n++)
+            foreach (var route in Routes)
             {
-                var tile = Routes[n].Walk(floor.CenterTile);
+                var tile = route.Walk(floor.CenterTile);
                 tile.Flip();
             }
 
@@ -187,9 +182,9 @@ namespace Advent2020.Advent24
         {
             var floor = new TileFloor();
 
-            for (int n = 0; n < Routes.Count(); n++)
-            {
-                var tile = Routes[n].Walk(floor.CenterTile);
+            foreach (var route in Routes) 
+            { 
+                var tile = route.Walk(floor.CenterTile);
                 tile.Flip();
             }
 
