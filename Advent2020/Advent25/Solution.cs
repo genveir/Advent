@@ -20,39 +20,26 @@ namespace Advent2020.Advent25
         }
         public Solution() : this("Input.txt") { }
 
-        public long BruteforceLoopSize(long pubKey) 
+        public long CalculateEncryptionKey(long pubKey1, long pubKey2)
         {
-            long loopSize = 0;
-            long curVal = 7;
+            long encKey = pubKey1;
+            long testVal = 7;
 
-            while(curVal != pubKey)
+            while(testVal != pubKey2)
             {
-                curVal *= 7;
-                curVal = curVal % 20201227;
+                encKey *= pubKey1;
+                testVal *= 7;
 
-                loopSize++;
+                encKey = encKey % 20201227;
+                testVal = testVal % 20201227;
             }
 
-            return loopSize;
-        }
-
-        public long CalculateEncryptionKey(long loopSize, long pubKey)
-        {
-            long curVal = pubKey;
-
-            for (int n = 0; n < loopSize; n++)
-            {
-                curVal *= pubKey;
-                curVal = curVal % 20201227;
-            }
-
-            return curVal;
+            return encKey;
         }
 
         public object GetResult1()
         {
-            var loopSize = BruteforceLoopSize(cardNum);
-            var encKey = CalculateEncryptionKey(loopSize, doorNum);
+            var encKey = CalculateEncryptionKey(cardNum, doorNum);
 
             return encKey;
         }
