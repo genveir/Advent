@@ -20,14 +20,14 @@ namespace Advent2020.Advent25
         }
         public Solution() : this("Input.txt") { }
 
-        public long CalculateEncryptionKey(long pubKey1, long pubKey2)
+        public long CalculateEncryptionKey()
         {
-            long encKey = pubKey1;
+            long encKey = cardNum;
             long testVal = 7;
 
-            while(testVal != pubKey2)
+            while(testVal != doorNum)
             {
-                encKey *= pubKey1;
+                encKey *= cardNum;
                 testVal *= 7;
 
                 encKey = encKey % 20201227;
@@ -39,7 +39,7 @@ namespace Advent2020.Advent25
 
         public object GetResult1()
         {
-            var encKey = CalculateEncryptionKey(cardNum, doorNum);
+            var encKey = CalculateEncryptionKey();
 
             return encKey;
         }
