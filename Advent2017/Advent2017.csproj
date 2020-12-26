@@ -9,12 +9,14 @@
   <ItemGroup>
     <None Remove="Advent1\Input.txt" />
     <None Remove="Advent2\Input.txt" />
+    <None Remove="Advent3\Input.txt" />
     <None Remove="AdventBase\Input.txt" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Advent1\Input.txt" />
     <EmbeddedResource Include="Advent2\Input.txt" />
+    <EmbeddedResource Include="Advent3\Input.txt" />
     <EmbeddedResource Include="AdventBase\Input.txt" />
   </ItemGroup>
 
