@@ -15,7 +15,7 @@ namespace Advent2017.Shared
 
         public ModNum(long number, long modulo, bool hasPrimeModulo)
         {
-            this.number = number;
+            this.number = number % modulo;
             this.modulo = modulo;
             this.hasPrimeModulo = hasPrimeModulo;
         }
