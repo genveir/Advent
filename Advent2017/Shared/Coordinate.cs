@@ -23,6 +23,37 @@ namespace Advent2017.Shared
         public Coordinate Shift(long shiftX, long shiftY, long shiftZ) =>
             new Coordinate(this.X + shiftX, this.Y + shiftY, this.Z + shiftZ);
 
+        private IEnumerable<Coordinate> _neighbours;
+        public IEnumerable<Coordinate> GetNeighbours()
+        {
+            if (_neighbours == null)
+            {
+                var neighbours = new List<Coordinate>();
+
+                for (int xShift = -1; xShift <= 1; xShift++)
+                {
+                    for (int yShift = -1; yShift <=1; yShift++)
+                    {
+                        if (Z != null)
+                        {
+                            for (int zShift = -1; zShift <= 1; zShift++)
+                            {
+                                if (xShift == 0 && yShift == 0 && zShift == 0) continue;
+                                else neighbours.Add(new Coordinate(X + xShift, Y + yShift, Z.Value + zShift));
+                            }
+                        }
+                        else
+                        {
+                            if (xShift == 0 && yShift == 0) continue;
+                            else neighbours.Add(new Coordinate(X + xShift, Y + yShift));
+                        }
+                    }
+                }
+                _neighbours = neighbours;
+            }
+            return _neighbours;
+        }
+
 
         public long IntegerDistance(Coordinate second) { return (long)Distance(second); }
         public double Distance(Coordinate second)
