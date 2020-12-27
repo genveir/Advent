@@ -9,9 +9,11 @@ namespace Advent2017.Shared
 {
     public static class Primes
     {
+        public static List<long> primesSoFar;
+
         public static bool CheckPrime(long numToCheck)
         {
-            List<long> primesSoFar = FirstLongPrimes.PrimeLookup.ToList();
+            if (primesSoFar == null) primesSoFar = new List<long>() { 2, 3, 5 };
 
             long numRoot = (long)Math.Ceiling(Math.Sqrt(numToCheck));
 
@@ -19,6 +21,9 @@ namespace Advent2017.Shared
 
             return CheckPrime(primesSoFar, numToCheck);
         }
+
+        public static bool IsPrime(this long numToCheck) => CheckPrime(numToCheck);
+        public static bool IsPrime(this int numToCheck) => CheckPrime(numToCheck);
 
         private static void GenerateAllPrimes(List<long> primesSoFar, long upperBound)
         {
