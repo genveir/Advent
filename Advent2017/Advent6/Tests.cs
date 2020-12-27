@@ -9,20 +9,6 @@ namespace Advent2017.Advent6
 {
     class Tests
     {
-        [TestCase("", "")]
-        public void Test1(string input, object output)
-        {
-            var sol = new Solution(input);
 
-            Assert.AreEqual(output, sol.GetResult1());
-        }
-
-        [TestCase("", "")]
-        public void Test2(string input, object output)
-        {
-            var sol = new Solution(input);
-
-            Assert.AreEqual(output, sol.GetResult2());
-        }
     }
 }

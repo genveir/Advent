@@ -19,13 +19,5 @@ namespace Advent2017.Advent3
 
             Assert.AreEqual(output, sol.FindNum(long.Parse(input)).ManhattanDistance(new Coordinate(0,0)));
         }
-
-        [TestCase("", "")]
-        public void Test2(string input, object output)
-        {
-            var sol = new Solution(input);
-
-            Assert.AreEqual(output, sol.GetResult2());
-        }
     }
 }
