@@ -15,7 +15,10 @@ namespace Advent2017.Shared
 
         public ModNum(long number, long modulo, bool hasPrimeModulo)
         {
-            this.number = number % modulo;
+            number = number % modulo;
+            if (number < 0) number += modulo;
+            this.number = number;
+
             this.modulo = modulo;
             this.hasPrimeModulo = hasPrimeModulo;
         }
@@ -47,6 +50,11 @@ namespace Advent2017.Shared
             long newVal = (long)(inbetween % mn.modulo);
 
             return new ModNum(newVal, mn.modulo, mn.hasPrimeModulo);
-        }        
+        }
+
+        public override string ToString()
+        {
+            return number.ToString();
+        }
     }
 }
