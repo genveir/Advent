@@ -17,19 +17,19 @@ namespace Advent2021.Shared
             innerList = new List<T>(collection);
         }
 
-        public T this[int n] {
+        public T this[long n] {
             get { return innerList[PosMod(n)]; }
             set { innerList[PosMod(n)] = value; }
         }
 
-        private int PosMod(int n)
+        private int PosMod(long n)
         {
-            int remainder = n % innerList.Count;
+            int remainder = (int)(n % innerList.Count);
             return (remainder < 0) ? remainder += innerList.Count : remainder;
         }
 
-        public void Insert(int index, T item) => Insert(index, new T[] { item });
-        public void Insert(int index, IEnumerable<T> items)
+        public void Insert(long index, T item) => Insert(index, new T[] { item });
+        public void Insert(long index, IEnumerable<T> items)
         {
             // Should do copyto's.
             var itemArray = items.ToArray();
@@ -37,14 +37,14 @@ namespace Advent2021.Shared
             index = PosMod(index);
 
             var newList = new List<T>();
-            for (int n = 0; n < index; n++) newList.Add(this[n]);
-            for (int i = 0; i < items.Count(); i++) newList.Add(itemArray[i]);
-            for (int n = index; n < innerList.Count; n++) newList.Add(this[n]);
+            for (long n = 0; n < index; n++) newList.Add(this[n]);
+            for (long i = 0; i < items.Count(); i++) newList.Add(itemArray[i]);
+            for (long n = index; n < innerList.Count; n++) newList.Add(this[n]);
 
             innerList = newList;
         }
 
-        public void ReverseRange(int index, int number)
+        public void ReverseRange(long index, int number)
         {
             var copy = new ModList<T>(this);
 
