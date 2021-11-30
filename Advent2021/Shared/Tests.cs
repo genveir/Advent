@@ -186,5 +186,135 @@ namespace Advent2021.Shared
             Assert.AreEqual(4, pw[0]);
             Assert.AreEqual(5, pw[1]);
         }
+
+        [Test]
+        public void ModListIsCircular()
+        {
+            var modList = new ModList<int>();
+            for (int n = 0; n < 10; n++) modList.Add(n);
+
+            Assert.AreEqual(1, modList[1]);
+            Assert.AreEqual(1, modList[11]);
+            Assert.AreEqual(1, modList[-9]);
+        }
+
+        [Test]
+        public void CanInsertIntoModList()
+        {
+            var modList = new ModList<int>();
+            for (int n = 0; n < 2; n++) modList.Add(n);
+
+            modList.Insert(1, new List<int>() { 3, 4 });
+
+            Assert.AreEqual(0, modList[0]);
+            Assert.AreEqual(3, modList[1]);
+            Assert.AreEqual(4, modList[2]);
+            Assert.AreEqual(1, modList[3]);
+        }
+
+        [Test]
+        public void CanInsertIntoModListWithNegativeStartIndex()
+        {
+            var modList = new ModList<int>();
+            for (int n = 0; n < 2; n++) modList.Add(n);
+
+            modList.Insert(-1, new List<int>() { 3, 4 });
+
+            Assert.AreEqual(0, modList[0]);
+            Assert.AreEqual(3, modList[1]);
+            Assert.AreEqual(4, modList[2]);
+            Assert.AreEqual(1, modList[3]);
+        }
+
+        [Test]
+        public void CanInsertIntoModListWithHighStartIndex()
+        {
+            var modList = new ModList<int>();
+            for (int n = 0; n < 2; n++) modList.Add(n);
+
+            modList.Insert(21, new List<int>() { 3, 4 });
+
+            Assert.AreEqual(0, modList[0]);
+            Assert.AreEqual(3, modList[1]);
+            Assert.AreEqual(4, modList[2]);
+            Assert.AreEqual(1, modList[3]);
+        }
+
+        [Test]
+        public void CanInsertLargeDataIntoModList()
+        {
+            var modList = new ModList<int>();
+            for (int n = 0; n < 2; n++) modList.Add(n);
+
+            var newList = new List<int>();
+            for (int n = 0; n < 100000; n++) newList.Add(n);
+
+            modList.Insert(1, newList);
+
+            Assert.AreEqual(0, modList[0]);
+            Assert.AreEqual(0, modList[1]);
+            Assert.AreEqual(1, modList[-1]);
+            Assert.AreEqual(99999, modList[-2]);
+        }
+
+        [Test]
+        public void CanReversePartOfModList()
+        {
+            var modList = new ModList<int>();
+            for (int n = 0; n < 5; n++) modList.Add(n);
+
+            modList.ReverseRange(1, 3);
+
+            Assert.AreEqual(0, modList[0]);
+            Assert.AreEqual(3, modList[1]);
+            Assert.AreEqual(2, modList[2]);
+            Assert.AreEqual(1, modList[3]);
+            Assert.AreEqual(4, modList[4]);
+        }
+
+        [Test]
+        public void CanReversePastEndOfModList()
+        {
+            var modList = new ModList<int>();
+            for (int n = 0; n < 5; n++) modList.Add(n);
+
+            modList.ReverseRange(3, 3);
+
+            Assert.AreEqual(3, modList[0]);
+            Assert.AreEqual(1, modList[1]);
+            Assert.AreEqual(2, modList[2]);
+            Assert.AreEqual(0, modList[3]);
+            Assert.AreEqual(4, modList[4]);
+        }
+
+        [Test]
+        public void CanStartReverseOfModListWithNegativeIndex()
+        {
+            var modList = new ModList<int>();
+            for (int n = 0; n < 5; n++) modList.Add(n);
+
+            modList.ReverseRange(-1, 2);
+
+            Assert.AreEqual(4, modList[0]);
+            Assert.AreEqual(1, modList[1]);
+            Assert.AreEqual(2, modList[2]);
+            Assert.AreEqual(3, modList[3]);
+            Assert.AreEqual(0, modList[4]);
+        }
+
+        [Test]
+        public void CanStartReverseOfModListWithHighIndex()
+        {
+            var modList = new ModList<int>();
+            for (int n = 0; n < 5; n++) modList.Add(n);
+
+            modList.ReverseRange(9, 2);
+
+            Assert.AreEqual(4, modList[0]);
+            Assert.AreEqual(1, modList[1]);
+            Assert.AreEqual(2, modList[2]);
+            Assert.AreEqual(3, modList[3]);
+            Assert.AreEqual(0, modList[4]);
+        }
     }
 }
