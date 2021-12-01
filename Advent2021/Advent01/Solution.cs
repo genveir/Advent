@@ -12,18 +12,9 @@ namespace Advent2021.Advent01
 
         public Solution(string input)
         {
-            var lines = Input.GetInputLines(input).ToArray();
-
-            for (int n = 0; n < lines.Length; n++)
-            {
-                nums.Add(long.Parse(lines[n]));
-            }
+            nums = Input.GetNumberLines(input);
         }
         public Solution() : this("Input.txt") { }
-
-        public class ParsedInput
-        {
-        }
 
         public object GetResult1()
         {

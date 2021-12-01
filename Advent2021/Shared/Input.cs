@@ -124,6 +124,16 @@ namespace Advent2021.Shared
             return lines;
         }
 
+        public static List<long> GetNumberLines(string input, char[] splitOn = null)
+        {
+            var rawInput = GetInputLines(input, splitOn);
+
+            return rawInput
+                .Where(ri => !string.IsNullOrWhiteSpace(ri))
+                .Select(long.Parse)
+                .ToList();
+        }
+
         public static string[][] GetBlockLines(string input)
         {
             var rawInput = GetInput(input);
