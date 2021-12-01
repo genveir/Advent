@@ -8,20 +8,16 @@ namespace Advent2021.Advent01
 {
     public class Solution : ISolution
     {
-        List<ParsedInput> modules;
+        List<long> nums = new List<long>();
 
         public Solution(string input)
         {
             var lines = Input.GetInputLines(input).ToArray();
 
-            var inputParser = new InputParser<string>(true, 2, " ");
-
-            modules = lines.Select(line =>
+            for (int n = 0; n < lines.Length; n++)
             {
-                var pi = new ParsedInput();
-                //(pi) = inputParser.Parse(line);
-                return pi;
-            }).ToList();
+                nums.Add(long.Parse(lines[n]));
+            }
         }
         public Solution() : this("Input.txt") { }
 
@@ -31,12 +27,27 @@ namespace Advent2021.Advent01
 
         public object GetResult1()
         {
-            return "";
+            int result = 0;
+            long buffer = nums[0];
+            for (int n = 1; n < nums.Count; n++)
+            {
+                if (nums[n] > buffer) result++;
+                buffer = nums[n];
+            }
+
+            return result;
         }
 
         public object GetResult2()
         {
-            return "";
+            int result = 0;
+            long buffer = nums[0] + nums[1] + nums[2];
+            for (int n = 3; n < nums.Count; n++)
+            {
+                if (nums[n] + nums[n - 1] + nums[n - 2] > buffer) result++;
+                buffer = nums[n] + nums[n - 1] + nums[n - 2];
+            }
+            return result;
         }
     }
 }
