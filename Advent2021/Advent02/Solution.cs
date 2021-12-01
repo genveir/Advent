@@ -14,7 +14,7 @@ namespace Advent2021.Advent02
         {
             var lines = Input.GetInputLines(input).ToArray();
 
-            var inputParser = new InputParser<string>(true, 2, " ");
+            var inputParser = new InputParser<string>("line");
 
             modules = lines.Select(line =>
             {
