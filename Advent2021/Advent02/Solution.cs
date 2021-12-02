@@ -20,16 +20,12 @@ namespace Advent2021.Advent02
         public Solution(string input)
         {
             var lines = Input.GetInputLines(input).ToArray();
-
             var inputParser = new InputParser<string, int>("direction amount");
 
             moves = lines.Select(line =>
             {
-                (var direction, var amount) = inputParser.Parse(line);
-
-                var pi = new Move(direction, amount);
-                
-                return pi;
+                var (direction, amount) = inputParser.Parse(line);
+                return new Move(direction, amount);
             }).ToList();
         }
         public Solution() : this("Input.txt") { }
@@ -52,22 +48,13 @@ namespace Advent2021.Advent02
 
             public void Go(Position pos)
             {
-                if (updown)
-                {
-                    pos.ver += amount;
-                }
-                else
-                {
-                    pos.hor += amount;
-                }
+                if (updown) pos.ver += amount;
+                else pos.hor += amount;
             }
 
             public void Go2(Position pos)
             {
-                if (updown)
-                {
-                    pos.aim += amount;
-                }
+                if (updown) pos.aim += amount;
                 else
                 {
                     pos.hor += amount;
