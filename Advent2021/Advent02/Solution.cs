@@ -8,35 +8,88 @@ namespace Advent2021.Advent02
 {
     public class Solution : ISolution
     {
-        List<ParsedInput> modules;
+        List<Move> moves;
+
+        public class Position
+        {
+            public long hor;
+            public long ver;
+            public long aim;
+        }
 
         public Solution(string input)
         {
             var lines = Input.GetInputLines(input).ToArray();
 
-            var inputParser = new InputParser<string>("line");
+            var inputParser = new InputParser<string, int>("direction amount");
 
-            modules = lines.Select(line =>
+            moves = lines.Select(line =>
             {
-                var pi = new ParsedInput();
-                //(pi) = inputParser.Parse(line);
+                (var direction, var amount) = inputParser.Parse(line);
+
+                var pi = new Move(direction, amount);
+                
                 return pi;
             }).ToList();
         }
         public Solution() : this("Input.txt") { }
 
-        public class ParsedInput
+        public class Move
         {
+            private bool updown;
+            private int amount;
+
+            public Move(string direction, int amount)
+            {
+                switch (direction.Trim())
+                {
+                    case "up": updown = true; this.amount = -amount; break;
+                    case "down": updown = true; this.amount = amount; break;
+                    case "forward": updown = false; this.amount = amount; break;
+                    default: throw new InvalidOperationException();
+                }
+            }
+
+            public void Go(Position pos)
+            {
+                if (updown)
+                {
+                    pos.ver += amount;
+                }
+                else
+                {
+                    pos.hor += amount;
+                }
+            }
+
+            public void Go2(Position pos)
+            {
+                if (updown)
+                {
+                    pos.aim += amount;
+                }
+                else
+                {
+                    pos.hor += amount;
+                    pos.ver += pos.aim * amount;
+                }
+            }
         }
 
         public object GetResult1()
         {
-            return "";
+            var pos = new Position();
+            foreach (var move in moves) move.Go(pos);
+
+            return pos.hor * pos.ver;
         }
 
         public object GetResult2()
         {
-            return "";
+            var pos = new Position();
+            foreach (var move in moves) move.Go2(pos);
+
+            return pos.hor * pos.ver;
         }
     }
 }
