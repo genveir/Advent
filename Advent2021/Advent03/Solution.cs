@@ -54,7 +54,7 @@ namespace Advent2021.Advent03
         {
             var numbers = input.ToArray();
 
-            char[] gamma = new char[numbers[0].Length];
+            char[] epsilon = new char[numbers[0].Length];
             for (int n = 0; n < numbers[0].Length; n++)
             {
                 int numOnes = 0;
@@ -65,11 +65,11 @@ namespace Advent2021.Advent03
                     else numZeros++;
                 }
 
-                gamma[n] = (numOnes > numZeros) ? '1' : '0';
-                if (numOnes == numZeros) gamma[n] = '0';
+                epsilon[n] = (numOnes > numZeros) ? '1' : '0';
+                if (numOnes == numZeros) epsilon[n] = '0';
             }
 
-            return gamma;
+            return epsilon;
         }
 
         public long P2()
