@@ -149,6 +149,27 @@ namespace Advent2021.Shared
             return input.Select(c => c - 48).ToArray();
         }
 
+        public static T[][] Pivot<T>(this IEnumerable<IEnumerable<T>> input)
+        {
+            T[][] arrayInput = input.Select(i => i.ToArray()).ToArray();
+
+            var output = new T[arrayInput[0].Length][];
+            for (int n = 0; n < arrayInput[0].Length; n++) output[n] = new T[arrayInput.Length];
+
+            for (int originalRow = 0; originalRow < arrayInput.Length; originalRow++)
+            {
+                var outputColumn = originalRow;
+                for (int originalColumn = 0; originalColumn < arrayInput[originalRow].Length; originalColumn++)
+                {
+                    var outputRow = originalColumn;
+
+                    output[outputRow][outputColumn] = arrayInput[originalRow][originalColumn];
+                }
+            }
+
+            return output;
+        }
+
         public const string BLOCK = "\U00002588";
     }
 }
