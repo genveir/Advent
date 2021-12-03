@@ -26,7 +26,8 @@ namespace Advent2021.Advent03
         {
             var gases = input.Pivot();
 
-            var nextSet = gases.Where(gas => gas[digit] == GetMatch(input, match)[digit]);
+            var matchNum = GetMatch(input, match)[digit];
+            var nextSet = gases.Where(gas => gas[digit] == matchNum);
 
             return nextSet.Count() == 1 ? nextSet.Single() : GetGasMatch(nextSet.Pivot(), match, digit + 1);
         }
