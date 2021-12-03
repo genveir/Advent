@@ -8,30 +8,35 @@ namespace Advent2021.Advent04
 {
     public class Solution : ISolution
     {
-        List<ParsedInput> modules;
+        public IEnumerable<string> commonNames;
 
         public Solution(string input)
         {
-            var lines = Input.GetInputLines(input).ToArray();
+            var blocks = Input.GetBlockLines(input).ToArray();
 
-            var inputParser = new InputParser<string>("line");
+            var inputParser = new InputParser<int, int, string, string>("num)    num stars  name");
 
-            modules = lines.Select(line =>
+            List<List<string>> names = new List<List<string>>();
+            foreach (var lines in blocks) 
             {
-                var pi = new ParsedInput();
-                //(pi) = inputParser.Parse(line);
-                return pi;
-            }).ToList();
+                List<string> blockNames = new List<string>();
+                foreach( var line in lines)
+                {
+                    var (_, _, _, name) = inputParser.Parse(line);
+
+                    blockNames.Add(name);
+                };
+                names.Add(blockNames);
+            }
+
+            commonNames = names[0].Intersect(names[1]);
         }
         public Solution() : this("Input.txt") { }
 
-        public class ParsedInput
-        {
-        }
 
         public object GetResult1()
         {
-            return "";
+            return string.Join(Environment.NewLine, commonNames);
         }
 
         public object GetResult2()
