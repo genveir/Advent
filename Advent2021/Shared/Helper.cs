@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Text;
 
@@ -141,6 +142,11 @@ namespace Advent2021.Shared
         {
             var angle = ((Math.Atan2(Y, X) + 0.5 * Math.PI) + 2.0d * Math.PI) % (2.0d * Math.PI);
             return angle;
+        }
+
+        public static int[] AsDigits(this string input)
+        {
+            return input.Select(c => c - 48).ToArray();
         }
 
         public const string BLOCK = "\U00002588";
