@@ -8,7 +8,7 @@ namespace Advent2021.Advent03
 {
     public class Solution : ISolution
     {
-        public int[][] numbers;
+        public List<List<int>> numbers;
 
         public Solution(string input)
         {
@@ -20,9 +20,9 @@ namespace Advent2021.Advent03
         public Solution() : this("Input.txt") { }
 
         public static int[] GetMatch(IEnumerable<IEnumerable<int>> input, int match) =>
-            input.Select(inp => (inp.Sum() >= inp.Count() / 2) ? match : 1 - match).ToArray();
+            input.Select(inp => (inp.Sum() >= inp.Count() / 2.0d) ? match : 1 - match).ToArray();
 
-        public static int[] GetGasMatch(IEnumerable<IEnumerable<int>> input, int match, int digit)
+        public static List<int> GetGasMatch(IEnumerable<IEnumerable<int>> input, int match, int digit)
         {
             var gases = input.Pivot();
 
@@ -32,7 +32,7 @@ namespace Advent2021.Advent03
             return nextSet.Count() == 1 ? nextSet.Single() : GetGasMatch(nextSet.Pivot(), match, digit + 1);
         }
 
-        public long CalculateResult(Func<int, int[]> matchFunc) =>
+        public long CalculateResult(Func<int, IEnumerable<int>> matchFunc) =>
             Enumerable.Range(0, 2)
                 .Select(matchFunc)
                 .Select(ints => Convert.ToInt64(string.Join("", ints), 2))

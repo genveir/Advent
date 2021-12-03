@@ -149,22 +149,19 @@ namespace Advent2021.Shared
             return input.Select(c => c - 48).ToArray();
         }
 
-        public static T[][] Pivot<T>(this IEnumerable<IEnumerable<T>> input)
+        public static List<List<T>> Pivot<T>(this IEnumerable<IEnumerable<T>> input)
         {
             T[][] arrayInput = input.Select(i => i.ToArray()).ToArray();
 
-            var output = new T[arrayInput[0].Length][];
-            for (int n = 0; n < arrayInput[0].Length; n++) output[n] = new T[arrayInput.Length];
-
-            for (int originalRow = 0; originalRow < arrayInput.Length; originalRow++)
+            var output = new List<List<T>>();
+            for (int originalColumn = 0; originalColumn < arrayInput[0].Length; originalColumn++)
             {
-                var outputColumn = originalRow;
-                for (int originalColumn = 0; originalColumn < arrayInput[originalRow].Length; originalColumn++)
+                var columnList = new List<T>();
+                for (int originalRow = 0; originalRow < arrayInput.Length; originalRow++)
                 {
-                    var outputRow = originalColumn;
-
-                    output[outputRow][outputColumn] = arrayInput[originalRow][originalColumn];
+                    columnList.Add(arrayInput[originalRow][originalColumn]);
                 }
+                output.Add(columnList);
             }
 
             return output;
