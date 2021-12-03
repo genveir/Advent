@@ -10,6 +10,7 @@
 	  <None Remove="Advent01\Input.txt" />
 	  <None Remove="Advent02\Input.txt" />
 	  <None Remove="Advent03\Input.txt" />
+	  <None Remove="Advent04\Input.txt" />
 	  <None Remove="AdventBase\Input.txt" />
 	</ItemGroup>
 
@@ -17,6 +18,7 @@
 	  <EmbeddedResource Include="Advent01\Input.txt" />
 	  <EmbeddedResource Include="Advent02\Input.txt" />
 	  <EmbeddedResource Include="Advent03\Input.txt" />
+	  <EmbeddedResource Include="Advent04\Input.txt" />
 	  <EmbeddedResource Include="AdventBase\Input.txt" />
 	</ItemGroup>
 
