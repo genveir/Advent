@@ -150,7 +150,7 @@ namespace Advent2021.Shared
             return rawInput.Select(c => c - 48L).ToArray();
         }
 
-        public static long[] GetNumbers(string input, char[] splitOn)
+        public static long[] GetNumbers(string input, params char[] splitOn)
         {
             var rawInput = GetInput(input);
 

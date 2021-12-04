@@ -15,9 +15,9 @@ namespace Advent2021.Advent04
 
         public Solution(string input)
         {
-            numbers = numberInput.Split(',').Select(long.Parse).ToArray();
+            numbers = Input.GetNumbers(numberInput, ',');
 
-            var blocks = Input.GetBlockLines(input).ToArray();
+            var blocks = Input.GetBlockLines(input);
 
             bingoBoards = blocks.Select(b => new BingoBoard(b)).ToArray();
 
