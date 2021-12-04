@@ -20,116 +20,32 @@ namespace Advent2021.Advent04
             var blocks = Input.GetBlockLines(input).ToArray();
 
             bingoBoards = blocks.Select(b => new BingoBoard(b)).ToArray();
+
+            RunBingo();
         }
         public Solution() : this("Input.txt") { }
 
-        public class BingoBoard
+        private void RunBingo()
         {
-            public long[][] fields;
-            public bool[][] picked;
-
-            Dictionary<long, Coordinate> byNum = new Dictionary<long, Coordinate>();
-
-            public BingoBoard(string[] input)
+            for (int turn = 0; turn < numbers.Length; turn++)
             {
-                fields = new long[5][];
-                picked = new bool[5][];
+                var number = numbers[turn];
 
-                for (int y = 0; y < 5; y++)
+                foreach (var board in bingoBoards)
                 {
-                    fields[y] = new long[5];
-                    picked[y] = new bool[5];
-
-                    var nums = input[y].Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-                    for (int x =0; x < 5; x++)
-                    {
-                        var num = long.Parse(nums[x]);
-                        fields[y][x] = num;
-
-                        var coord = new Coordinate(x, y);
-                        byNum.Add(num, coord);
-                    }
+                    board.Pick(turn, number);
                 }
-            }
-
-            public void Pick(long number)
-            {
-                Coordinate coordinate;
-                if (byNum.TryGetValue(number, out coordinate))
-                {
-                    picked[coordinate.Y][coordinate.X] = true;
-                }
-            }
-
-            public bool CheckForWin()
-            {
-                var pivotted = picked.Pivot();
-
-                for (int y = 0; y < 5; y++) if (picked[y].All(p => p)) return true;
-                for (int x = 0; x < 5; x++) if (pivotted[x].All(p => p)) return true;
-
-                return false;
-            }
-
-            public long score = -1; // urgl
-            public long turn;
-            public void MarkWin(long turn, long number)
-            {
-                if (this.score != -1) return;
-
-                this.turn = turn;
-                this.score = number * CalculateScore();
-            }
-
-            public long CalculateScore()
-            {
-                long result = 0;
-                for (int y = 0; y < 5; y++)
-                {
-                    for (int x = 0; x < 5; x++)
-                    {
-                        if (!picked[y][x]) result += fields[y][x];
-                    }
-                }
-                return result;
             }
         }
 
         public object GetResult1()
         {
-            for (int n = 0; n < numbers.Length; n++)
-            {
-                var number = numbers[n];
-
-                foreach (var board in bingoBoards)
-                {
-                    board.Pick(number);
-
-                    if (board.CheckForWin()) return board.CalculateScore() * number;
-                }
-            }
-
-            return "no answer";
+            return bingoBoards.OrderBy(b => b.turn).First().score;
         }
 
         public object GetResult2()
         {
-            for (int n = 0; n < numbers.Length; n++)
-            {
-                var number = numbers[n];
-
-                foreach (var board in bingoBoards)
-                {
-                    board.Pick(number);
-
-                    if (board.CheckForWin()) board.MarkWin(n, number);
-                }
-            }
-
-            var last = bingoBoards.OrderBy(b => b.turn).Last();
-
-            return last.score;
+            return bingoBoards.OrderBy(b => b.turn).Last().score;
         }
     }
 }
