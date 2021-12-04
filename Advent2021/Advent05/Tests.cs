@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Advent2021.AdventBase
+namespace Advent2021.Advent05
 {
     class Tests
     {
