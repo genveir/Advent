@@ -12,8 +12,8 @@ namespace Advent2021.Advent04
         [TestCase(example, exampleNums, 4512)]
         public void Test1(string input, string numberList, object output)
         {
-            var sol = new Solution(input);
             Solution.numberInput = numberList;
+            var sol = new Solution(input);
 
             Assert.AreEqual(output, sol.GetResult1());
         }
@@ -21,8 +21,8 @@ namespace Advent2021.Advent04
         [TestCase(example, exampleNums, 1924)]
         public void Test2(string input, string numberList, object output)
         {
-            var sol = new Solution(input);
             Solution.numberInput = numberList;
+            var sol = new Solution(input);
 
             Assert.AreEqual(output, sol.GetResult2());
         }
