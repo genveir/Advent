@@ -90,24 +90,24 @@ namespace Advent2021.Advent04
             }
 
             public long score;
-            public long turn;
+            public long wonOnTurn;
             public void MarkWin(long turn, long number)
             {
                 this.won = true;
 
-                this.turn = turn;
+                this.wonOnTurn = turn;
                 this.score = number * boardValue;
             }
         }
 
         public object GetResult1()
         {
-            return bingoBoards.OrderBy(b => b.turn).First().score;
+            return bingoBoards.OrderBy(b => b.wonOnTurn).First().score;
         }
 
         public object GetResult2()
         {
-            return bingoBoards.OrderBy(b => b.turn).Last().score;
+            return bingoBoards.OrderBy(b => b.wonOnTurn).Last().score;
         }
     }
 }
