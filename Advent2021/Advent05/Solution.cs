@@ -36,30 +36,18 @@ namespace Advent2021.Advent05
             {
                 Begin = new Coordinate(begin);
                 End = new Coordinate(end);
-
-                if (Begin.X > End.X)
-                {
-                    var buffer = End;
-                    End = Begin;
-                    Begin = buffer;
-                }
             }
 
             public bool ForPart1 => Begin.X == End.X || Begin.Y == End.Y;
 
             public void Draw(long[][] grid)
             {
-                var xDir = 1;
+                var xDir = End.X.CompareTo(Begin.X);
+                var yDir = End.Y.CompareTo(Begin.Y);
 
-                var yDir = Begin.Y < End.Y ? 1 : -1;
-                if (Begin.Y == End.Y) yDir = 0;
-
-                var length = End.X - Begin.X;
-                if (length == 0)
-                {
-                    length = (End.Y - Begin.Y) * yDir;
-                    xDir = 0;
-                }
+                var length = Math.Max(
+                    Math.Abs(End.X - Begin.X),
+                    Math.Abs(End.Y - Begin.Y));
 
                 for (int n = 0; n <= length; n++)
                 {
