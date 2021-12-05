@@ -20,13 +20,9 @@ namespace Advent2021.Advent02
         public Solution(string input)
         {
             var lines = Input.GetInputLines(input).ToArray();
-            var inputParser = new InputParser<string, int>("direction amount");
+            var inputParser = new InputParser<Move>("direction amount");
 
-            moves = lines.Select(line =>
-            {
-                var (direction, amount) = inputParser.Parse(line);
-                return new Move(direction, amount);
-            }).ToList();
+            moves = inputParser.Parse(lines);
         }
         public Solution() : this("Input.txt") { }
 

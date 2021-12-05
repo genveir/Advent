@@ -16,9 +16,9 @@ namespace Advent2021.Advent05
         {
             var lines = Input.GetInputLines(input).ToArray();
 
-            var inputParser = new ComplexParser<LineDef>("begin -> end");
+            var inputParser = new InputParser("begin -> end");
 
-            lineDefs = inputParser.Parse(lines);
+            lineDefs = inputParser.Parse<LineDef>(lines);
 
             for (int n = 0; n < 1000; n++)
             {

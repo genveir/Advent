@@ -5,11 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Advent2021.Advent02
+namespace Advent2021.Advent06
 {
     class Tests
     {
-        [TestCase("Input.txt", 1690020)]
+        [TestCase(example, "")]
         public void Test1(string input, object output)
         {
             var sol = new Solution(input);
@@ -17,12 +17,14 @@ namespace Advent2021.Advent02
             Assert.AreEqual(output, sol.GetResult1());
         }
 
-        [TestCase("Input.txt", 1408487760)]
+        [TestCase(example, "")]
         public void Test2(string input, object output)
         {
             var sol = new Solution(input);
 
             Assert.AreEqual(output, sol.GetResult2());
         }
+
+        public const string example = @"";
     }
 }

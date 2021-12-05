@@ -9,29 +9,23 @@ namespace Advent2021.Advent05
 {
     class Tests
     {
+        [TestCase("Input.txt", 5774)]
         [TestCase(example, 5)]
         public void Test1(string input, object output)
         {
             var sol = new Solution(input);
 
-            var result = sol.GetResult1();
-
-            var drawn = DrawGrid(sol.grid);
-
-            Assert.AreEqual(output, result);
+            Assert.AreEqual(output, sol.GetResult1());
         }
 
+        [TestCase("Input.txt", 18423)]
         [TestCase(example, 12)]
         public void Test2(string input, object output)
         {
             var sol = new Solution(input);
 
             sol.GetResult1();
-            var result = sol.GetResult2();
-
-            var drawn = DrawGrid(sol.grid);
-
-            Assert.AreEqual(output, result);
+            Assert.AreEqual(output, sol.GetResult2());
         }
 
         [Test]

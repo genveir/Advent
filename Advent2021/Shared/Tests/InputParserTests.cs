@@ -14,7 +14,7 @@ namespace Advent2021.Shared.Tests
         {
             var parser = new InputParser("<min, max>");
 
-            Assert.That(parser.delimiters.SequenceEqual(new string[] { "<", ", ", ">" }));
+            Assert.That(parser.simpleParser.delimiters.SequenceEqual(new string[] { "<", ", ", ">" }));
             Assert.AreEqual(2, parser.NumberOfValues);
         }
 
@@ -24,7 +24,7 @@ namespace Advent2021.Shared.Tests
             var parser = new InputParser("min-max letter: password");
 
             Assert.AreEqual(4, parser.NumberOfValues);
-            Assert.That(parser.delimiters.SequenceEqual(new string[] { "-", " ", ": " }));
+            Assert.That(parser.simpleParser.delimiters.SequenceEqual(new string[] { "-", " ", ": " }));
         }
 
         [Test]
@@ -150,8 +150,8 @@ namespace Advent2021.Shared.Tests
         [Test]
         public void CanParseComplexObjects()
         {
-            var parser = new ComplexParser<ParsingTestClass>("begin -> end");
-            var testClass = parser.Parse("1,1 -> 10,10");
+            var parser = new InputParser("begin -> endx,endy");
+            var testClass = parser.Parse<ParsingTestClass>("1,1 -> 10,10");
 
             Assert.AreEqual(1, testClass.Begin.X);
             Assert.AreEqual(1, testClass.Begin.Y);
@@ -165,10 +165,10 @@ namespace Advent2021.Shared.Tests
             public Coordinate End;
 
             [ComplexParserConstructor]
-            public ParsingTestClass(long[] begin, long[] end)
+            public ParsingTestClass(long[] begin, long endX, long endY)
             {
                 this.Begin = new Coordinate(begin);
-                this.End = new Coordinate(end);
+                this.End = new Coordinate(endX, endY);
             }
         }
     }

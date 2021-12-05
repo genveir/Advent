@@ -9,6 +9,22 @@ namespace Advent2021.Advent03
 {
     class Tests
     {
+        [TestCase("Input.txt", 2595824)]
+        public void Test1(string input, object output)
+        {
+            var sol = new Solution(input);
+
+            Assert.AreEqual(output, sol.GetResult1());
+        }
+
+        [TestCase("Input.txt", 2135254)]
+        public void Test2(string input, object output)
+        {
+            var sol = new Solution(input);
+
+            Assert.AreEqual(output, sol.GetResult2());
+        }
+
         [Test]
         public void GetGammaIsCorrectForTwoItems()
         {

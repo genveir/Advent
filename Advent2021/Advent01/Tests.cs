@@ -9,7 +9,7 @@ namespace Advent2021.Advent01
 {
     class Tests
     {
-        [TestCase("", "")]
+        [TestCase("Input.txt", 1564)]
         public void Test1(string input, object output)
         {
             var sol = new Solution(input);
@@ -17,7 +17,7 @@ namespace Advent2021.Advent01
             Assert.AreEqual(output, sol.GetResult1());
         }
 
-        [TestCase("", "")]
+        [TestCase("Input.txt", 1611)]
         public void Test2(string input, object output)
         {
             var sol = new Solution(input);

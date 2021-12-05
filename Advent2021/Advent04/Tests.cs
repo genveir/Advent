@@ -9,19 +9,21 @@ namespace Advent2021.Advent04
 {
     class Tests
     {
+        [TestCase("Input.txt", null, 63424)]
         [TestCase(example, exampleNums, 4512)]
         public void Test1(string input, string numberList, object output)
         {
-            Solution.numberInput = numberList;
+            if (numberList != null) Solution.numberInput = numberList;
             var sol = new Solution(input);
 
             Assert.AreEqual(output, sol.GetResult1());
         }
 
+        [TestCase("Input.txt", null, 23541)]
         [TestCase(example, exampleNums, 1924)]
         public void Test2(string input, string numberList, object output)
         {
-            Solution.numberInput = numberList;
+            if (numberList != null) Solution.numberInput = numberList;
             var sol = new Solution(input);
 
             Assert.AreEqual(output, sol.GetResult2());

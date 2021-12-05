@@ -10,26 +10,32 @@ namespace Advent2021.Shared
     [AttributeUsage(AttributeTargets.Constructor, Inherited = false, AllowMultiple = false)]
     sealed class ComplexParserConstructorAttribute : Attribute { }
 
-    public class ComplexParser<ComplexType> where ComplexType : class
+    public class ComplexParser
     {
-        InputParser innerParser;
+        SimpleParser innerParser;
 
         public ComplexParser(string pattern)
         {
-            innerParser = new InputParser(pattern);
+            innerParser = new SimpleParser(pattern);
         }
 
         public ComplexParser(bool startsWithValue, int numberOfValues, IEnumerable<string> delimiters)
         {
-            innerParser = new InputParser(startsWithValue, numberOfValues, delimiters);
+            innerParser = new SimpleParser(startsWithValue, numberOfValues, delimiters);
         }
 
-        public List<ComplexType> Parse(IEnumerable<string> inputs) => inputs.Select(Parse).ToList();
-        public ComplexType Parse(string input)
+        public ComplexParser(SimpleParser simpleParser)
         {
-            var types = GetConstructorInputTypes();
+            innerParser = simpleParser;
+        }
 
-            var method = typeof(InputParser)
+        public List<ComplexType> Parse<ComplexType>(IEnumerable<string> inputs)
+            => inputs.Select(Parse<ComplexType>).ToList();
+        public ComplexType Parse<ComplexType>(string input)
+        {
+            var types = GetConstructorInputTypes<ComplexType>();
+
+            var method = typeof(SimpleParser)
                 .GetMethods()
                 .Where(m => m.Name == "Parse")
                 .Where(m => m.GetGenericArguments().Length == types.Length)
@@ -41,18 +47,18 @@ namespace Advent2021.Shared
 
             var values = result.GetType().GetFields().Select(f => f.GetValue(result)).ToArray();
 
-            return Activator.CreateInstance(typeof(ComplexType), values) as ComplexType;
+            return (ComplexType)Activator.CreateInstance(typeof(ComplexType), values);
         }
 
-        public Type[] GetConstructorInputTypes()
+        public Type[] GetConstructorInputTypes<ComplexType>()
         {
-            var constructorToUse = GetConstructor();
+            var constructorToUse = GetConstructor<ComplexType>();
 
             var parameters = constructorToUse.GetParameters();
             return parameters.Select(p => p.ParameterType).ToArray();
         }
 
-        private ConstructorInfo GetConstructor()
+        private ConstructorInfo GetConstructor<ComplexType>()
         {
             var constructors = typeof(ComplexType).GetConstructors();
             
