@@ -41,7 +41,7 @@ namespace Advent2021.Shared
             {
                 var method = typeof(SimpleParser)
                 .GetMethods()
-                .Where(m => m.Name == "Parse")
+                .Where(m => m.Name == nameof(SimpleParser.Parse))
                 .Where(m => m.GetGenericArguments().Length == types.Length)
                 .SingleOrDefault();
 
