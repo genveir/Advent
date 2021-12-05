@@ -8,7 +8,7 @@ namespace Advent2021.Advent05
 {
     public class Solution : ISolution
     {
-        List<ParsedInput> modules;
+        List<LineDef> lineDefs;
 
         public long[][] grid = new long[1000][];
 
@@ -18,10 +18,10 @@ namespace Advent2021.Advent05
 
             var inputParser = new InputParser<long, long, long, long>("x,y -> x,y");
 
-            modules = lines.Select(line =>
+            lineDefs = lines.Select(line =>
             {
                 (var beginX, var beginY, var endX, var endY) = inputParser.Parse(line);
-                var pi = new ParsedInput(beginX, beginY, endX, endY);
+                var pi = new LineDef(beginX, beginY, endX, endY);
                 return pi;
             }).ToList();
 
@@ -32,12 +32,12 @@ namespace Advent2021.Advent05
         }
         public Solution() : this("Input.txt") { }
 
-        public class ParsedInput
+        public class LineDef
         {
             Coordinate Begin;
             Coordinate End;
 
-            public ParsedInput(long beginX, long beginY, long endX, long endY)
+            public LineDef(long beginX, long beginY, long endX, long endY)
             {
                 Begin = new Coordinate(beginX, beginY);
                 End = new Coordinate(endX, endY);
@@ -83,9 +83,9 @@ namespace Advent2021.Advent05
 
         public object GetResult1()
         {
-            var relevantLines = modules.Where(m => m.ForPart1);
+            var relevantLines = lineDefs.Where(m => m.ForPart1);
 
-            foreach (var line in relevantLines) line.DrawPart2(grid);
+            foreach (var line in relevantLines) line.Draw(grid);
 
             long result = 0;
             for (int n = 0; n < 1000; n++)
@@ -101,9 +101,9 @@ namespace Advent2021.Advent05
 
         public object GetResult2()
         {
-            var linesToAdd = modules.Where(m => !m.ForPart1);
+            var linesToAdd = lineDefs.Where(m => !m.ForPart1);
 
-            foreach (var line in linesToAdd) line.DrawPart2(grid);
+            foreach (var line in linesToAdd) line.Draw(grid);
 
             long result = 0;
             for (int n = 0; n < 1000; n++)
