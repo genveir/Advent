@@ -148,15 +148,46 @@ namespace Advent2021.Shared.Tests
         }
 
         [Test]
+        public void CanParseComplexObjectsWithNoParameters()
+        {
+            var parser = new InputParser("begin -> end");
+            var testClass = parser.Parse<EmptyConstructorClass>("1,1 -> 10,10");
+
+            Assert.IsNotNull(testClass);
+        }
+
+        [Test]
+        public void CanParseComplexObjectWithSingleParameter()
+        {
+            var parser = new InputParser<SingleParameterTestClass>("coord");
+            var testClass = parser.Parse("1,2");
+
+            Assert.AreEqual(1, testClass.coordinate.X);
+            Assert.AreEqual(2, testClass.coordinate.Y);
+        }
+
+        [Test]
         public void CanParseComplexObjects()
         {
             var parser = new InputParser("begin -> endx,endy");
-            var testClass = parser.Parse<ParsingTestClass>("1,1 -> 10,10");
+            var testClass = parser.Parse<ParsingTestClass>("1,2 -> 10,11");
 
             Assert.AreEqual(1, testClass.Begin.X);
-            Assert.AreEqual(1, testClass.Begin.Y);
+            Assert.AreEqual(2, testClass.Begin.Y);
             Assert.AreEqual(10, testClass.End.X);
-            Assert.AreEqual(10, testClass.End.Y);
+            Assert.AreEqual(11, testClass.End.Y);
+        }
+
+        public class EmptyConstructorClass { }
+
+        public class SingleParameterTestClass
+        {
+            public Coordinate coordinate;
+
+            public SingleParameterTestClass(long[] coords)
+            {
+                this.coordinate = new Coordinate(coords[0], coords[1]);
+            }
         }
 
         public class ParsingTestClass 

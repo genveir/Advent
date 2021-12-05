@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -48,7 +49,16 @@ namespace Advent2021.Shared
 
                 object result = generic.Invoke(innerParser, new object[] { input });
 
-                values = result.GetType().GetFields().Select(f => f.GetValue(result)).ToArray();
+                var resultType = result.GetType();
+
+                if (resultType.GetInterfaces().Contains(typeof(ITuple)))
+                {
+                    values = resultType.GetFields().Select(f => f.GetValue(result)).ToArray();
+                }
+                else
+                {
+                    values = new object[] { result };
+                }
             }
             return (ComplexType)Activator.CreateInstance(typeof(ComplexType), values);
         }
