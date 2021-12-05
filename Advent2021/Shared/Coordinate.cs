@@ -13,6 +13,27 @@ namespace Advent2021.Shared
             this.Z = z;
         }
 
+        public Coordinate(long[] coords)
+        {
+            if (coords.Length < 2)
+            {
+                throw new ArgumentException("coord input must be of length 2 or 3");
+            }
+            if (coords.Length >= 2)
+            {
+                this.X = coords[0];
+                this.Y = coords[1];
+            }
+            if (coords.Length == 3)
+            {
+                this.Z = coords[2];
+            }
+            if (coords.Length > 3)
+            {
+                throw new ArgumentException("coord input must be of length 2 or 3");
+            }
+        }
+
         public long X;
         public long Y;
         public long? Z;

@@ -16,13 +16,13 @@ namespace Advent2021.Advent05
         {
             var lines = Input.GetInputLines(input).ToArray();
 
-            var inputParser = new InputParser<long, long, long, long>("x,y -> x,y");
+            var inputParser = new InputParser<long[], long[]>("begin -> end");
 
             lineDefs = lines.Select(line =>
             {
-                (var beginX, var beginY, var endX, var endY) = inputParser.Parse(line);
-                var pi = new LineDef(beginX, beginY, endX, endY);
-                return pi;
+                (var begin, var end) = inputParser.Parse(line);
+
+                return new LineDef(begin, end);
             }).ToList();
 
             for (int n = 0; n < 1000; n++)
@@ -37,12 +37,12 @@ namespace Advent2021.Advent05
             Coordinate Begin;
             Coordinate End;
 
-            public LineDef(long beginX, long beginY, long endX, long endY)
+            public LineDef(long[] begin, long[] end)
             {
-                Begin = new Coordinate(beginX, beginY);
-                End = new Coordinate(endX, endY);
+                Begin = new Coordinate(begin);
+                End = new Coordinate(end);
 
-                if (beginX > endX)
+                if (Begin.X > End.X)
                 {
                     var buffer = End;
                     End = Begin;
