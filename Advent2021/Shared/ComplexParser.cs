@@ -35,18 +35,21 @@ namespace Advent2021.Shared
         {
             var types = GetConstructorInputTypes<ComplexType>();
 
-            var method = typeof(SimpleParser)
+            object[] values = new object[0];
+            if (types.Length != 0)
+            {
+                var method = typeof(SimpleParser)
                 .GetMethods()
                 .Where(m => m.Name == "Parse")
                 .Where(m => m.GetGenericArguments().Length == types.Length)
                 .SingleOrDefault();
 
-            var generic = method.MakeGenericMethod(types);
+                var generic = method.MakeGenericMethod(types);
 
-            object result = generic.Invoke(innerParser, new object[] { input });
+                object result = generic.Invoke(innerParser, new object[] { input });
 
-            var values = result.GetType().GetFields().Select(f => f.GetValue(result)).ToArray();
-
+                values = result.GetType().GetFields().Select(f => f.GetValue(result)).ToArray();
+            }
             return (ComplexType)Activator.CreateInstance(typeof(ComplexType), values);
         }
 
