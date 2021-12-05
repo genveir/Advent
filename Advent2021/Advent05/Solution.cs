@@ -10,33 +10,111 @@ namespace Advent2021.Advent05
     {
         List<ParsedInput> modules;
 
+        public long[][] grid = new long[1000][];
+
         public Solution(string input)
         {
             var lines = Input.GetInputLines(input).ToArray();
 
-            var inputParser = new InputParser<string>("line");
+            var inputParser = new InputParser<long, long, long, long>("x,y -> x,y");
 
             modules = lines.Select(line =>
             {
-                var pi = new ParsedInput();
-                //(pi) = inputParser.Parse(line);
+                (var beginX, var beginY, var endX, var endY) = inputParser.Parse(line);
+                var pi = new ParsedInput(beginX, beginY, endX, endY);
                 return pi;
             }).ToList();
+
+            for (int n = 0; n < 1000; n++)
+            {
+                grid[n] = new long[1000];
+            }
         }
         public Solution() : this("Input.txt") { }
 
         public class ParsedInput
         {
+            Coordinate Begin;
+            Coordinate End;
+
+            public ParsedInput(long beginX, long beginY, long endX, long endY)
+            {
+                Begin = new Coordinate(beginX, beginY);
+                End = new Coordinate(endX, endY);
+
+                if (beginX > endX)
+                {
+                    var buffer = End;
+                    End = Begin;
+                    Begin = buffer;
+                }
+            }
+
+            public bool ForPart1 => Begin.X == End.X || Begin.Y == End.Y;
+
+            public void Draw(long[][] grid)
+            {
+                var xDir = 1;
+
+                var yDir = Begin.Y < End.Y ? 1 : -1;
+                if (Begin.Y == End.Y) yDir = 0;
+
+                var length = End.X - Begin.X;
+                if (length == 0)
+                {
+                    length = (End.Y - Begin.Y) * yDir;
+                    xDir = 0;
+                }
+
+                for (int n = 0; n <= length; n++)
+                {
+                    var xCoord = Begin.X + (n * xDir);
+                    var yCoord = Begin.Y + (n * yDir);
+
+                    grid[xCoord][yCoord]++;
+                }
+            }
+
+            public override string ToString()
+            {
+                return $"{Begin}, {End}";
+            }
         }
 
         public object GetResult1()
         {
-            return "";
+            var relevantLines = modules.Where(m => m.ForPart1);
+
+            foreach (var line in relevantLines) line.DrawPart2(grid);
+
+            long result = 0;
+            for (int n = 0; n < 1000; n++)
+            {
+                for (int i = 0; i < 1000; i++)
+                {
+                    if (grid[n][i] > 1) result++;
+                }
+            }
+
+            return result;
         }
 
         public object GetResult2()
         {
-            return "";
+            var linesToAdd = modules.Where(m => !m.ForPart1);
+
+            foreach (var line in linesToAdd) line.DrawPart2(grid);
+
+            long result = 0;
+            for (int n = 0; n < 1000; n++)
+            {
+                for (int i = 0; i < 1000; i++)
+                {
+                    if (grid[n][i] > 1) result++;
+                }
+            }
+
+            return result;
         }
     }
 }
