@@ -1,12 +1,13 @@
-﻿using NUnit.Framework;
+﻿using Advent2021.Shared.Searching;
+using NUnit.Framework;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Advent2021.Shared.Search
+namespace Advent2021.Shared.Tests
 {
-    public class Test
+    public class SearchTest
     {
         [Test]
         public void SingleStep()

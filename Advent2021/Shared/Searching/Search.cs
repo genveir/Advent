@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Advent2021.Shared.Search
+namespace Advent2021.Shared.Searching
 {
     public class Search
     {

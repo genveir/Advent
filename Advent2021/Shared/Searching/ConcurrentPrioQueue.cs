@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 
-namespace Advent2021.Shared.Search
+namespace Advent2021.Shared.Searching
 {
     public class ConcurrentPriorityQueue
     {

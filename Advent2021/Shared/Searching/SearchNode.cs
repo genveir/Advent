@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Advent2021.Shared.Search
+namespace Advent2021.Shared.Searching
 {
     public abstract class SearchNode : IComparable<SearchNode>
     {
