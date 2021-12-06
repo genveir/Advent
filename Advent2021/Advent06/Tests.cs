@@ -34,8 +34,6 @@ namespace Advent2021.Advent06
         [Test]
         public void WaarGaatHetFoutDan()
         {
-            var inputParser = new InputParser<long, long[]>(false, 2, new string[] { "After", "days:" });
-
             var expected = Input.GetInputLines(output).ToArray();
 
             var solution = new Solution(example);
