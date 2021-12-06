@@ -66,16 +66,13 @@ namespace Advent2021.Advent06
 
         public long CalculateWithRotatingIndex(long days)
         {
-            ModList<long> workingArray = new ModList<long>(fishArray.Take(7));
-            ModList<long> buffer = new ModList<long>() { 0, 0 };
+            ModList<long> workingArray = new ModList<long>(fishArray);
 
             for (int n = 0; n < days; n++)
             {
-                var fromBuffer = buffer[n];
-                buffer[n] = workingArray[n];
-                workingArray[n] += fromBuffer;
+                workingArray[n - 2] += workingArray[n];
             }
-            return workingArray.Sum() + buffer.Sum();
+            return workingArray.Sum();
         }
 
         public static long days2;
