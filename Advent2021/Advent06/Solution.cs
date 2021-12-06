@@ -68,9 +68,9 @@ namespace Advent2021.Advent06
         {
             ModList<long> workingArray = new ModList<long>(fishArray);
 
-            for (int n = 0; n < days; n++)
+            for (int day = 0; day < days; day++)
             {
-                workingArray[n - 2] += workingArray[n];
+                workingArray[day + 7] += workingArray[day];
             }
             return workingArray.Sum();
         }
