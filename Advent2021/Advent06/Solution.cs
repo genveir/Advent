@@ -60,30 +60,28 @@ namespace Advent2021.Advent06
                     fish.Tick(nextGen);
                 }
                 fishes.AddRange(nextGen);
-                ;
             }
             return fishes.Count;
         }
 
-        public static long days2 = 256;
+        public long CalculateWithRotatingIndex(long days)
+        {
+            ModList<long> workingArray = new ModList<long>(fishArray.Take(7));
+            ModList<long> buffer = new ModList<long>() { 0, 0 };
+
+            for (int n = 0; n < days; n++)
+            {
+                var fromBuffer = buffer[n];
+                buffer[n] = workingArray[n];
+                workingArray[n] += fromBuffer;
+            }
+            return workingArray.Sum() + buffer.Sum();
+        }
+
+        public static long days2;
         public object GetResult2()
         {
-            for (int n = 0; n < days2; n++)
-            {
-                var newArray = new long[9];
-                newArray[0] = fishArray[1];
-                newArray[1] = fishArray[2];
-                newArray[2] = fishArray[3];
-                newArray[3] = fishArray[4];
-                newArray[4] = fishArray[5];
-                newArray[5] = fishArray[6];
-                newArray[6] = fishArray[7] + fishArray[0];
-                newArray[7] = fishArray[8];
-                newArray[8] = fishArray[0];
-
-                fishArray = newArray;
-            }
-            return fishArray.Sum();
+            return CalculateWithRotatingIndex(days2);
         }
     }
 }
