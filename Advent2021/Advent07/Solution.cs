@@ -8,35 +8,50 @@ namespace Advent2021.Advent07
 {
     public class Solution : ISolution
     {
-        List<ParsedInput> modules;
+        List<long> numbers;
 
         public Solution(string input)
         {
-            var lines = Input.GetInputLines(input).ToArray();
-
-            var inputParser = new InputParser<ParsedInput>("line");
-
-            modules = inputParser.Parse(lines);
+            numbers = Input.GetNumbers(input, ',').ToList();
         }
         public Solution() : this("Input.txt") { }
 
-        public class ParsedInput
-        {
-            [ComplexParserConstructor]
-            public ParsedInput()
-            {
-
-            }
-        }
+        
 
         public object GetResult1()
         {
-            return "";
+            long minCost = long.MaxValue;
+            
+            for (int n = 0; n < 10000; n++)
+            {
+                long cost = 0;
+                for (int i = 0; i < numbers.Count; i++)
+                {
+                    cost += Math.Abs(numbers[i] - n);
+                }
+                if (cost < minCost) minCost = cost;
+            }
+            return minCost;
         }
 
         public object GetResult2()
         {
-            return "";
+            long minCost = long.MaxValue;
+
+            for (int n = 0; n < 10000; n++)
+            {
+                long cost = 0;
+                for (int i = 0; i < numbers.Count; i++)
+                {
+                    var x = Math.Abs(numbers[i] - n);
+
+                    var triangle = x * (x + 1) / 2;
+
+                    cost += triangle;
+                }
+                if (cost < minCost) minCost = cost;
+            }
+            return minCost;
         }
     }
 }
