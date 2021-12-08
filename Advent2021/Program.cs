@@ -18,7 +18,7 @@ namespace Advent2021
             stopWatch.Start();
             for (int n = 0; n < numRuns; n++)
             {
-                ISolution solution = new Advent08.Solution();
+                ISolution solution = new Advent09.Solution();
 
                 result1 = solution.GetResult1().ToString();
                 result2 = solution.GetResult2().ToString();
