@@ -60,7 +60,7 @@ namespace Advent2021.Advent08
             static SegmentArray()
             {
                 // intersects with 1, 4, 7 and 8 in a format that works as a key
-                Dictionary<string, int> intersectMapping = new Dictionary<string, int>();
+                intersectMapping = new Dictionary<string, int>();
                 intersectMapping.Add("2336", 0);
                 intersectMapping.Add("2222", 1);
                 intersectMapping.Add("1225", 2);
