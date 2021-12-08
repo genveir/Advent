@@ -48,11 +48,46 @@ namespace Advent2021.Advent08
 
             public long GetValue()
             {
-                var values = GetValues();
+                var values = BetterIdea();
 
                 var digits = string.Join("", segments.Select(s => values[s]));
 
                 return long.Parse(digits);
+            }
+
+            public Dictionary<string, int> BetterIdea()
+            {
+                var allSegments = wires.Union(segments);
+
+                var one = allSegments.Single(s => s.Length == 2);
+                var seven = allSegments.Single(s => s.Length == 3);
+                var four = allSegments.Single(s => s.Length == 4);
+                var eight = allSegments.Single(s => s.Length == 7);
+
+                var twoThreeAndFive = allSegments.Where(s => s.Length == 5);
+                var zeroSixAndNine = allSegments.Where(s => s.Length == 6);
+
+                var three = twoThreeAndFive.Where(ttf => ttf.Intersect(one).Count() == 2);
+                var five = twoThreeAndFive.Except(three).Where(tf => tf.Intersect(four).Count() == 3);
+                var two = twoThreeAndFive.Except(three).Except(five);
+
+                var six = zeroSixAndNine.Where(zsn => zsn.Intersect(seven).Count() == 2);
+                var nine = zeroSixAndNine.Except(six).Where(zn => zn.Intersect(four).Count() == 4);
+                var zero = zeroSixAndNine.Except(six).Except(nine);
+
+                var dict = new Dictionary<string, int>();
+                dict.Add(zero.Single(), 0);
+                dict.Add(one, 1);
+                dict.Add(two.Single(), 2);
+                dict.Add(three.Single(), 3);
+                dict.Add(four, 4);
+                dict.Add(five.Single(), 5);
+                dict.Add(six.Single(), 6);
+                dict.Add(seven, 7);
+                dict.Add(eight, 8);
+                dict.Add(nine.Single(), 9);
+
+                return dict;
             }
 
             public Dictionary<string, int> GetValues()
@@ -69,7 +104,6 @@ namespace Advent2021.Advent08
                 // 9 yes
 
                 var allSegments = wires.Union(segments);
-                Console.WriteLine(allSegments.Count());
 
                 var one = allSegments.Single(s => s.Length == 2);
                 var seven = allSegments.Single(s => s.Length == 3);
