@@ -31,8 +31,6 @@ namespace Advent2021.Advent08
             {
                 this.signalPattern = sortedStrings(signalPattern);
                 this.outputs = sortedStrings(outputs);
-
-                
             }
 
             private string[] sortedStrings(string[] input) =>
