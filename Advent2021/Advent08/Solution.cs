@@ -8,26 +8,26 @@ namespace Advent2021.Advent08
 {
     public class Solution : ISolution
     {
-        List<ParsedInput> modules;
+        List<SegmentArray> display;
 
         public Solution(string input)
         {
             var lines = Input.GetInputLines(input).ToArray();
 
-            var inputParser = new InputParser<ParsedInput>("words | words");
+            var inputParser = new InputParser<SegmentArray>("words | words");
             inputParser.ArrayDelimiters = new char[] { ' ' };
 
-            modules = inputParser.Parse(lines);
+            display = inputParser.Parse(lines);
         }
         public Solution() : this("Input.txt") { }
 
-        public class ParsedInput
+        public class SegmentArray
         {
             public string[] wires;
             public string[] segments;
 
             [ComplexParserConstructor]
-            public ParsedInput(string[] wires, string[] segments)
+            public SegmentArray(string[] wires, string[] segments)
             {
                 this.wires = wires.Select(w =>
                 {
@@ -166,12 +166,12 @@ namespace Advent2021.Advent08
 
         public object GetResult1()
         {
-            return modules.Sum(m => m.Count());
+            return display.Sum(m => m.Count());
         }
 
         public object GetResult2()
         {
-            return modules.Sum(m => m.GetValue());
+            return display.Sum(m => m.GetValue());
         }
     }
 }
