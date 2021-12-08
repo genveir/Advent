@@ -1,0 +1,9 @@
+{
+	"name": "advent-geerten",
+	"scripts": {
+		"install-dotnet": "@powershell -NoProfile -ExecutionPolicy unrestricted -Command ./dotnet-install.ps1 -RunTime dotnet -InstallDir ./dotnetRuntime",
+		"run-dotnet": "@powershell -NoProfile -ExecutionPolicy unrestricted -Command ./dotnetRuntime/dotnet.exe run --project ./Advent2021",
+		"install": "npm run install-dotnet",
+		"start": "npm run run-dotnet"
+	}
+}
