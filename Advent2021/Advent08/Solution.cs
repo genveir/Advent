@@ -56,15 +56,9 @@ namespace Advent2021.Advent08
                 return long.Parse(digits);
             }
 
-            public Dictionary<string, int> MapDigits()
+            public static Dictionary<string, int> intersectMapping;
+            static SegmentArray()
             {
-                var allDigits = signalPattern.Union(outputs).ToArray();
-
-                var one = allDigits.Single(s => s.Length == 2);
-                var seven = allDigits.Single(s => s.Length == 3);
-                var four = allDigits.Single(s => s.Length == 4);
-                var eight = allDigits.Single(s => s.Length == 7);
-
                 // intersects with 1, 4, 7 and 8 in a format that works as a key
                 Dictionary<string, int> intersectMapping = new Dictionary<string, int>();
                 intersectMapping.Add("2336", 0);
@@ -77,6 +71,16 @@ namespace Advent2021.Advent08
                 intersectMapping.Add("2233", 7);
                 intersectMapping.Add("2437", 8);
                 intersectMapping.Add("2436", 9);
+            }
+
+            public Dictionary<string, int> MapDigits()
+            {
+                var allDigits = signalPattern.Union(outputs).ToArray();
+
+                var one = allDigits.Single(s => s.Length == 2);
+                var seven = allDigits.Single(s => s.Length == 3);
+                var four = allDigits.Single(s => s.Length == 4);
+                var eight = allDigits.Single(s => s.Length == 7);
 
                 var intersectValues = allDigits.Select(digit => string.Join("", new int[]
                 {
