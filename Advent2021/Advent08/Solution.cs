@@ -23,146 +23,74 @@ namespace Advent2021.Advent08
 
         public class SegmentArray
         {
-            public string[] wires;
-            public string[] segments;
+            public string[] signalPattern;
+            public string[] outputs;
 
             [ComplexParserConstructor]
-            public SegmentArray(string[] wires, string[] segments)
+            public SegmentArray(string[] signalPattern, string[] outputs)
             {
-                this.wires = wires.Select(w =>
-                {
-                    var orderedArray = w.OrderBy(c => c).ToArray();
-                    return new string(orderedArray);
-                }).ToArray();
-                this.segments = segments.Select(w =>
-                {
-                    var orderedArray = w.OrderBy(c => c).ToArray();
-                    return new string(orderedArray);
-                }).ToArray();
+                this.signalPattern = sortedStrings(signalPattern);
+                this.outputs = sortedStrings(outputs);
+
+                
             }
+
+            private string[] sortedStrings(string[] input) =>
+                input
+                    .Select(sequence => sequence.OrderBy(c => c))
+                    .Select(chars => new string(chars.ToArray()))
+                    .ToArray();
+
 
             public long Count()
             {
-                return segments.Where(s => s.Length == 2 || s.Length == 3 || s.Length == 7 || s.Length == 4).Count();
+                return outputs.Where(s => s.Length == 2 || s.Length == 3 || s.Length == 7 || s.Length == 4).Count();
             }
 
             public long GetValue()
             {
-                var values = BetterIdea();
+                var values = MapDigits();
 
-                var digits = string.Join("", segments.Select(s => values[s]));
+                var digits = string.Join("", this.outputs.Select(s => values[s]));
 
                 return long.Parse(digits);
             }
 
-            public Dictionary<string, int> BetterIdea()
+            public Dictionary<string, int> MapDigits()
             {
-                var allSegments = wires.Union(segments);
+                var allDigits = signalPattern.Union(outputs).ToArray();
 
-                var one = allSegments.Single(s => s.Length == 2);
-                var seven = allSegments.Single(s => s.Length == 3);
-                var four = allSegments.Single(s => s.Length == 4);
-                var eight = allSegments.Single(s => s.Length == 7);
+                var one = allDigits.Single(s => s.Length == 2);
+                var seven = allDigits.Single(s => s.Length == 3);
+                var four = allDigits.Single(s => s.Length == 4);
+                var eight = allDigits.Single(s => s.Length == 7);
 
-                var twoThreeAndFive = allSegments.Where(s => s.Length == 5);
-                var zeroSixAndNine = allSegments.Where(s => s.Length == 6);
+                // intersects with 1, 4, 7 and 8 in a format that works as a key
+                Dictionary<string, int> intersectMapping = new Dictionary<string, int>();
+                intersectMapping.Add("2336", 0);
+                intersectMapping.Add("2222", 1);
+                intersectMapping.Add("1225", 2);
+                intersectMapping.Add("2335", 3);
+                intersectMapping.Add("2424", 4);
+                intersectMapping.Add("1325", 5);
+                intersectMapping.Add("1326", 6);
+                intersectMapping.Add("2233", 7);
+                intersectMapping.Add("2437", 8);
+                intersectMapping.Add("2436", 9);
 
-                var three = twoThreeAndFive.Where(ttf => ttf.Intersect(one).Count() == 2);
-                var five = twoThreeAndFive.Except(three).Where(tf => tf.Intersect(four).Count() == 3);
-                var two = twoThreeAndFive.Except(three).Except(five);
+                var intersectValues = allDigits.Select(digit => string.Join("", new int[]
+                {
+                    digit.Intersect(one).Count(),
+                    digit.Intersect(four).Count(),
+                    digit.Intersect(seven).Count(),
+                    digit.Intersect(eight).Count()
+                })).ToArray();
 
-                var six = zeroSixAndNine.Where(zsn => zsn.Intersect(seven).Count() == 2);
-                var nine = zeroSixAndNine.Except(six).Where(zn => zn.Intersect(four).Count() == 4);
-                var zero = zeroSixAndNine.Except(six).Except(nine);
-
-                var dict = new Dictionary<string, int>();
-                dict.Add(zero.Single(), 0);
-                dict.Add(one, 1);
-                dict.Add(two.Single(), 2);
-                dict.Add(three.Single(), 3);
-                dict.Add(four, 4);
-                dict.Add(five.Single(), 5);
-                dict.Add(six.Single(), 6);
-                dict.Add(seven, 7);
-                dict.Add(eight, 8);
-                dict.Add(nine.Single(), 9);
-
-                return dict;
+                var result = new Dictionary<string, int>();
+                for (int n = 0; n < 10; n++) result.Add(allDigits[n], intersectMapping[intersectValues[n]]);
+                return result;
             }
-
-            public Dictionary<string, int> GetValues()
-            {
-                // 0 yes
-                // 1 yes
-                // 2 yes
-                // 3 yes
-                // 4 yes
-                // 5 yes
-                // 6 yes
-                // 7 yes
-                // 8 yes
-                // 9 yes
-
-                var allSegments = wires.Union(segments);
-
-                var one = allSegments.Single(s => s.Length == 2);
-                var seven = allSegments.Single(s => s.Length == 3);
-                var four = allSegments.Single(s => s.Length == 4);
-                var eight = allSegments.Single(s => s.Length == 7);
-
-                var twoThreeAndFive = allSegments.Where(s => s.Length == 5);
-                var zeroSixAndNine = allSegments.Where(s => s.Length == 6);
-
-                var cf = one;
-                var acf = seven;
-                var bcdf = four;
-                var a = acf.Except(cf);
-                var bd = bcdf.Except(cf);
-
-                // 3
-                var acdfg = twoThreeAndFive.Where(n => n.Contains(cf[0]) && n.Contains(cf[1])).Single();
-                var three = acdfg;
-
-                var twoAndFive = twoThreeAndFive.Except(new List<string>() { three });
-
-                var adg = acdfg.Except(cf);
-                var dg = adg.Except(a);
-
-                var d = dg.Intersect(bd);
-                var b = bd.Except(d);
-                var g = dg.Except(d);
-
-                // 0
-                var abcefg = eight.Except(d);
-                var zero = new string(abcefg.ToArray());
-
-                var sixAndNine = zeroSixAndNine.Except(new List<string>() { zero });
-
-                var five = twoAndFive.Where(n => n.Contains(b.Single())).Single();
-                var two = twoAndFive.Except( new List<string>() { five });
-
-                var acdeg = two.Single().ToArray();
-
-                var e = acdeg.Except(acdfg).Except(cf);
-
-                var six = sixAndNine.Where(n => n.Contains(e.Single())).Single();
-                var nine = sixAndNine.Except(new List<string>() { six });
-
-                var dict = new Dictionary<string, int>();
-                dict.Add(zero, 0);
-                dict.Add(one, 1);
-                dict.Add(two.Single(), 2);
-                dict.Add(three, 3);
-                dict.Add(four, 4);
-                dict.Add(five, 5);
-                dict.Add(six, 6);
-                dict.Add(seven, 7);
-                dict.Add(eight, 8);
-                dict.Add(nine.Single(), 9);
-
-                return dict;
-            }
-        }        
+        }
 
         public object GetResult1()
         {
