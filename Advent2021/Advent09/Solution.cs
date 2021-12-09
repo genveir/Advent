@@ -8,7 +8,7 @@ namespace Advent2021.Advent09
 {
     public class Solution : ISolution
     {
-        List<Tile> modules;
+        public List<Tile> allTiles;
 
         public Solution(string input)
         {
@@ -16,40 +16,42 @@ namespace Advent2021.Advent09
 
             var inputParser = new InputParser<Tile>("line");
 
+            var tileMap = new Dictionary<Coordinate, Tile>();
             for (int y = 0; y < lines.Length; y++)
             {
                 for (int x = 0; x < lines[0].Length; x++)
                 {
-                    new Tile(x, y, lines[y][x]);
+                    var coord = new Coordinate(x, y);
+                    var tile = new Tile(coord, lines[y][x]);
+
+                    tileMap.Add(coord, tile);
                 }
             }
 
-            foreach (var kvp in Tile.allTiles)
+            foreach (var kvp in tileMap)
             {
-                kvp.Value.SetNeighbours();
+                kvp.Value.SetNeighbours(tileMap);
             }
+
+            allTiles = tileMap.Select(kvp => kvp.Value).ToList();
         }
         public Solution() : this("Input.txt") { }
 
         public class Tile
         {
-            public static Dictionary<Coordinate, Tile> allTiles = new Dictionary<Coordinate, Tile>();
-
             public Coordinate coordinate;
             public long value;
 
             [ComplexParserConstructor]
-            public Tile(int x, int y, long value)
+            public Tile(Coordinate coordinate, long value)
             {
-                this.coordinate = new Coordinate(x, y);
-
-                allTiles.Add(coordinate, this);
+                this.coordinate = coordinate;
 
                 this.value = value;
             }
 
             private List<Tile> neighbours = new List<Tile>();
-            public void SetNeighbours()
+            public void SetNeighbours(Dictionary<Coordinate, Tile> allTiles)
             {
                 Tile above, right, below, left;
 
@@ -62,13 +64,14 @@ namespace Advent2021.Advent09
                 if (allTiles.TryGetValue(new Coordinate(x, y + 1), out below)) neighbours.Add(below);
             }
 
-            public bool AmLowPoint()
-            {
-                return neighbours.All(n => this.value < n.value);
-            }
+            public bool IsLowPoint => neighbours.All(n => this.value < n.value);
 
+            public long Risk => value + 1;
+
+            public Coordinate IsInBasin = null;
             public void PropagateBasin(Coordinate basin)
             {
+                if (IsInBasin != null) return;
                 if (this.value == 9) return;
 
                 this.IsInBasin = basin;
@@ -77,27 +80,26 @@ namespace Advent2021.Advent09
 
                 foreach (var n in neighboursNotInBasin) n.PropagateBasin(basin);
             }
-
-            public Coordinate IsInBasin = null;
-
-            public long Risk => value + 1;
         }
 
         public object GetResult1()
         {
-            return Tile.allTiles.Where(t => t.Value.AmLowPoint()).Select(t => t.Value.Risk).Sum();
+            return allTiles.Where(t => t.IsLowPoint).Select(t => t.Risk).Sum();
         }
 
         public object GetResult2()
         {
-            var lowPoints = Tile.allTiles.Where(t => t.Value.AmLowPoint()).Select(t => t.Value);
+            var lowPoints = allTiles.Where(t => t.IsLowPoint);
 
             foreach (var t in lowPoints) t.PropagateBasin(t.coordinate);
 
-            var basins = Tile.allTiles.Select(t => t.Value).Where(t => t.IsInBasin != null).GroupBy(t => t.IsInBasin);
-                var sizes = basins.Select(g => g.Count()).OrderByDescending(g => g).ToArray();
+            var basins = allTiles
+                .Where(t => t.IsInBasin != null)
+                .GroupBy(t => t.IsInBasin)
+                .Select(g => g.Count())
+                .OrderByDescending(g => g).ToArray();
 
-            return sizes[0] * sizes[1] * sizes[2];
+            return basins[0] * basins[1] * basins[2];
         }
     }
 }
