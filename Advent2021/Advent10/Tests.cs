@@ -9,7 +9,8 @@ namespace Advent2021.Advent10
 {
     class Tests
     {
-        [TestCase(example, "")]
+        [TestCase(example, 26397)]
+        [TestCase("Input.txt", 321237)]
         public void Test1(string input, object output)
         {
             var sol = new Solution(input);
@@ -17,7 +18,8 @@ namespace Advent2021.Advent10
             Assert.AreEqual(output, sol.GetResult1());
         }
 
-        [TestCase(example, "")]
+        [TestCase(example, 288957)]
+        [TestCase("Input.txt", 2360030859)]
         public void Test2(string input, object output)
         {
             var sol = new Solution(input);
@@ -25,6 +27,15 @@ namespace Advent2021.Advent10
             Assert.AreEqual(output, sol.GetResult2());
         }
 
-        public const string example = @"";
+        public const string example = @"[({(<(())[]>[[{[]{<()<>>
+[(()[<>])]({[<{<<[]>>(
+{([(<{}[<>[]}>{[]{[(<()>
+(((({<>}<{<{<>}{[]{[]{}
+[[<[([]))<([[{}[[()]]]
+[{[{({}]{}}([{[{{{}}([]
+{<[[]]>}<{[{[{[]{()[[[]
+[<(<(<(<{}))><([]([]()
+<{([([[(<>()){}]>(<<{{
+<{([{{}}[<[[[<>{}]]]>[]]";
     }
 }
