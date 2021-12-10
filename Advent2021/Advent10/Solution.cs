@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Advent2021.Advent10
 {
@@ -34,7 +35,6 @@ namespace Advent2021.Advent10
             {
                 corruptionMap = new long[255][];
 
-                corruptionMap[0] = new long[255];
                 corruptionMap['('] = new long[255];
                 corruptionMap['['] = new long[255];
                 corruptionMap['{'] = new long[255];
@@ -81,71 +81,69 @@ namespace Advent2021.Advent10
             private static long[] numPops;
             private static long[] scoreMap;
 
-            public long CorruptionScore => CalculateCorruptionScore().corruption;
+            public long CorruptionScore => _corruptionScores.corruption;
 
-            long timesToDoCalculation = 1;
             public (Stack<char> open, long corruption) _corruptionScores;
-            public (Stack<char> open, long corruption) CalculateCorruptionScore()
+            public void CalculateCorruptionScore()
             {
-                for (int runs = 0; runs < timesToDoCalculation; timesToDoCalculation--)
+                var opened = new Stack<char>(50);
+
+                long acc = 0;
+                long mult = 1;
+                for (int index = 0; index < input.Length; index++)
                 {
-                    var opened = new Stack<char>();
+                    var c = input[index];
 
-                    long acc = 0;
-                    long mult = 1;
-                    for (int index = 0; index < input.Length; index++)
-                    {
-                        var c = input[index];
+                    opened.Push(c);
 
-                        opened.Push(c);
+                    char toCheck = (char)0;
+                    for (int n = 0; n < numPops[c]; n++) toCheck = opened.Pop();
 
-                        char toCheck = (char)0;
-                        for (int n = 0; n < numPops[c]; n++) toCheck = opened.Pop();
+                    var corruption = corruptionMap[c][toCheck];
 
-                        var corruption = corruptionMap[c][toCheck];
-
-                        acc = acc + (corruption * mult);
-                        mult = 1 - (acc & 1);
-                    }
-
-                    _corruptionScores = (opened, acc);
+                    acc = acc + (corruption * mult);
+                    mult = 1 - (acc & 1);
                 }
-                return _corruptionScores;
+
+                _corruptionScores = (opened, acc);
             }
 
-            long score;
-            long timesToCalculateScore = 1;
-            public long GetCompletionScore()
+            public long Score { get; set; }
+            public void CalculateCompletionScore()
             {
-                for (int runs = 0; runs < timesToCalculateScore; timesToCalculateScore--)
+                (var opened, var corruption) = _corruptionScores;
+
+                var mult = 1 - (corruption & 1);
+
+                Score = 0;
+                while (opened.Count > 0)
                 {
-                    (var opened, var corruption) = CalculateCorruptionScore();
+                    Score *= 5;
+                    var toClose = opened.Pop();
 
-                    var mult = 1 - (corruption & 1);
-
-                    score = 0;
-                    while (opened.Count > 0)
-                    {
-                        score *= 5;
-                        var toClose = opened.Pop();
-
-                        score += scoreMap[toClose];
-                    }
-
-                    score = score * mult;
+                    Score += scoreMap[toClose];
                 }
-                return score;
+
+                Score = Score * mult;
             }
         }
 
+        bool p1Run = false;
         public object GetResult1()
         {
+            Parallel.ForEach(modules, m => m.CalculateCorruptionScore());
+
+            p1Run = true;
             return modules.Sum(m => m.CorruptionScore);
         }
 
         public object GetResult2()
         {
-            var incomplete = modules.Select(m => m.GetCompletionScore()).ToList();
+            if (!p1Run) Parallel.ForEach(modules, m => m.CalculateCorruptionScore());
+
+            Parallel.ForEach(modules, m => m.CalculateCompletionScore());
+
+            var incomplete = modules.Select(m => m.Score).ToList();
             var filtered = incomplete.Where(m => m > 0).ToList();
             var ordered = filtered
                 .OrderBy(m => m)
