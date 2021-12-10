@@ -136,8 +136,6 @@ namespace Advent2021.Advent10
                 }
                 return score;
             }
-
-            public bool isOpening(char c) => "([{<".Contains(c);
         }
 
         public object GetResult1()
