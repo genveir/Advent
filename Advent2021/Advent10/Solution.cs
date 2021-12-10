@@ -28,119 +28,132 @@ namespace Advent2021.Advent10
             public ParsedInput(string input)
             {
                 this.input = input;
-
-
             }
 
-            public int _corruptionIndex = 0;
-            public long _corruptionScore = -1;
-            public long CorruptionScore
+            static ParsedInput()
             {
-                get
+                corruptionMap = new long[255][];
+
+                corruptionMap[0] = new long[255];
+                corruptionMap['('] = new long[255];
+                corruptionMap['['] = new long[255];
+                corruptionMap['{'] = new long[255];
+                corruptionMap['<'] = new long[255];
+
+                corruptionMap[')'] = new long[255];
+                corruptionMap[')']['['] = 3;
+                corruptionMap[')']['{'] = 3;
+                corruptionMap[')']['<'] = 3;
+
+                corruptionMap[']'] = new long[255];
+                corruptionMap[']']['('] = 57;
+                corruptionMap[']']['{'] = 57;
+                corruptionMap[']']['<'] = 57;
+
+                corruptionMap['}'] = new long[255];
+                corruptionMap['}']['('] = 1197;
+                corruptionMap['}']['['] = 1197;
+                corruptionMap['}']['<'] = 1197;
+
+                corruptionMap['>'] = new long[255];
+                corruptionMap['>']['('] = 25137;
+                corruptionMap['>']['['] = 25137;
+                corruptionMap['>']['{'] = 25137;
+
+                numPops = new long[255];
+                numPops['('] = 0;
+                numPops[')'] = 2;
+                numPops['['] = 0;
+                numPops[']'] = 2;
+                numPops['{'] = 0;
+                numPops['}'] = 2;
+                numPops['<'] = 0;
+                numPops['>'] = 2;
+
+                scoreMap = new long[255];
+                scoreMap['('] = 1;
+                scoreMap['['] = 2;
+                scoreMap['{'] = 3;
+                scoreMap['<'] = 4;
+            }
+
+            public static long[][] corruptionMap;
+            private static long[] numPops;
+            private static long[] scoreMap;
+
+            public long CorruptionScore => CalculateCorruptionScore().corruption;
+
+            long timesToDoCalculation = 1;
+            public (Stack<char> open, long corruption) _corruptionScores;
+            public (Stack<char> open, long corruption) CalculateCorruptionScore()
+            {
+                for (int runs = 0; runs < timesToDoCalculation; timesToDoCalculation--)
                 {
-                    if (_corruptionScore == -1)
+                    var opened = new Stack<char>();
+
+                    long acc = 0;
+                    long mult = 1;
+                    for (int index = 0; index < input.Length; index++)
                     {
-                        Stack<char> opened = new Stack<char>();
-                        for (int n = 0; n < input.Length; n++)
-                        {
+                        var c = input[index];
 
-                            if (isOpening(input[n])) opened.Push(input[n]);
-                            else
-                            {
-                                var corruptionScore = GetCorrupted(opened, input[n]);
+                        opened.Push(c);
 
-                                if (corruptionScore > 0)
-                                {
-                                    _corruptionScore = corruptionScore;
-                                    _corruptionIndex = n;
-                                    break;
-                                }
-                            }
-                        }
+                        char toCheck = (char)0;
+                        for (int n = 0; n < numPops[c]; n++) toCheck = opened.Pop();
+
+                        var corruption = corruptionMap[c][toCheck];
+
+                        acc = acc + (corruption * mult);
+                        mult = 1 - (acc & 1);
                     }
-                    if (_corruptionScore == -1) _corruptionScore = 0;
 
-                    return _corruptionScore;
+                    _corruptionScores = (opened, acc);
                 }
+                return _corruptionScores;
             }
 
-            private long GetCorrupted(Stack<char> opened, char c)
-            {
-                var toClose = opened.Pop();
-                switch (c)
-                {
-                    case ')':
-                        if (toClose != '(') return 3;
-                        break;
-                    case ']':
-                        if (toClose != '[') return 57;
-                        break;
-                    case '}':
-                        if (toClose != '{') return 1197;
-                        break;
-                    case '>':
-                        if (toClose != '<') return 25137;
-                        break;
-                }
-
-                return 0;
-
-            }
-
+            long score;
+            long timesToCalculateScore = 1;
             public long GetCompletionScore()
             {
-                Stack<char> opened = new Stack<char>();
-                for (int n = 0; n < input.Length; n++)
+                for (int runs = 0; runs < timesToCalculateScore; timesToCalculateScore--)
                 {
-                    if (isOpening(input[n])) opened.Push(input[n]);
-                    else
+                    (var opened, var corruption) = CalculateCorruptionScore();
+
+                    var mult = 1 - (corruption & 1);
+
+                    score = 0;
+                    while (opened.Count > 0)
                     {
-                        opened.Pop();
+                        score *= 5;
+                        var toClose = opened.Pop();
+
+                        score += scoreMap[toClose];
                     }
+
+                    score = score * mult;
                 }
-
-                long score = 0;
-                while(opened.Count > 0)
-                {
-                    score *= 5;
-                    var toClose = opened.Pop();
-
-                    switch(toClose)
-                    {
-                        case '(': score += 1;break;
-                        case '[': score += 2; break;
-                        case '{': score += 3; break;
-                        case '<': score += 4; break;
-                    }
-                }
-
                 return score;
             }
 
             public bool isOpening(char c) => "([{<".Contains(c);
-
-            public override string ToString()
-            {
-                return $"{_corruptionIndex}, {_corruptionScore } {input}";
-            }
         }
 
         public object GetResult1()
         {
             return modules.Sum(m => m.CorruptionScore);
-
-            ;
         }
 
         public object GetResult2()
         {
-            var incomplete = modules
-                .Where(m => m.CorruptionScore == 0)
-                .Select(m => m.GetCompletionScore())
+            var incomplete = modules.Select(m => m.GetCompletionScore()).ToList();
+            var filtered = incomplete.Where(m => m > 0).ToList();
+            var ordered = filtered
                 .OrderBy(m => m)
                 .ToList();
 
-            return incomplete[incomplete.Count / 2];
+            return ordered[ordered.Count / 2];
         }
     }
 }

@@ -10,6 +10,8 @@ namespace Advent2021.Advent10
     class Tests
     {
         [TestCase(example, 26397)]
+        [TestCase("()", 0)]
+        [TestCase("(]", 57)]
         [TestCase("Input.txt", 321237)]
         public void Test1(string input, object output)
         {
