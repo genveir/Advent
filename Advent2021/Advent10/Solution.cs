@@ -1,6 +1,7 @@
 ﻿using Advent2021.Shared;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,22 +14,20 @@ namespace Advent2021.Advent10
 
         public Solution(string input)
         {
-            var lines = Input.GetInputLines(input).ToArray();
+            var lines = Input.GetInputLines(input);
 
-            var inputParser = new InputParser<ParsedInput>("line");
-
-            modules = inputParser.Parse(lines);
+            modules = lines.Select(l => new ParsedInput(l)).ToList();
         }
         public Solution() : this("Input.txt") { }
 
         public class ParsedInput
         {
-            public string input;
+            public char[] input;
 
             [ComplexParserConstructor]
             public ParsedInput(string input)
             {
-                this.input = input;
+                this.input = input.ToCharArray();
             }
 
             static ParsedInput()
