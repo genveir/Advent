@@ -59,6 +59,8 @@ namespace Advent2021.Advent12
             }
 
             NumberOfPaths = paths.Select(p => p.ToArray()).ToArray();
+            for (int n = 0; n < NumberOfPaths.Length; n++) NumberOfPaths[n][startIndex] = 0; // there are no paths to start
+
             Visted = new int[Caves.Count];
             return DFSWithMem(startIndex, 0);
             ;
@@ -80,18 +82,18 @@ namespace Advent2021.Advent12
         int[] Visted;
         private unsafe int DFSWithMem(int caveFrom, int twice)
         {
-            if (caveFrom == endIndex) return 1;
-
             fixed (int* memPtr = Memory)
             fixed (int* visPtr = Visted)
             {
+                if (caveFrom == endIndex) return 1;
+
                 long key = Convert(Visted, caveFrom, twice);
                 if (memPtr[key] == 0)
                 {
                     int count = 0;
                     for (int caveTo = 0; caveTo < NumberOfPaths.Length; caveTo++)
                     {
-                        if (NumberOfPaths[caveFrom][caveTo] == 0 || caveTo == startIndex) continue;
+                        if (NumberOfPaths[caveFrom][caveTo] == 0) continue;
 
                         var visited = visPtr[caveTo];
 
@@ -100,7 +102,6 @@ namespace Advent2021.Advent12
                         { 
                             count += (NumberOfPaths[caveFrom][caveTo]) * DFSWithMem(caveTo, visited | twice);
                         }
-                        
                         visPtr[caveTo] = visited & visPtr[caveTo];
                     }
                     memPtr[key] = count;
