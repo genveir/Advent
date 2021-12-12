@@ -47,23 +47,24 @@ namespace Advent2021.Advent12
             startIndex = SmallCaves.IndexOf("start");
             endIndex = SmallCaves.IndexOf("end");
             Memory = new int[40000];
-            var paths = new List<List<int>>();
+            var paths = new List<List<(int to, int num)>>();
             for (int i = 0; i < SmallCaves.Count; i++)
             {
-                var list = new List<int>();
+                var list = new List<(int to, int num)>();
                 for (int j = 0; j < SmallCaves.Count; j++)
                 {
-                    list.Add(CountPaths(SmallCaves[i], SmallCaves[j]));
+                    if (j == startIndex) continue;
+
+                    var num = CountPaths(SmallCaves[i], SmallCaves[j]);
+                    if (num > 0) list.Add((j, num));
                 }
                 paths.Add(list);
             }
 
             NumberOfPaths = paths.Select(p => p.ToArray()).ToArray();
-            for (int n = 0; n < NumberOfPaths.Length; n++) NumberOfPaths[n][startIndex] = 0; // there are no paths to start
 
             Visted = new int[Caves.Count];
             return DFSWithMem(startIndex, 0);
-            ;
         }
 
         public long Convert(int[] Visted, int caveFrom, int twice)
@@ -78,7 +79,7 @@ namespace Advent2021.Advent12
             return acc;
         }
 
-        int[][] NumberOfPaths;
+        (int to, int num)[][] NumberOfPaths;
         int[] Visted;
         private unsafe int DFSWithMem(int caveFrom, int twice)
         {
@@ -91,16 +92,17 @@ namespace Advent2021.Advent12
                 if (memPtr[key] == 0)
                 {
                     int count = 0;
-                    for (int caveTo = 0; caveTo < NumberOfPaths.Length; caveTo++)
+                    for (int target = 0; target < NumberOfPaths[caveFrom].Length; target++)
                     {
-                        if (NumberOfPaths[caveFrom][caveTo] == 0) continue;
+                        var caveTo = NumberOfPaths[caveFrom][target].to;
+                        var num = NumberOfPaths[caveFrom][target].num;
 
                         var visited = visPtr[caveTo];
 
                         visPtr[caveTo] = 1;
                         if ((visited & twice) == 0)
                         { 
-                            count += (NumberOfPaths[caveFrom][caveTo]) * DFSWithMem(caveTo, visited | twice);
+                            count += num * DFSWithMem(caveTo, visited | twice);
                         }
                         visPtr[caveTo] = visited & visPtr[caveTo];
                     }
