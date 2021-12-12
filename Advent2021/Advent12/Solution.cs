@@ -54,7 +54,7 @@ namespace Advent2021.Advent12
                 }
 
                 fromCave.LinkNeighbour(toCave);
-                toCave.LinkNeighbour(fromCave);
+                if (fromCave.name != "start") toCave.LinkNeighbour(fromCave);
             }
         }
 
@@ -63,7 +63,6 @@ namespace Advent2021.Advent12
             public string name;
 
             public bool isBig;
-            public bool isTiny;
 
             public List<Cave> neighbours = new List<Cave>();
 
@@ -71,9 +70,6 @@ namespace Advent2021.Advent12
             {
                 this.name = name;
                 isBig = name.ToUpper() == name;
-                isTiny = name == "start" || name == "end";
-
-                if (name == "end") isBig = true;
             }
 
             public void LinkNeighbour(Cave neighbour)
@@ -133,7 +129,6 @@ namespace Advent2021.Advent12
         {
             public List<Cave> inOrder = new List<Cave>();
             public HashSet<Cave> smallCavesVisited = new HashSet<Cave>();
-            public HashSet<Cave> cantVisit = new HashSet<Cave>();
             public bool cantVisitSmall = false;
             public Cave Current;
 
@@ -149,11 +144,9 @@ namespace Advent2021.Advent12
                 this.inOrder.Add(newCurrent);
 
                 this.smallCavesVisited = new HashSet<Cave>(parent.smallCavesVisited); // small visited once
-                this.cantVisit = new HashSet<Cave>(parent.cantVisit); // small visited twice + start/end
                 this.cantVisitSmall = parent.cantVisitSmall;
                 this.Current = newCurrent;
 
-                if (parent.Current.isTiny) this.cantVisit.Add(parent.Current);
                 if (smallCavesVisited.Contains(Current)) this.cantVisitSmall = true;
 
                 if (!Current.isBig) smallCavesVisited.Add(Current);
@@ -163,8 +156,7 @@ namespace Advent2021.Advent12
             {
                 foreach(var neighbour in Current.neighbours)
                 {
-                    if (cantVisit.Contains(neighbour)) continue;
-                    if (cantVisitSmall && !neighbour.isBig && smallCavesVisited.Contains(neighbour)) continue;
+                    if (cantVisitSmall && smallCavesVisited.Contains(neighbour)) continue;
                     else yield return new SearchNode2(this, neighbour);
                 }
             }
