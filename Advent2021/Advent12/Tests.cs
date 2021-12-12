@@ -35,10 +35,13 @@ namespace Advent2021.Advent12
             var myResults = sol.EnumeratePaths2().ToList();
             var exampleResults = visits.Split(Environment.NewLine).ToList();
 
+            var missing = new List<string>();
             foreach(var route in myResults)
             {
-                Assert.That(exampleResults.Any(res => res == route.ToString()));
+                if (!exampleResults.Any(res => res == route.ToString())) missing.Add(route.ToString());
             }
+
+            Assert.That(missing.Count == 0, $"missing:{Environment.NewLine} {string.Join(Environment.NewLine, missing)}");
         }
 
         [Test]
@@ -49,7 +52,7 @@ namespace Advent2021.Advent12
             var myResults = sol.EnumeratePaths2().ToList();
             var exampleResults = visits.Split(Environment.NewLine).ToList();
 
-            List<string> missing = new List<string>();
+            var missing = new List<string>();
             foreach (var route in exampleResults)
             {
                 if (!myResults.Any(res => res.ToString() == route)) missing.Add(route);

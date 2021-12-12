@@ -8,55 +8,34 @@ namespace Advent2021.Advent12
 {
     public class Solution : ISolution
     {
-        List<Cave> caves;
-        Dictionary<string, Cave> allCaves = new Dictionary<string, Cave>();
+        Cave start;
 
         public Solution(string input)
         {
-            var lines = Input.GetInputLines(input).ToArray();
+            var links = Input.GetInputLines(input).Select(l => l.Split("-")).ToArray();
 
-            var inputParser = new InputParser<ParsedInput>("a-b");
+            var allCaves = new Dictionary<string, Cave>();
 
-            var links = inputParser.Parse(lines);
+            for (int n = 0; n < links.Length; n++)
+            {
+                var from = links[n][0];
+                var to = links[n][1];
+                if (!allCaves.ContainsKey(from)) allCaves.Add(from, new Cave(from));
+                if (!allCaves.ContainsKey(to)) allCaves.Add(to, new Cave(to));
+            }
 
-            foreach (var link in links) link.SetCaves(allCaves); 
+            for (int n = 0; n < links.Length; n++)
+            {
+                var from = links[n][0];
+                var to = links[n][1];
 
-            caves = allCaves.Values.ToList();
+                if (to != "start") allCaves[from].LinkNeighbour(allCaves[to]);
+                if (from != "start") allCaves[to].LinkNeighbour(allCaves[from]);
+            }
+
+            start = allCaves["start"];
         }
         public Solution() : this("Input.txt") { }
-
-        public class ParsedInput
-        {
-            public string from;
-            public string to;
-
-            public Cave fromCave;
-            public Cave toCave;
-
-            [ComplexParserConstructor]
-            public ParsedInput(string from, string to)
-            {
-                this.from = from;
-                this.to = to;
-            }
-
-            public void SetCaves(Dictionary<string, Cave> allCaves)
-            {
-                if (!allCaves.TryGetValue(from, out fromCave))
-                {
-                    fromCave = new Cave(from);
-                    allCaves.Add(from, fromCave);
-                }
-                if (!allCaves.TryGetValue(to, out toCave))
-                {
-                    toCave = new Cave(to);
-                    allCaves.Add(to, toCave);
-                }
-
-                fromCave.LinkNeighbour(toCave);
-                if (fromCave.name != "start") toCave.LinkNeighbour(fromCave);
-            }
-        }
 
         public class Cave
         {
@@ -165,14 +144,12 @@ namespace Advent2021.Advent12
 
             public override string ToString()
             {
-                //return $"node at {Current}, visited {string.Join(",", this.smallCavesVisited)}, can't visit: {string.Join(",", this.cantVisit)}";
                 return string.Join(",", inOrder);
             }
         }
 
         public IEnumerable<SearchNode1> EnumeratePaths1()
         {
-            var start = allCaves["start"];
             var node = new SearchNode1(start);
 
             var queue = new Queue<SearchNode1>();
@@ -194,7 +171,6 @@ namespace Advent2021.Advent12
 
         public IEnumerable<SearchNode2> EnumeratePaths2()
         {
-            var start = allCaves["start"];
             var node = new SearchNode2(start);
 
             var queue = new Queue<SearchNode2>();
