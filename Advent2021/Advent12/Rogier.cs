@@ -63,16 +63,20 @@ namespace Advent2021.Advent12
 
             NumberOfPaths = paths.Select(p => p.ToArray()).ToArray();
 
-            Visted = new int[Caves.Count + 1];
-            twiceIndex = Visted.Length - 1;
-            return DFSWithMem(startIndex);
+            Visted = new int[Caves.Count + 2];
+            twiceIndex = Visted.Length - 2;
+            caveIndex = Visted.Length - 1; // not binary
+
+            Visted[caveIndex] = startIndex;
+            
+            return DFSWithMem();
         }
 
-        public long Convert(int[] Visted, int caveFrom)
+        public long Convert(int[] Visted)
         {
-            long acc = caveFrom;
+            long acc = Visted[caveIndex]; // not binary, can't fold like the rest
             int i = 0;
-            for (; i < Visted.Length; i++)
+            for (; i < Visted.Length - 1; i++)
             {
                 acc += Visted[i] << (i + 4);
             }
@@ -82,12 +86,15 @@ namespace Advent2021.Advent12
         (int to, int num)[][] NumberOfPaths;
         int[] Visted;
         int twiceIndex;
+        int caveIndex;
 
-        private int DFSWithMem(int caveFrom)
+        private int DFSWithMem()
         {
+            var caveFrom = Visted[caveIndex];
+
             if (caveFrom == endIndex) return 1;
 
-            long key = Convert(Visted, caveFrom);
+            long key = Convert(Visted);
             if (Memory[key] == 0)
             {
                 int count = 0;
@@ -101,11 +108,13 @@ namespace Advent2021.Advent12
 
                     Visted[caveTo] = 1;
                     Visted[twiceIndex] = visited | twice;
+                    Visted[caveIndex] = caveTo;
 
-                    count += ((visited & twice) == 1) ? 0 :  num * DFSWithMem(caveTo);
+                    count += ((visited & twice) == 1) ? 0 :  num * DFSWithMem();
 
                     Visted[caveTo] = visited & Visted[caveTo];
                     Visted[twiceIndex] = twice;
+                    Visted[caveIndex] = caveFrom;
                 }
                 Memory[key] = count;
             }
