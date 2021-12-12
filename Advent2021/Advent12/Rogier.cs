@@ -100,10 +100,7 @@ namespace Advent2021.Advent12
                         var visited = visPtr[caveTo];
 
                         visPtr[caveTo] = 1;
-                        if ((visited & twice) == 0)
-                        { 
-                            count += num * DFSWithMem(caveTo, visited | twice);
-                        }
+                        count += ((visited & twice) == 1) ? 0 :  num * DFSWithMem(caveTo, visited | twice);
                         visPtr[caveTo] = visited & visPtr[caveTo];
                     }
                     memPtr[key] = count;
