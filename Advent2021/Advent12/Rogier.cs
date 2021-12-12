@@ -47,16 +47,16 @@ namespace Advent2021.Advent12
             startIndex = SmallCaves.IndexOf("start");
             endIndex = SmallCaves.IndexOf("end");
             Memory = new int[40000];
-            var paths = new List<List<(int to, int num)>>();
+            var paths = new List<List<int[]>>();
             for (int i = 0; i < SmallCaves.Count; i++)
             {
-                var list = new List<(int to, int num)>();
+                var list = new List<int[]>();
                 for (int j = 0; j < SmallCaves.Count; j++)
                 {
                     if (j == startIndex) continue;
 
                     var num = CountPaths(SmallCaves[i], SmallCaves[j]);
-                    if (num > 0) list.Add((j, num));
+                    if (num > 0) list.Add(new int[] { j, num });
                 }
                 paths.Add(list);
             }
@@ -83,7 +83,7 @@ namespace Advent2021.Advent12
             return acc;
         }
 
-        (int to, int num)[][] NumberOfPaths;
+        int[][][] NumberOfPaths;
         int[] Visted;
         int twiceIndex;
         int caveIndex;
@@ -100,8 +100,8 @@ namespace Advent2021.Advent12
                 int count = 0;
                 for (int target = 0; target < NumberOfPaths[caveFrom].Length; target++)
                 {
-                    var caveTo = NumberOfPaths[caveFrom][target].to;
-                    var num = NumberOfPaths[caveFrom][target].num;
+                    var caveTo = NumberOfPaths[caveFrom][target][0];
+                    var num = NumberOfPaths[caveFrom][target][1];
 
                     var visited = Visted[caveTo];
                     var twice = Visted[twiceIndex];
