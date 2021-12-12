@@ -80,6 +80,8 @@ namespace Advent2021.Advent12
         int[] Visted;
         private unsafe int DFSWithMem(int caveFrom, int twice)
         {
+            if (caveFrom == endIndex) return 1;
+
             fixed (int* memPtr = Memory)
             fixed (int* visPtr = Visted)
             {
@@ -94,26 +96,11 @@ namespace Advent2021.Advent12
                         var visited = visPtr[caveTo];
 
                         visPtr[caveTo] = 1;
-                        if (caveTo == endIndex)
-                        {
-                            count += NumberOfPaths[caveFrom][caveTo];
+                        if ((visited & twice) == 0)
+                        { 
+                            count += (NumberOfPaths[caveFrom][caveTo]) * DFSWithMem(caveTo, visited | twice);
                         }
-                        else if (visited == 0 && twice == 0)
-                        {
-                            count += (NumberOfPaths[caveFrom][caveTo]) * DFSWithMem(caveTo, visited + twice);
-                        }
-                        else if (visited == 0 && twice == 1)
-                        {
-                            count += (NumberOfPaths[caveFrom][caveTo]) * DFSWithMem(caveTo, visited + twice);
-                        }
-                        else if (visited == 1 && twice == 0)
-                        {
-                            count += (NumberOfPaths[caveFrom][caveTo]) * DFSWithMem(caveTo, 1);
-                        }
-                        else if (visited == 1 && twice == 1)
-                        {
-                            count += 0;
-                        }
+                        
                         visPtr[caveTo] = visited & visPtr[caveTo];
                     }
                     memPtr[key] = count;
