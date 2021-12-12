@@ -93,21 +93,18 @@ namespace Advent2021.Advent12
 
                         var visited = visPtr[caveTo];
 
+                        visPtr[caveTo] = 1;
                         if (caveTo == endIndex)
                         {
                             count += NumberOfPaths[caveFrom][caveTo];
                         }
                         else if (visited == 0 && twice == 0)
                         {
-                            visPtr[caveTo] = 1 - visPtr[caveTo];
                             count += (NumberOfPaths[caveFrom][caveTo]) * DFSWithMem(caveTo, visited + twice);
-                            visPtr[caveTo] = 1 - visPtr[caveTo];
                         }
                         else if (visited == 0 && twice == 1)
                         {
-                            visPtr[caveTo] = 1 - visPtr[caveTo];
                             count += (NumberOfPaths[caveFrom][caveTo]) * DFSWithMem(caveTo, visited + twice);
-                            visPtr[caveTo] = 1 - visPtr[caveTo];
                         }
                         else if (visited == 1 && twice == 0)
                         {
@@ -117,6 +114,7 @@ namespace Advent2021.Advent12
                         {
                             count += 0;
                         }
+                        visPtr[caveTo] = visited & visPtr[caveTo];
                     }
                     memPtr[key] = count;
                 }
