@@ -81,32 +81,28 @@ namespace Advent2021.Advent12
 
         (int to, int num)[][] NumberOfPaths;
         int[] Visted;
-        private unsafe int DFSWithMem(int caveFrom, int twice)
+        private int DFSWithMem(int caveFrom, int twice)
         {
-            fixed (int* memPtr = Memory)
-            fixed (int* visPtr = Visted)
+            if (caveFrom == endIndex) return 1;
+
+            long key = Convert(Visted, caveFrom, twice);
+            if (Memory[key] == 0)
             {
-                if (caveFrom == endIndex) return 1;
-
-                long key = Convert(Visted, caveFrom, twice);
-                if (memPtr[key] == 0)
+                int count = 0;
+                for (int target = 0; target < NumberOfPaths[caveFrom].Length; target++)
                 {
-                    int count = 0;
-                    for (int target = 0; target < NumberOfPaths[caveFrom].Length; target++)
-                    {
-                        var caveTo = NumberOfPaths[caveFrom][target].to;
-                        var num = NumberOfPaths[caveFrom][target].num;
+                    var caveTo = NumberOfPaths[caveFrom][target].to;
+                    var num = NumberOfPaths[caveFrom][target].num;
 
-                        var visited = visPtr[caveTo];
+                    var visited = Visted[caveTo];
 
-                        visPtr[caveTo] = 1;
-                        count += ((visited & twice) == 1) ? 0 :  num * DFSWithMem(caveTo, visited | twice);
-                        visPtr[caveTo] = visited & visPtr[caveTo];
-                    }
-                    memPtr[key] = count;
+                    Visted[caveTo] = 1;
+                    count += ((visited & twice) == 1) ? 0 :  num * DFSWithMem(caveTo, visited | twice);
+                    Visted[caveTo] = visited & Visted[caveTo];
                 }
-                return memPtr[key];
+                Memory[key] = count;
             }
+            return Memory[key];   
         }
 
         private void GetCaves(List<string> Lines)
