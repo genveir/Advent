@@ -18,7 +18,7 @@ namespace Advent2021
             stopWatch.Start();
             for (int n = 0; n < numRuns; n++)
             {
-                ISolution solution = new Advent12.Solution();
+                ISolution solution = new Advent13.Solution();
 
                 result1 = solution.GetResult1().ToString();
                 result2 = solution.GetResult2().ToString();
@@ -31,6 +31,7 @@ namespace Advent2021
             Console.WriteLine(string.Format("Result for part 1: {0}", result1));
             Console.WriteLine(string.Format("Result for part 2: {0}", result2));
             Console.WriteLine();
+            Console.WriteLine("Number of runs: " + numRuns);
             Console.WriteLine("Total runtime: " + stopWatch.ElapsedMilliseconds + "ms");
             Console.WriteLine("Average runtime: " + (stopWatch.ElapsedMilliseconds / numRuns) + "ms");
 
