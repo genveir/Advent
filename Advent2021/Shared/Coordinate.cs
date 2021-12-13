@@ -13,6 +13,7 @@ namespace Advent2021.Shared
             this.Z = z;
         }
 
+        [ComplexParserConstructor]
         public Coordinate(long[] coords)
         {
             if (coords.Length < 2)

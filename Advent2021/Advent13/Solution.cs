@@ -15,24 +15,19 @@ namespace Advent2021.Advent13
         {
             var lines = Input.GetBlockLines(input).ToArray();
 
+            var coordParser = new InputParser<Coordinate>("coord");
             for (int n = 0; n < lines[0].Length; n++)
             {
-                var line = lines[0][n];
-
-                var parsed = line.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(long.Parse).ToArray();
-
-                var coord = new Coordinate(parsed[0], parsed[1]);
+                var coord = coordParser.Parse(lines[0][n]);
 
                 dots.Add(coord);
             }
 
+            var instructionParser = new InputParser<Instruction>(false, 2, "fold along ", "=");
+
             for (int n = 0; n < lines[1].Length; n++)
             {
-                var line = lines[1][n].Substring("fold along ".Length);
-
-                var parsed = line.Split('=', StringSplitOptions.RemoveEmptyEntries).ToArray();
-
-                var instruction = new Instruction(parsed[0].ToCharArray()[0], long.Parse(parsed[1]));
+                var instruction = instructionParser.Parse(lines[1][n]);
 
                 instructions.Add(instruction);
             }
@@ -41,43 +36,38 @@ namespace Advent2021.Advent13
 
         public class Instruction
         {
-            public char axis;
             public long index;
+            public Func<Coordinate, Coordinate> flip;
+
+            public Instruction(long index) => this.index = index;
 
             [ComplexParserConstructor]
-            public Instruction(char axis, long index)
+            public Instruction (char axis, long index)
             {
-                this.axis = axis;
                 this.index = index;
+                this.flip = (axis == 'x') ? XFlip : YFlip;
             }
 
             public HashSet<Coordinate> Fold(HashSet<Coordinate> dots)
             {
                 HashSet<Coordinate> newCoords = new HashSet<Coordinate>();
-                foreach(var dot in dots)
+                foreach (var dot in dots)
                 {
-                    Coordinate newCoord = null;
-                    if (axis == 'x')
-                    {
-                        var higher = dot.X - index > 0;
-                        var distance = Math.Abs(dot.X - index);
+                    var newCoord = flip(dot);
 
-                        if (higher) newCoord = new Coordinate(dot.X - 2 * distance, dot.Y);
-                        else newCoord = new Coordinate(dot.X, dot.Y);
-                    }
-                    if (axis == 'y')
-                    {
-                        var higher = dot.Y - index > 0;
-                        var distance = Math.Abs(dot.Y - index);
-
-                        if (higher) newCoord = new Coordinate(dot.X, dot.Y - 2 * distance);
-                        else newCoord = new Coordinate(dot.X, dot.Y);
-                    }
                     if (!newCoords.Contains(newCoord)) newCoords.Add(newCoord);
                 }
 
                 return newCoords;
             }
+
+            public long NewValue(long currentValue) => 
+                (index < currentValue)
+                    ? currentValue - 2 * Math.Abs(currentValue - index)
+                    : currentValue;
+
+            public Coordinate XFlip(Coordinate dot) => new Coordinate(NewValue(dot.X), dot.Y);
+            public Coordinate YFlip(Coordinate dot) => new Coordinate(dot.X, NewValue(dot.Y));
         }
 
         public string Display(HashSet<Coordinate> coordinates)
