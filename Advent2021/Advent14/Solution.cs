@@ -9,127 +9,131 @@ namespace Advent2021.Advent14
 {
     public class Solution : ISolution
     {
-        Dictionary<char, Dictionary<char, char>> rules = new Dictionary<char, Dictionary<char, char>>();
-
-        LinkedListNode firstNode;
-
         Dictionary<string, long> pairCounts = new Dictionary<string, long>();
         Dictionary<string, string[]> transitions = new Dictionary<string, string[]>();
+
+        char firstPolymer;
+        char lastPolymer;
 
         public Solution(string input)
         {
             var lines = Input.GetBlockLines(input).ToArray();
 
-            var inputParser = new InputParser<string, char>("AB -> C");
+            var inputParser = new InputParser<string, string>("AB -> C");
 
-            foreach(var rule in lines[1])
+            foreach (var rule in lines[1])
             {
                 var (inputs, output) = inputParser.Parse(rule);
 
-                if (!rules.ContainsKey(inputs[0])) rules[inputs[0]] = new Dictionary<char, char>();
-                rules[inputs[0]][inputs[1]] = output;
+                var outputPairs = new string[] { inputs[0] + output , output + inputs[1] };
+
+                transitions[inputs] = outputPairs;
             }
 
-            LinkedListNode previous = null;
-            foreach(var c in lines[0][0])
+            for (int n = 0; n < lines[0][0].Length - 1; n++)
             {
-                previous = new LinkedListNode(c, previous, null);
-                if (firstNode == null) firstNode = previous;
+                var pair = lines[0][0].Substring(n, 2);
+
+                if (!pairCounts.ContainsKey(pair)) pairCounts[pair] = 0;
+
+                pairCounts[pair]++;
             }
+
+            firstPolymer = lines[0][0].First();
+            lastPolymer = lines[0][0].Last();
+
+            RunAll();
         }
         public Solution() : this("Input.txt") { }
 
-        private class LinkedListNode
+        public void DoRun()
         {
-            public char polymer;
-            public LinkedListNode previous;
-            public LinkedListNode next;
+            Dictionary<string, long> newPairCounts = new Dictionary<string, long>();
 
-            public static Dictionary<char, long> counts = new Dictionary<char, long>();
-
-            public LinkedListNode(char polymer, LinkedListNode previous, LinkedListNode next)
+            foreach (var pairType in pairCounts.Keys)
             {
-                this.polymer = polymer;
-                this.previous = previous;
-                this.next = next;
-
-                if (previous != null) previous.next = this;
-                if (next != null) next.previous = this;
-
-                if (!counts.ContainsKey(polymer)) counts[polymer] = 0;
-
-                counts[polymer]++;
-            }
-
-            public void DoRun(Dictionary<char, Dictionary<char, char>> rules)
-            {
-                if (previous != null) Multiply(rules);
-
-                if (next != null) next.DoRun(rules);
-            }
-
-            public void Multiply(Dictionary<char, Dictionary<char, char>> rules)
-            {
-                if (rules.TryGetValue(previous.polymer, out Dictionary<char, char> inner))
+                if (transitions.ContainsKey(pairType))
                 {
-                    if (inner.TryGetValue(polymer, out char output) )
-                    {
-                        new LinkedListNode(output, previous, this);
-                    }
+                    var targets = transitions[pairType];
+                    foreach (var target in targets) AddPair(target, newPairCounts, pairCounts[pairType]);
+                }
+                else
+                {
+                    AddPair(pairType, newPairCounts, pairCounts[pairType]);
                 }
             }
 
-            public override string ToString()
+            pairCounts = newPairCounts;
+        }
+
+        private void AddPair(string pairType, Dictionary<string, long> counts, long count)
+        {
+            if (!counts.ContainsKey(pairType)) counts[pairType] = 0;
+            counts[pairType] += count;
+        }
+
+        Dictionary<char, long> CalculateCounts()
+        {
+            Dictionary<char, long> counts = new Dictionary<char, long>();
+            foreach (var pairType in pairCounts)
             {
-                return polymer.ToString();
+                var chars = pairType.Key.ToCharArray();
+
+                if (!counts.ContainsKey(chars[0])) counts[chars[0]] = 0;
+                if (!counts.ContainsKey(chars[1])) counts[chars[1]] = 0;
+
+                counts[chars[0]] += pairType.Value;
+                counts[chars[1]] += pairType.Value;
+            }
+            counts[firstPolymer]++;
+            counts[lastPolymer]++;
+
+            var keys = counts.Keys;
+            foreach(var key in keys)
+            {
+                counts[key] = counts[key] / 2;
             }
 
-            public string WholeString()
+            return counts;
+        }
+
+        long p1, p2;
+        private void RunAll()
+        {
+            for (int n = 0; n < 10; n++)
             {
-                var sb = new StringBuilder();
-
-                WholeString(sb);
-
-                return sb.ToString();
+                DoRun();
             }
 
-            public void WholeString(StringBuilder b)
-            {
-                b.Append(polymer);
+            p1 = CalculateAnswer();
 
-                if (next != null) next.WholeString(b);
+            for (int n = 0; n < 30; n++)
+            {
+                DoRun();
             }
+
+            p2 = CalculateAnswer();
+        }
+
+        private long CalculateAnswer()
+        {
+            var counts = CalculateCounts();
+
+            var vals = counts.Values;
+
+            var inOrder = vals.OrderBy(v => v);
+
+            return inOrder.Last() - inOrder.First();
         }
 
         public object GetResult1()
         {
-            for (int n = 0; n < 20; n++)
-            {
-                firstNode.DoRun(rules);
-            }
-
-            var counts = LinkedListNode.counts;
-
-            var inORder = counts.Values.OrderBy(v => v);
-
-            return inORder.Last() - inORder.First();
+            return p1;
         }
 
         public object GetResult2()
         {
-            
-
-
-            for (int n = 0; n < 40; n++)
-            {
-                //firstNode.DoRun(rules);
-            }
-
-            var counts = LinkedListNode.counts;
-
-            var inORder = counts.Values.OrderBy(v => v);
-
-            return inORder.Last() - inORder.First();
+            return p2;
         }
     }
 }
