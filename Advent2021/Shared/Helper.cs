@@ -167,6 +167,12 @@ namespace Advent2021.Shared
             return output;
         }
 
+        public static void InitAndUpdate<KeyType, ValueType>(this Dictionary<KeyType, ValueType> dict, KeyType key, Func<ValueType, ValueType> action)
+        {
+            if (!dict.ContainsKey(key)) dict[key] = default(ValueType);
+            dict[key] = action(dict[key]);
+        }
+
         public const string BLOCK = "\U00002588";
     }
 }

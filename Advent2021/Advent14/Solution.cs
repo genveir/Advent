@@ -55,21 +55,15 @@ namespace Advent2021.Advent14
                 if (transitions.ContainsKey(pairType))
                 {
                     var targets = transitions[pairType];
-                    foreach (var target in targets) AddPair(target, newPairCounts, pairCounts[pairType]);
+                    foreach (var target in targets) newPairCounts.InitAndUpdate(target, l => l + pairCounts[pairType]);
                 }
                 else
                 {
-                    AddPair(pairType, newPairCounts, pairCounts[pairType]);
+                    newPairCounts.InitAndUpdate(pairType, l => l + pairCounts[pairType]);
                 }
             }
 
             pairCounts = newPairCounts;
-        }
-
-        private void AddPair(string pairType, Dictionary<string, long> counts, long count)
-        {
-            if (!counts.ContainsKey(pairType)) counts[pairType] = 0;
-            counts[pairType] += count;
         }
 
         Dictionary<char, long> CalculateCounts()
@@ -79,11 +73,7 @@ namespace Advent2021.Advent14
             {
                 var chars = pairType.Key.ToCharArray();
 
-                if (!counts.ContainsKey(chars[0])) counts[chars[0]] = 0;
-                if (!counts.ContainsKey(chars[1])) counts[chars[1]] = 0;
-
-                counts[chars[0]] += pairType.Value;
-                counts[chars[1]] += pairType.Value;
+                foreach(var c in chars) counts.InitAndUpdate(c, l => l + pairType.Value);
             }
             counts[firstPolymer]++;
             counts[lastPolymer]++;

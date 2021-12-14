@@ -17,7 +17,7 @@ namespace Advent2021.Advent14
             Assert.AreEqual(output, sol.GetResult1());
         }
 
-        [TestCase(example, "")]
+        [TestCase(example, 2188189693529)]
         public void Test2(string input, object output)
         {
             var sol = new Solution(input);
