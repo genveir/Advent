@@ -167,9 +167,10 @@ namespace Advent2021.Shared
             return output;
         }
 
-        public static void InitAndUpdate<KeyType, ValueType>(this Dictionary<KeyType, ValueType> dict, KeyType key, Func<ValueType, ValueType> action)
+        public static void InitAndUpdate<KeyType, ValueType>(this Dictionary<KeyType, ValueType> dict, 
+            KeyType key, Func<ValueType, ValueType> action, ValueType defaultValue = default(ValueType))
         {
-            if (!dict.ContainsKey(key)) dict[key] = default(ValueType);
+            if (!dict.ContainsKey(key)) dict[key] = defaultValue;
             dict[key] = action(dict[key]);
         }
 
