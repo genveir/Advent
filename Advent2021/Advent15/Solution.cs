@@ -54,6 +54,7 @@ namespace Advent2021.Advent15
         {
             public Coordinate coordinate;
             public long value;
+            public bool explored;
 
             [ComplexParserConstructor]
             public Tile(Coordinate coordinate, long value)
@@ -102,17 +103,11 @@ namespace Advent2021.Advent15
                 this.HeuristicValue = totalValue + target.ManhattanDistance(Current.coordinate);
             }
 
-            public IEnumerable<SearchNode1> Explore(Dictionary<Coordinate, long> lowestCostExplores)
+            public IEnumerable<SearchNode1> Explore()
             {
-                if (
-                    lowestCostExplores.ContainsKey(Current.coordinate) &&
-                    totalValue >= lowestCostExplores[Current.coordinate])
-                    yield break;
-
-                lowestCostExplores[Current.coordinate] = totalValue;
-
-                foreach (var neighbour in Current.neighbours)
+                foreach (var neighbour in Current.neighbours.Where(n => !n.explored))
                 {
+                    neighbour.explored = true;
                     yield return new SearchNode1(this, neighbour, target);
                 }
             }
@@ -132,7 +127,6 @@ namespace Advent2021.Advent15
             var queue = new PriorityQueue<SearchNode1>();
             queue.Add(node);
 
-            var lowestCostExplores = new Dictionary<Coordinate, long>();
             while (queue.Count() > 0)
             {
                 var popped = queue.Poll();
@@ -140,7 +134,7 @@ namespace Advent2021.Advent15
                 if (popped.isWin) return popped;
                 else
                 {
-                    var newNodes = popped.Explore(lowestCostExplores);
+                    var newNodes = popped.Explore();
                     foreach (var newNode in newNodes) queue.Add(newNode);
                 }
             }
