@@ -11,7 +11,7 @@ namespace Advent2021
         {
             var stopWatch = new Stopwatch();
 
-            int numRuns = 10;
+            int numRuns = 1;
             string result1 = "";
             string result2 = "";
 

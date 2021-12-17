@@ -51,23 +51,14 @@ namespace Advent2021.Advent17
 
             public long CalculateXPosition(long xVelocity, long turns)
             {
-                var tri = triangle(turns - 1);
+                long xVal = Math.Min(xVelocity, turns);
 
-                long newX;
-                if (turns > xVelocity)
-                {
-                    newX = xVelocity * xVelocity - triangle(xVelocity - 1);
-                }
-                else newX = xVelocity * turns - tri;
-
-                return newX;
+                return xVelocity * xVal - triangle(xVal - 1);
             }
 
             public long CalculateYPosition(long yVelocity, long turns)
             {
-                var tri = triangle(turns - 1);
-
-                return yVelocity * turns - tri;
+                return yVelocity * turns - triangle(turns - 1);
             }
 
             public int ValidatePosition(long xVelocity, long yVelocity, long turns)
@@ -119,7 +110,7 @@ namespace Advent2021.Advent17
             public List<long> TurnsForYVelocity(long yVelocity)
             {
                 long turns = 0;
-                var stepSize = (long)Math.Pow(2.0d, 31.0d);
+                var stepSize = (long)Math.Pow(2.0d, 12.0d);
                 var stepUp = true;
 
                 long hitTurn = -1;
@@ -141,7 +132,7 @@ namespace Advent2021.Advent17
                 var hits = new List<long>();
                 if (hitTurn != -1) hits.Add(hitTurn);
 
-                for (long runBackTurn = hitTurn - 1; ValidateYPosition(yVelocity, runBackTurn) == 0 && runBackTurn > 0; runBackTurn--)
+                for (long runBackTurn = hitTurn - 1; runBackTurn > 0 && ValidateYPosition(yVelocity, runBackTurn) == 0 && runBackTurn > 0; runBackTurn--)
                 {
                     hits.Add(runBackTurn);
                 }
@@ -156,7 +147,7 @@ namespace Advent2021.Advent17
             public List<long> TurnsForXVelocity(long xVelocity)
             {
                 long turns = 0;
-                var stepSize = (long)Math.Pow(2.0d, 10.0d);
+                var stepSize = (long)Math.Pow(2.0d, 12.0d);
                 var stepUp = true;
 
                 long hitTurn = -1;
@@ -178,11 +169,11 @@ namespace Advent2021.Advent17
                 var hits = new List<long>();
                 if (hitTurn != -1) hits.Add(hitTurn);
 
-                for (long runBackTurn = hitTurn - 1; ValidateXPosition(xVelocity, runBackTurn) == 0 && runBackTurn > 0; runBackTurn--)
+                for (long runBackTurn = hitTurn - 1; runBackTurn > 0  && ValidateXPosition(xVelocity, runBackTurn) == 0; runBackTurn--)
                 {
                     hits.Add(runBackTurn);
                 }
-                for (long runForwardTurn = hitTurn + 1; ValidateXPosition(xVelocity, runForwardTurn) == 0 && runForwardTurn < xMax; runForwardTurn++)
+                for (long runForwardTurn = hitTurn + 1; runForwardTurn < xMax && ValidateXPosition(xVelocity, runForwardTurn) == 0; runForwardTurn++)
                 {
                     hits.Add(runForwardTurn);
                 }
@@ -249,7 +240,19 @@ namespace Advent2021.Advent17
 
                 return CalculatePosition(xVelocity, yVelocity, turns).Y;
             }
-            public long triangle(long input) => input * (input + 1) / 2;
+
+            public Dictionary<long, long> _triangles = new Dictionary<long, long>();
+            public long triangle(long input)
+            {
+                long value;
+                if (!_triangles.TryGetValue(input, out value))
+                { 
+                    value = input * (input + 1) / 2;
+
+                    _triangles[input] = value;
+                }
+                return value;
+            }
         }
 
         public object GetResult1()
