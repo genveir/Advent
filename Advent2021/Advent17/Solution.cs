@@ -196,8 +196,11 @@ namespace Advent2021.Advent17
                     }
                 }
 
+                long maxYToCheck = xMax;
+                if (yMax < 0) maxYToCheck = -yMin;
+
                 var yHitsAtTurn = new Dictionary<long, List<long>>();
-                for (long yVelocity = yMin; yVelocity <= xMax; yVelocity++)
+                for (long yVelocity = yMin; yVelocity <= maxYToCheck; yVelocity++)
                 {
                     var hitTurns = TurnsForYVelocity(yVelocity);
                     foreach (var hitTurn in hitTurns)
