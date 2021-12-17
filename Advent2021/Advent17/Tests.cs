@@ -11,6 +11,8 @@ namespace Advent2021.Advent17
     {
         [TestCase(example, 45)]
         [TestCase(testFar, 478731)]
+        [TestCase(testFar2, 18528)]
+        [TestCase(nonsense, 0)]
         public void Test1(string input, object output)
         {
             var sol = new Solution(input);
@@ -119,8 +121,12 @@ namespace Advent2021.Advent17
             }
         }
 
+        public const string nonsense = @"target area: x=2..2, y=-10..-100000";
         public const string example = @"target area: x=20..30, y=-10..-5";
         public const string testFar = @"target area: x=2000000..2000100, y=-200..0";
+        public const string testFar2 = @"target area: x=2000000..2000100, y=-200..-1";
+        
+        public const string testhigh = @"target area: x=20..30, y=19990..20000"; // interesting, but can't do it yet
 
         public const string answerExample2 = @"23,-10  25,-9   27,-5   29,-6   22,-6   21,-7   9,0     27,-7   24,-5
 25,-7   26,-6   25,-5   6,8     11,-2   20,-5   29,-10  6,3     28,-7

@@ -254,8 +254,11 @@ namespace Advent2021.Advent17
 
         public object GetResult1()
         {
-            var highestYVel = target.EnumeratePossibleHits().OrderBy(p => p.yVelocity).Last();
-            
+            var hits = target.EnumeratePossibleHits();
+
+            if (hits.Count == 0) return 0;
+            var highestYVel = hits.OrderBy(p => p.yVelocity).Last();
+
             return target.getMaxY(highestYVel.xVelocity, highestYVel.yVelocity);
         }
 
