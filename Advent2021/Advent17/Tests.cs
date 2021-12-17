@@ -10,8 +10,8 @@ namespace Advent2021.Advent17
     class Tests
     {
         [TestCase(example, 45)]
-        [TestCase(testFar, 478731)]
-        [TestCase(testFar2, 18528)]
+        [TestCase(testFarZero, 478731)]
+        [TestCase(testFarNegative, 18528)]
         [TestCase(nonsense, 0)]
         public void Test1(string input, object output)
         {
@@ -21,7 +21,7 @@ namespace Advent2021.Advent17
         }
 
         [TestCase(example, 112)]
-        [TestCase(testFar, 33370)]
+        [TestCase(testFarZero, 33370)]
         public void Test2(string input, object output)
         {
             var sol = new Solution(input);
@@ -44,6 +44,9 @@ namespace Advent2021.Advent17
         [TestCase(6, 3, 7, 21, 0)]
         [TestCase(6, 3, 8, 21, -4)]
         [TestCase(6, 3, 9, 21, -9)]
+
+        [TestCase(2000, 978, 978, 1478247, 478731)]
+        [TestCase(2000, 978, 1957, 2000054, 0)]
         public void CalculationWorks(int xVelocity, int yVelocity, int turns, int x, int y)
         {
             var sol = new Solution(example);
@@ -106,7 +109,7 @@ namespace Advent2021.Advent17
         [Test]
         public void CheckAnswer()
         {
-            var sol = new Solution(testFar);
+            var sol = new Solution(testFarZero);
 
             var results = sol.target.EnumeratePossibleHits();
 
@@ -123,8 +126,8 @@ namespace Advent2021.Advent17
 
         public const string nonsense = @"target area: x=2..2, y=-10..-100000";
         public const string example = @"target area: x=20..30, y=-10..-5";
-        public const string testFar = @"target area: x=2000000..2000100, y=-200..0";
-        public const string testFar2 = @"target area: x=2000000..2000100, y=-200..-1";
+        public const string testFarZero = @"target area: x=2000000..2000100, y=-200..0";
+        public const string testFarNegative = @"target area: x=2000000..2000100, y=-200..-1";
         
         public const string testhigh = @"target area: x=20..30, y=19990..20000"; // interesting, but can't do it yet
     }
