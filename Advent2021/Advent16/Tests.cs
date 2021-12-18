@@ -9,7 +9,6 @@ namespace Advent2021.Advent16
 {
     class Tests
     {
-        [TestCase(example, "")]
         public void Test1(string input, object output)
         {
             var sol = new Solution(input);

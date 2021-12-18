@@ -13,7 +13,7 @@ namespace Advent2021.Advent04
         [TestCase(example, exampleNums, 4512)]
         public void Test1(string input, string numberList, object output)
         {
-            if (numberList != null) Solution.numberInput = numberList;
+            if (numberList != null) Solution.numbersToUse = numberList;
             var sol = new Solution(input);
 
             Assert.AreEqual(output, sol.GetResult1());
@@ -23,7 +23,7 @@ namespace Advent2021.Advent04
         [TestCase(example, exampleNums, 1924)]
         public void Test2(string input, string numberList, object output)
         {
-            if (numberList != null) Solution.numberInput = numberList;
+            Solution.numbersToUse = numberList;
             var sol = new Solution(input);
 
             Assert.AreEqual(output, sol.GetResult2());
