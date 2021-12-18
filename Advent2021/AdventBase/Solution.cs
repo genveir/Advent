@@ -8,7 +8,7 @@ namespace Advent2021.AdventBase
 {
     public class Solution : ISolution
     {
-        List<ParsedInput> modules;
+        public List<ParsedInput> modules;
 
         public Solution(string input)
         {
