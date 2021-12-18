@@ -50,8 +50,6 @@ namespace Advent2021.Advent16
             List<string> numbers = new List<string>();
             List<Packet> subPackets = new List<Packet>();
 
-            bool visited;
-
             static string bitString;
             static int cursor;
 
