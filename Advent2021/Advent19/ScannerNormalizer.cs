@@ -21,7 +21,7 @@ namespace Advent2021.Advent19
         {
             this.myScanner = scanner;
 
-            var coordinates = myScanner.Coordinates;
+            var coordinates = myScanner.Coordinates.Append(new Coordinate(0, 0, 0)).ToArray();
 
             normalizedCoordinates = new Coordinate[coordinates.Length];
             for (int n = 0; n < coordinates.Length; n++) normalizedCoordinates[n] =

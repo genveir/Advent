@@ -27,15 +27,7 @@ namespace Advent2021.Advent19
 
         public Coordinate OwnPosition()
         {
-            Coordinate position;
-            if (NormalizedAgainst != null) position = NormalizedAgainst.OwnPosition();
-            else position = new Coordinate(0, 0, 0);
-
-            position.X += scannerNormalizer.normalizationShifts[0];
-            position.Y += scannerNormalizer.normalizationShifts[1];
-            position.Z += scannerNormalizer.normalizationShifts[2];
-
-            return position;
+            return normalizedCoordinates.Last();
         }
 
         public List<ScannerMatch> scannerMatches;
