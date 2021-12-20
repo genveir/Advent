@@ -83,11 +83,7 @@ namespace Advent2021.Advent19
             {
                 for (int i = 0; i < scanners.Count; i++)
                 {
-                    var diffX = Math.Abs(scanners[n].OwnPosition().X - scanners[i].OwnPosition().X);
-                    var diffY = Math.Abs(scanners[n].OwnPosition().Y - scanners[i].OwnPosition().Y);
-                    var diffZ = Math.Abs(scanners[n].OwnPosition().Z.Value - scanners[i].OwnPosition().Z.Value);
-
-                    var distance = diffX + diffY + diffZ;
+                    var distance = scanners[n].OwnPosition().ManhattanDistance(scanners[i].OwnPosition());
 
                     if (distance > highest) highest = distance; //10870 too high
                 }

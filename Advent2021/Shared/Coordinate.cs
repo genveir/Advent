@@ -85,7 +85,10 @@ namespace Advent2021.Shared
 
         public long ManhattanDistance(Coordinate second)
         {
-            return Math.Abs(this.X - second.X) + Math.Abs(this.Y - second.Y) + Math.Abs(this.Z ?? 0 - second.Z ?? 0);
+            return 
+                Math.Abs(this.X - second.X) 
+                + Math.Abs(this.Y - second.Y) 
+                + Math.Abs((this.Z ?? 0) - (second.Z ?? 0));
         }
 
         public long IntegerDistance(long x, long y, long z) { return (long)Distance(x, y, z); }
