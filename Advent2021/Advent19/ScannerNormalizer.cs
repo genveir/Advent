@@ -21,11 +21,12 @@ namespace Advent2021.Advent19
         {
             this.myScanner = scanner;
 
-            var coordinates = myScanner.Coordinates.Append(new Coordinate(0, 0, 0)).ToArray();
+            var coordinates = myScanner.Coordinates;
 
-            normalizedCoordinates = new Coordinate[coordinates.Length];
+            normalizedCoordinates = new Coordinate[coordinates.Length + 1];
             for (int n = 0; n < coordinates.Length; n++) normalizedCoordinates[n] =
                     new Coordinate(coordinates[n].X, coordinates[n].Y, coordinates[n].Z);
+            normalizedCoordinates[normalizedCoordinates.Length - 1] = new Coordinate(0, 0, 0);
 
             this.normalizationRotation = 0;
             this.normalizationFlips = new bool[] { false, false, false };
