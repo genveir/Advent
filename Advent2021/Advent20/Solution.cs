@@ -131,18 +131,17 @@ namespace Advent2021.Advent20
             }
         }
 
-        
+
+        int stepsTaken = 0;
         public void DoStep()
         {
             currentState = currentState.DoStep();
+            stepsTaken++;
         }
 
         public object GetResult1()
         {
-            // not 714, not 10009
-
-            DoStep();
-            DoStep();
+            while (stepsTaken < 2) DoStep();
 
             var numLight = dark.front.Where(f => f.Value).Count();
 
@@ -151,7 +150,7 @@ namespace Advent2021.Advent20
 
         public object GetResult2()
         {
-            for (int n = 0; n < 48; n++) DoStep();
+            while (stepsTaken < 50) DoStep();
 
             var numLight = dark.front.Where(f => f.Value).Count();
 
