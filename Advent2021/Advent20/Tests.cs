@@ -19,10 +19,11 @@ namespace Advent2021.Advent20
             Assert.AreEqual(output, sol.GetResult1());
         }
 
-        [TestCase(example, "")]
+        [TestCase(example, 3351)]
         public void Test2(string input, object output)
         {
             var sol = new Solution(input);
+            sol.light.defaultColor = false;
 
             Assert.AreEqual(output, sol.GetResult2());
         }
