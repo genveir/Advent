@@ -29,7 +29,8 @@ namespace Advent2021.Advent20
             {
                 for (int x = 0; x < lines[1][0].Length; x++)
                 {
-                    dark.AddToFront(key(x, y), true);
+                    var c = lines[1][y][x] == '#';
+                    dark.AddToFront(key(x, y), c);
                 }
             }
 
@@ -150,7 +151,11 @@ namespace Advent2021.Advent20
 
         public object GetResult2()
         {
-            return "";
+            for (int n = 0; n < 48; n++) DoStep();
+
+            var numLight = dark.front.Where(f => f.Value).Count();
+
+            return numLight;
         }
     }
 }
