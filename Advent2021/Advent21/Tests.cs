@@ -12,9 +12,7 @@ namespace Advent2021.Advent21
         [TestCase(example, 739785)]
         public void Test1(string input, object output)
         {
-            var sol = new Solution(input);
-            sol.player1.position = 4;
-            sol.player2.position = 8;
+            var sol = new Solution(4, 8);
 
             Assert.AreEqual(output, sol.GetResult1());
         }
@@ -22,8 +20,7 @@ namespace Advent2021.Advent21
         [TestCase(example, 444356092776315)]
         public void Test2(string input, object output)
         {
-            var sol = new Solution(input);
-            
+            var sol = new Solution(4, 8);
 
             Assert.AreEqual(output, sol.GetResult2());
         }

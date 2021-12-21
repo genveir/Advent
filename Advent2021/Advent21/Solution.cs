@@ -10,74 +10,22 @@ namespace Advent2021.Advent21
     {
         // Player 1 starting position: 4
         // Player 2 starting position: 6
-        public Player player1;
-        public Player player2;
+        public State startingState;
 
+        public Solution() : this(4,6) { }
         public Solution(string input) : this() { }
-        public Solution()
+        public Solution(long p1Pos = 4, long p2Pos = 6)
         {
-            die.numRolls = -1;
-
-            player1 = new Player();
-            player2 = new Player();
-
-            player1.position = 4;
-            player2.position = 6;
+            startingState = new State()
+            {
+                p1Pos = p1Pos,
+                p1Score = 0,
+                p2Pos = p2Pos,
+                p2Score = 0,
+                p1sTurn = true
+            };
 
             results = new Dictionary<State, (long p1Wins, long p2Wins)>();
-        }
-
-        static Solution()
-        {
-            die = new DeterministicDie();
-        }
-
-        public static DeterministicDie die;
-
-        public class DeterministicDie
-        {
-            public long numRolls { get; set; }
-
-            public DeterministicDie()
-            {
-                this.numRolls = -1;
-            }
-
-            public long Roll
-            {
-                get
-                {
-                    return (++numRolls % 100) + 1;
-                }
-            }
-        }
-
-        public class Player
-        {
-            public long score;
-
-            public long position;
-
-            public long TakeTurn()
-            {
-                var totalRoll = die.Roll + die.Roll + die.Roll;
-                position = position + totalRoll;
-                while (position > 10) position -= 10;
-
-                score += position;
-
-                return score;
-            }
-        }
-
-        public object GetResult1()
-        {
-            while(true)
-            {
-                if (player1.TakeTurn() >= 1000) return player2.score * (die.numRolls + 1);
-
-                if (player2.TakeTurn() >= 1000) return player1.score * (die.numRolls + 1);
-            }
         }
 
         public class State
@@ -89,6 +37,18 @@ namespace Advent2021.Advent21
             public long p2Score;
 
             public bool p1sTurn;
+
+            public State Copy()
+            {
+                return new State()
+                {
+                    p1Pos = p1Pos,
+                    p1Score = p1Score,
+                    p2Pos = p2Pos,
+                    p2Score = p2Score,
+                    p1sTurn = p1sTurn
+                };
+            }
 
             public override int GetHashCode()
             {
@@ -112,6 +72,32 @@ namespace Advent2021.Advent21
             }
         }
 
+        public class DeterministicDie
+        {
+            public long numRolls { get; set; } = -1;
+
+            public long Roll => (++numRolls % 100) + 1;
+        }
+
+        public void TakeTurn(State state, DeterministicDie die)
+        {
+            var totalRoll = die.Roll + die.Roll + die.Roll;
+            if (state.p1sTurn)
+            {
+                state.p1Pos = state.p1Pos + totalRoll;
+                while (state.p1Pos > 10) state.p1Pos -= 10;
+                state.p1Score += state.p1Pos;
+            }
+            else
+            {
+                state.p2Pos = state.p2Pos + totalRoll;
+                while (state.p2Pos > 10) state.p2Pos -= 10;
+                state.p2Score += state.p2Pos;
+            }
+
+            state.p1sTurn = !state.p1sTurn;
+        }
+
         Dictionary<State, (long p1Wins, long p2Wins)> results;
         public (long p1Wins, long p2Wins) CalculateWins(State state)
         {
@@ -124,7 +110,7 @@ namespace Advent2021.Advent21
 
             // mogelijke nieuwe states is deze state met dobbels
             (long p1Wins, long p2Wins) result = (0, 0);
-            for (var die1 = 1; die1 <= 3; die1++ )
+            for (var die1 = 1; die1 <= 3; die1++)
             {
                 for (var die2 = 1; die2 <= 3; die2++)
                 {
@@ -147,6 +133,21 @@ namespace Advent2021.Advent21
             return result;
         }
 
+
+        public object GetResult1()
+        {
+            var state = startingState.Copy();
+            var die = new DeterministicDie();
+
+            while(true)
+            {
+                TakeTurn(state, die);
+
+                if (state.p1Score >= 1000) return state.p2Score * (die.numRolls + 1);
+                if (state.p2Score >= 1000) return state.p1Score * (die.numRolls + 1);
+            }
+        }
+
         public object GetResult2()
         {
             // eindscore is 21,22, 23
@@ -157,14 +158,7 @@ namespace Advent2021.Advent21
             // alle states -> positions, scores, turn, verder niks = 10 * 10 * 23 * 23 * 2 = 50k ofzo
             // kan makkelijk in een dict
 
-            var startState = new State()
-            {
-                p1Pos = 4,
-                p1Score = 0,
-                p2Pos = 6,
-                p2Score = 0,
-                p1sTurn = true
-            };
+            var startState = startingState.Copy();
 
             results = new Dictionary<State, (long p1Wins, long p2Wins)>();
 
