@@ -32,17 +32,16 @@ namespace Advent2021.Advent21
             // no, p2 also rolls, so p1 wins in 26 universes, p2 wins in 1 * 27 = 27
             var state = new Solution.State()
             {
-                p1Pos = 10,
-                p2Pos = 10,
-                p1Score = 17,
-                p2Score = 20,
-                p1sTurn = true
+                pActivePos = 10,
+                pOffPos = 10,
+                pActiveScore = 17,
+                pOffScore = 20
             };
 
             var calc = new Solution().CalculateWins(state);
 
-            Assert.AreEqual(26, calc.p1Wins);
-            Assert.AreEqual(27, calc.p2Wins);
+            Assert.AreEqual(26, calc.pOffWins);
+            Assert.AreEqual(27, calc.pActWins);
         }
 
         public const string example = @"";

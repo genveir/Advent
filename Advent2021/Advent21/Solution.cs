@@ -18,11 +18,10 @@ namespace Advent2021.Advent21
         {
             startingState = new State()
             {
-                p1Pos = p1Pos,
-                p1Score = 0,
-                p2Pos = p2Pos,
-                p2Score = 0,
-                p1sTurn = true
+                pActivePos = p1Pos,
+                pActiveScore = 0,
+                pOffPos = p2Pos,
+                pOffScore = 0
             };
 
             results = new Dictionary<State, (long p1Wins, long p2Wins)>();
@@ -30,86 +29,87 @@ namespace Advent2021.Advent21
 
         public class State
         {
-            public long p1Pos;
-            public long p2Pos;
+            private long _pOffPos;
+            public long pOffPos 
+            { 
+                get => _pOffPos;
+                set { _pOffPos = value; while (_pOffPos > 10) _pOffPos -= 10; }
+            }
 
-            public long p1Score;
-            public long p2Score;
 
-            public bool p1sTurn;
+            public long pOffScore;
+
+            public long pActivePos;
+            public long pActiveScore;
 
             public State Copy()
             {
                 return new State()
                 {
-                    p1Pos = p1Pos,
-                    p1Score = p1Score,
-                    p2Pos = p2Pos,
-                    p2Score = p2Score,
-                    p1sTurn = p1sTurn
+                    _pOffPos = _pOffPos,
+                    pOffScore = pOffScore,
+                    pActivePos = pActivePos,
+                    pActiveScore = pActiveScore
                 };
+            }
+
+            // hm dit flipt gewoon
+            public State Next(int totalDieRoll)
+            {
+                var newState = Copy();
+                newState.pOffPos = pActivePos + totalDieRoll;
+                newState.pOffScore = pActiveScore + newState.pOffPos;
+
+                newState.pActivePos = pOffPos;
+                newState.pActiveScore = pOffScore;
+
+                return newState;
             }
 
             public override int GetHashCode()
             {
-                return (int)(p1Pos * p2Pos + (10928181 * p1Score * p2Score) * (p1sTurn ? 7 : 3));
+                return (int)(pActivePos * _pOffPos + 398479 * pActiveScore * pOffScore);
             }
 
             public override bool Equals(object obj)
             {
                 var other = (State)obj;
-                return other.p1Pos == this.p1Pos &&
-                    other.p2Pos == this.p2Pos &&
-                    other.p1Score == this.p1Score &&
-                    other.p2Score == this.p2Score &&
-                    other.p1sTurn == this.p1sTurn;
+                return other.pActivePos == this.pActivePos &&
+                    other._pOffPos == this._pOffPos &&
+                    other.pActiveScore == this.pActiveScore &&
+                    other.pOffScore == this.pOffScore;
             }
 
             public override string ToString()
             {
-                var turn = p1sTurn ? "(P1)" : "(P2)";
-                return $"{turn} p1 at {p1Pos} with {p1Score}, p2 at {p2Pos} with {p2Score}";
+                return $"pAct at {pActivePos} with {pActiveScore}, pOff at {_pOffPos} with {pOffScore}";
             }
         }
 
         public class DeterministicDie
         {
-            public long numRolls { get; set; } = -1;
+            public int numRolls { get; set; } = -1;
 
-            public long Roll => (++numRolls % 100) + 1;
+            public int Roll => (++numRolls % 100) + 1;
         }
 
-        public void TakeTurn(State state, DeterministicDie die)
+        public void TakeTurn(ref State state, DeterministicDie die)
         {
             var totalRoll = die.Roll + die.Roll + die.Roll;
-            if (state.p1sTurn)
-            {
-                state.p1Pos = state.p1Pos + totalRoll;
-                while (state.p1Pos > 10) state.p1Pos -= 10;
-                state.p1Score += state.p1Pos;
-            }
-            else
-            {
-                state.p2Pos = state.p2Pos + totalRoll;
-                while (state.p2Pos > 10) state.p2Pos -= 10;
-                state.p2Score += state.p2Pos;
-            }
-
-            state.p1sTurn = !state.p1sTurn;
+            state = state.Next(totalRoll);
         }
 
         Dictionary<State, (long p1Wins, long p2Wins)> results;
-        public (long p1Wins, long p2Wins) CalculateWins(State state)
+        public (long pActWins, long pOffWins) CalculateWins(State state)
         {
             // eerder gezien -> result terug
             if (results.TryGetValue(state, out (long p1Wins, long pw2Wins) val)) return val;
 
             // gewonnen -> +1 win
-            if (state.p1Score >= 21) return (1, 0);
-            if (state.p2Score >= 21) return (0, 1);
+            if (state.pOffScore >= 21) return (1, 0);
 
             // mogelijke nieuwe states is deze state met dobbels
-            (long p1Wins, long p2Wins) result = (0, 0);
+            (long pActWins, long pOffWins) result = (0, 0);
             for (var die1 = 1; die1 <= 3; die1++)
             {
                 for (var die2 = 1; die2 <= 3; die2++)
@@ -118,12 +118,13 @@ namespace Advent2021.Advent21
                     {
                         var totalVal = die1 + die2 + die3;
 
-                        var newState = GetNewState(state, totalVal);
+                        // flipperoonie
+                        var newState = state.Next(totalVal);
 
                         var subResult = CalculateWins(newState);
 
-                        result.p1Wins = result.p1Wins + subResult.p1Wins;
-                        result.p2Wins = result.p2Wins + subResult.p2Wins;
+                        result.pActWins = result.pActWins + subResult.pOffWins;
+                        result.pOffWins = result.pOffWins + subResult.pActWins;
                     }
                 }
             }
@@ -141,10 +142,9 @@ namespace Advent2021.Advent21
 
             while(true)
             {
-                TakeTurn(state, die);
+                TakeTurn(ref state, die);
 
-                if (state.p1Score >= 1000) return state.p2Score * (die.numRolls + 1);
-                if (state.p2Score >= 1000) return state.p1Score * (die.numRolls + 1);
+                if (state.pOffScore >= 1000) return state.pActiveScore * (die.numRolls + 1);
             }
         }
 
@@ -164,47 +164,7 @@ namespace Advent2021.Advent21
 
             var res = CalculateWins(startState);
 
-            return (res.p1Wins > res.p2Wins) ? res.p1Wins : res.p2Wins;
-        }
-
-        public State GetNewState(State state, int totalVal)
-        {
-            State newState;
-
-            if (state.p1sTurn)
-            {
-                var p1Pos = state.p1Pos + totalVal;
-                while (p1Pos > 10) p1Pos -= 10;
-
-                var p1Score = state.p1Score + p1Pos;
-
-                newState = new State()
-                {
-                    p1Pos = p1Pos,
-                    p1Score = p1Score,
-                    p2Pos = state.p2Pos,
-                    p2Score = state.p2Score,
-                    p1sTurn = false
-                };
-            }
-            else
-            {
-                var p2Pos = state.p2Pos + totalVal;
-                while (p2Pos > 10) p2Pos -= 10;
-
-                var p2Score = state.p2Score + p2Pos;
-
-                newState = new State()
-                {
-                    p1Pos = state.p1Pos,
-                    p1Score = state.p1Score,
-                    p2Pos = p2Pos,
-                    p2Score = p2Score,
-                    p1sTurn = true
-                };
-            }
-
-            return newState;
+            return (res.pActWins > res.pOffWins) ? res.pActWins : res.pOffWins;
         }
     }
 }
