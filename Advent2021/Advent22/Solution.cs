@@ -10,9 +10,19 @@ namespace Advent2021.Advent22
     {
         public List<Cube> cubes;
 
+
+        private string input;
         public Solution(string input)
         {
-            var lines = Input.GetInputLines(input).ToArray();
+            this.input = input;
+
+            Reset();
+        }
+        public Solution() : this("Input.txt") { }
+
+        public void Reset()
+        {
+            var lines = Input.GetInputLines(input).Where(l => !string.IsNullOrWhiteSpace(l)).ToArray();
 
             cubes = new List<Cube>();
             for (int n = 0; n < lines.Length; n++)
@@ -22,7 +32,7 @@ namespace Advent2021.Advent22
                 var perCoord = line.Split(new char[] { ' ', 'x', 'y', 'z', '=', '.', ',' }, StringSplitOptions.RemoveEmptyEntries);
                 var on = perCoord[0] == "on";
 
-                cubes.Add(new Cube(on, 
+                cubes.Add(Cube.FromParser(on,
                     long.Parse(perCoord[1]),
                     long.Parse(perCoord[2]),
                     long.Parse(perCoord[3]),
@@ -30,10 +40,7 @@ namespace Advent2021.Advent22
                     long.Parse(perCoord[5]),
                     long.Parse(perCoord[6])));
             }
-
-            ;
         }
-        public Solution() : this("Input.txt") { }
 
         public class Cube
         {
@@ -49,30 +56,38 @@ namespace Advent2021.Advent22
 
             public bool isInStartArea;
 
+            public bool IsValid =>
+                minX <= maxX && minY <= maxY && minZ <= maxZ;
+
+            public static Cube FromParser(bool on, long minX, long maxX, long minY, long maxY, long minZ, long maxZ)
+            {
+                var _minX = Math.Min(minX, maxX);
+                var _maxX = Math.Max(minX, maxX);
+                var _minY = Math.Min(minY, maxY);
+                var _maxY = Math.Max(minY, maxY);
+                var _minZ = Math.Min(minZ, maxZ);
+                var _maxZ = Math.Max(minZ, maxZ);
+
+                return new Cube(on, _minX, _maxX, _minY, _maxY, _minZ, _maxZ);
+            }
+
             public Cube(bool on, long minX, long maxX, long minY, long maxY, long minZ, long maxZ)
             {
                 this.on = on;
-                this.minX = Math.Min(minX, maxX);
-                this.maxX = Math.Max(minX, maxX);
-                this.minY = Math.Min(minY, maxY);
-                this.maxY = Math.Max(minY, maxY);
-                this.minZ = Math.Min(minZ, maxZ);
-                this.maxZ = Math.Max(minZ, maxZ);
 
-                isInStartArea = (   minX >= -50 && maxX <= 50 &&
+                this.minX = minX;
+                this.maxX = maxX;
+                this.minY = minY;
+                this.maxY = maxY;
+                this.minZ = minZ;
+                this.maxZ = maxZ;
+
+                isInStartArea = (minX >= -50 && maxX <= 50 &&
                                     minY >= -50 && maxY <= 50 &&
                                     minZ >= -50 && maxZ <= 50);
             }
 
             public long Size => ((maxX - minX) + 1) * ((maxY - minY) + 1) * ((maxZ - minZ) + 1);
-
-            public bool Valid
-            {
-                get
-                {
-                    return (minX <= maxX && minY <= maxY && minZ <= maxZ);
-                }
-            }
 
             public List<Cube> SplitOnOverlap(Cube laterInInstructions)
             {
@@ -136,7 +151,7 @@ namespace Advent2021.Advent22
                     }
                 }
 
-                return newCubes;
+                return newCubes.Where(nc => nc.IsValid).ToList();
             }
 
             public bool HasOverlap(Cube cube) => Overlap(cube) > 0;
@@ -232,13 +247,13 @@ namespace Advent2021.Advent22
             var cubesInStartingArea = cubes.Where(c => c.isInStartArea);
 
             return GetCubesThatAreOn(cubesInStartingArea);
-
-            
         }
 
         public object GetResult2()
         {
-            return "";// GetCubesThatAreOn(cubes);
+            Reset();
+
+            return GetCubesThatAreOn(cubes);
         }
     }
 }
