@@ -69,13 +69,17 @@ namespace Advent2021.Advent16
 
             public Packet ReadPacket()
             {
+                Console.WriteLine();
+                Console.WriteLine("reading packet");
                 // the first three bits encode the packet version, and 
 
                 // the next three bits encode the packet type ID.
 
                 //These two values are numbers; all numbers encoded in any packet are represented as binary with the most significant bit first
                 version = readnum(3);
+                Console.WriteLine(" version = {0}", version);
                 typeId = readnum(3);
+                Console.WriteLine(" typeId = {0}", typeId);
 
                 switch (typeId)
                 {
@@ -109,6 +113,8 @@ namespace Advent2021.Advent16
 
             public string read(int num)
             {
+                Console.Write("read {0}: ", num);
+
                 var result = bitString.Substring(cursor, num);
                 cursor += num;
 
@@ -119,24 +125,38 @@ namespace Advent2021.Advent16
 
             public void ReadNumbers()
             {
+                Console.WriteLine();
+                Console.WriteLine("reading number group");
+
                 var header = read(1);
+
+                Console.WriteLine("header = " + header);
 
                 bool continueAfter = header == "1";
 
-                numbers.Add(read(4));
+                var number = read(4);
+                numbers.Add(number);
+
+                Console.WriteLine("number = {0}", number);
 
                 if (continueAfter) ReadNumbers();
             }
 
             public void ReadOperator()
             {
+                Console.WriteLine();
+                Console.WriteLine("reading operator");
+
                 var lengthTypeId = read(1);
+                Console.WriteLine("length type = {0}", lengthTypeId);
 
                 // If the length type ID is 0, then the next 15 bits are a number
                 // that represents the total length in bits of the sub-packets contained by this packet.
                 if (lengthTypeId == "0")
                 {
                     var readUntil = readnum(15) + cursor;
+                    Console.WriteLine("read the following {0} bits", readUntil);
+
                     while (cursor < readUntil)
                     {
                         subPackets.Add(new Packet());
@@ -148,6 +168,8 @@ namespace Advent2021.Advent16
                 else
                 {
                     var numPackets = readnum(11);
+
+                    Console.WriteLine("read {0} packets", numPackets);
 
                     for (int n = 0; n < numPackets; n++)
                     {
