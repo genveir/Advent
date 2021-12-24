@@ -110,7 +110,7 @@ namespace Advent2021.Advent23
 
         public int numOfEach; // number of each creature
 
-        public int[] hashMults; 
+        public int[] hashMults; // multiplier for each amphipod to calculate equality hash
 
         public long maxConsiderableCost; // don't bother adding transitions that are more expensive than this
     }
