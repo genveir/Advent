@@ -22,6 +22,19 @@ namespace Advent2021.Shared
             return CheckPrime(primesSoFar, numToCheck);
         }
 
+        public static List<long> GeneratePrimes(int number)
+        {
+            if (primesSoFar == null) primesSoFar = new List<long>() { 2, 3, 5 };
+
+            int upto = 100;
+            while(primesSoFar.Count < number)
+            {
+                GenerateAllPrimes(primesSoFar, upto);
+                upto *= 2;
+            }
+            return primesSoFar.Take(number).ToList();
+        }
+
         public static bool IsPrime(this long numToCheck) => CheckPrime(numToCheck);
         public static bool IsPrime(this int numToCheck) => CheckPrime(numToCheck);
 
