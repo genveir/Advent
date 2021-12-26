@@ -14,6 +14,9 @@ namespace Advent2021.Advent24.Expressions
         {
             if (Left is Constant && Right is Constant) return new Constant(Left.Value % Right.Value);
 
+            // can't mod by 0, so this will always be / 1
+            if (Right is Eql) return Left;
+
             if (Left is ISet && Right is ISet) return this;
             if (Left is ISet) return ((ISet)Left).ApplyLeft(new Mod(null, Right, true));
             if (Right is ISet) return ((ISet)Right).ApplyRight(new Mod(Left, null, true));
