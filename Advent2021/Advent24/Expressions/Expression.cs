@@ -11,6 +11,17 @@ namespace Advent2021.Advent24.Expressions
         public virtual bool IsSet => false;
         public bool Mutable = true;
 
+        private Constraint _constraint;
+        public Constraint Constraint 
+        {
+            get => _constraint;
+            set
+            {
+                if (!Mutable) throw new ImmutableObjectException("can't set Constraint on immutable expressions");
+                _constraint = value;
+            }
+        }
+
         private long? _value;
         public long? Value 
         {
@@ -45,13 +56,14 @@ namespace Advent2021.Advent24.Expressions
         public static long _idCursor = 0;
         public long Id { get; }
 
-        public Expression(Expression left, Expression right, long? value = null, bool mutable = false) 
+        public Expression(Expression left, Expression right, long? value = null, bool mutable = false, Constraint constraint = null) 
         { 
             Id = _idCursor++;
 
             Left = left;
             Right = right;
             Value = value;
+            Constraint = constraint ?? Constraint.None();
             Mutable = mutable;
         }
 
@@ -82,6 +94,8 @@ namespace Advent2021.Advent24.Expressions
             }
             return _depth;
         }
+
+        public abstract Expression CopyAndAddConstraint(Constraint constraint);
 
         public abstract Expression Simplify();
 

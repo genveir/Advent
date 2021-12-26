@@ -8,30 +8,33 @@ namespace Advent2021.Advent24.Expressions
 {
     public class Mul : Expression
     {
-        public Mul(Expression left, Expression right, bool mutable = false) : base(left, right, mutable: mutable) { }
+        public Mul(Expression left, Expression right, bool mutable = false, Constraint constraint = null)
+            : base(left, right, mutable: mutable, constraint: constraint) { }
 
         public override Expression Simplify()
         {
-            if (Left is Constant && Left.Value == 0) return Left;
-            if (Right is Constant && Right.Value == 0) return Right;
+            if (Left is Constant && Left.Value == 0) return Left.CopyAndAddConstraint(Right.Constraint);
+            if (Right is Constant && Right.Value == 0) return Right.CopyAndAddConstraint(Left.Constraint);
 
-            if (Left is Constant && Left.Value == 1) return Right;
-            if (Right is Constant && Right.Value == 1) return Left;
+            if (Left is Constant && Left.Value == 1) return Right.CopyAndAddConstraint(Left.Constraint);
+            if (Right is Constant && Right.Value == 1) return Left.CopyAndAddConstraint(Right.Constraint);
 
-            if (Left is Constant && Right is Constant) return new Constant(Left.Value * Right.Value);
+            if (Left is Constant && Right is Constant) return new Constant(Left.Value * Right.Value, Left.Constraint.And(Right.Constraint));
 
-            if (Left is ISet && Right is ISet) return this;
-            if (Left is ISet) return ((ISet)Left).ApplyLeft(new Mod(null, Right, true));
-            if (Right is ISet) return ((ISet)Right).ApplyRight(new Mod(Left, null, true));
+            if (Left is Set && Right is Set) return this;
+            if (Left is Set) return ((Set)Left).ApplyLeft(new Mul(null, Right, true));
+            if (Right is Set) return ((Set)Right).ApplyRight(new Mul(Left, null, true));
 
             return this;
         }
+
+        public override Expression CopyAndAddConstraint(Constraint constraint) => new Mul(Left, Right, false, Constraint.And(constraint));
 
         public override bool IsEquivalentTo(Expression other)
         {
             if (ReferenceEquals(other, this)) return true;
 
-            if (other is Mul)
+            if (other is Mul && Constraint.IsEquivalentTo(other.Constraint))
             {
                 return Left.IsEquivalentTo(other.Left) && Right.IsEquivalentTo(other.Right);
             }

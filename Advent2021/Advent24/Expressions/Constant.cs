@@ -9,17 +9,19 @@ namespace Advent2021.Advent24.Expressions
     public class Constant : Expression
     {
 
-        public Constant(long? value) : base(null, null, value) { }
+        public Constant(long? value, Constraint constraint = null) : base(null, null, value, constraint: constraint) { }
 
         public override Expression Simplify() => this;
 
         public override long UniqueSimplifyableExpressionCount() => 0;
 
+        public override Expression CopyAndAddConstraint(Constraint constraint) => new Constant(Value, Constraint.And(constraint));
+
         public override bool IsEquivalentTo(Expression other)
         {
             if (ReferenceEquals(other, this)) return true;
 
-            if (other is Constant)
+            if (other is Constant && Constraint.IsEquivalentTo(other.Constraint))
             {
                 return Value == other.Value;
             }

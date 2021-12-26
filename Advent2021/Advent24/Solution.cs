@@ -84,12 +84,9 @@ namespace Advent2021.Advent24
                 }
                 var target = registers[data[1]];
 
-                var inputConstants = new Expression[9];
-                for (int n = 1; n < 10; n++) inputConstants[n - 1] = registers[n.ToString()].Value;
-
                 switch (data[0])
                 {
-                    case "inp": target.Value = new InputSet(new Constant(inputCursor++), inputConstants); break;
+                    case "inp": target.Value = new InputSet(inputCursor++); break;
                     case "add": target.Value = new Add(target.Value, source.Value).Simplify(); break;
                     case "mul": target.Value = new Mul(target.Value, source.Value).Simplify(); break;
                     case "div": target.Value = new Div(target.Value, source.Value).Simplify(); break;
