@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Advent2021.Advent24.Constraints;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,14 +17,18 @@ namespace Advent2021.Advent24.Expressions
         public override long UniqueSimplifyableExpressionCount() => 0;
 
         public override Expression CopyAndAddConstraint(Constraint constraint) => new Constant(Value, Constraint.And(constraint));
+        public override Expression CopyAndSetConstraint(Constraint constraint) => new Constant(Value, constraint);
 
-        public override bool IsEquivalentTo(Expression other)
+        public override bool IsEquivalentTo(Expression other, bool checkConstraint)
         {
             if (ReferenceEquals(other, this)) return true;
 
-            if (other is Constant && Constraint.IsEquivalentTo(other.Constraint))
+            if (other is Constant)
             {
-                return Value == other.Value;
+                if (!checkConstraint || Constraint.IsEquivalentTo(other.Constraint))
+                {
+                    return Value == other.Value;
+                }
             }
 
             return false;

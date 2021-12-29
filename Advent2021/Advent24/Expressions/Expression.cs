@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Advent2021.Advent24.Constraints;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -96,11 +97,30 @@ namespace Advent2021.Advent24.Expressions
         }
 
         public abstract Expression CopyAndAddConstraint(Constraint constraint);
+        public abstract Expression CopyAndSetConstraint(Constraint constraint);
 
         public abstract Expression Simplify();
 
-        public abstract bool IsEquivalentTo(Expression other);
+        public virtual bool IsEquivalentTo(Expression other, bool checkConstraint)
+        {
+            if (ReferenceEquals(other, this)) return true;
+
+            if (other.GetType() == this.GetType())
+            {
+                if (!checkConstraint || Constraint.IsEquivalentTo(other.Constraint))
+                {
+                    return Left.IsEquivalentTo(other.Left, checkConstraint) && Right.IsEquivalentTo(other.Right, checkConstraint);
+                }
+            }
+
+            return false;
+        }
 
         public abstract string PrintToDepth(int depth);
+
+        public override string ToString()
+        {
+            return PrintToDepth(1);
+        }
     }
 }

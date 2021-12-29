@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Advent2021.Advent24.Constraints;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,18 +27,7 @@ namespace Advent2021.Advent24.Expressions
         }
 
         public override Expression CopyAndAddConstraint(Constraint constraint) => new Add(Left, Right, false, Constraint.And(constraint));
-
-        public override bool IsEquivalentTo(Expression other)
-        {
-            if (ReferenceEquals(other, this)) return true;
-            
-            if (other is Add && Constraint.IsEquivalentTo(other.Constraint))
-            {
-                return Left.IsEquivalentTo(other.Left) && Right.IsEquivalentTo(other.Right);
-            }
-
-            return false;
-        }
+        public override Expression CopyAndSetConstraint(Constraint constraint) => new Add(Left, Right, false, constraint);
 
         public override string PrintToDepth(int depth)
         {

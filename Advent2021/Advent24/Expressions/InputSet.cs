@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Advent2021.Advent24.Constraints;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,7 @@ namespace Advent2021.Advent24.Expressions
             Elements = new Expression[9];
             for (int n = 0; n < 9; n++)
             {
-                Elements[n] = new Constant(n + 1, constraint: new Constraint(input, n + 1));
+                Elements[n] = new Constant(n + 1, constraint: new AndConstraint(input, n + 1));
             }
 
             Mutable = false;
