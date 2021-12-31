@@ -101,13 +101,7 @@ namespace Advent2021.Advent24.Tests
 
             var sum = new Add(left, right).Simplify();
 
-            var sumConstraints = new List<Constraint>()
-            {
-                or
-            };
-            var newOr = new OrConstraint(sumConstraints);
-
-            Assert.That(sum.IsEquivalentTo(new Constant(12, newOr), true));
+            Assert.That(sum.IsEquivalentTo(new Constant(12, or), true));
         }
 
         [Test]
