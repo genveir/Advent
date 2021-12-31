@@ -33,13 +33,15 @@ namespace Advent2021.Advent24.Constraints
             return false;
         }
 
-        public override OrConstraint Or(Constraint constraint)
+        public override Constraint Or(Constraint constraint)
         {
-            return new OrConstraint(Constraints.Append(constraint));
+            return new OrConstraint(Constraints.Append(constraint)).Simplify();
         }
 
         public override Constraint Simplify()
         {
+            if (Constraints.Count() == 0) return Constraint.Impossible();
+
             // remove all unconstrained elements
             if (Constraints.Any(c => c.IsUnconstrained())) 
                 return new OrConstraint(Constraints.Where(c => !c.IsUnconstrained())).Simplify();
@@ -61,7 +63,7 @@ namespace Advent2021.Advent24.Constraints
 
         public override bool CannotBeSatisfied()
         {
-            return Constraints.All(c => c.CannotBeSatisfied());
+            return Constraints.All(c => c.CannotBeSatisfied()) && Constraints.Count() > 0;
         }
 
         public override string ToString()

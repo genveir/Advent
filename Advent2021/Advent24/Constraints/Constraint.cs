@@ -10,9 +10,11 @@ namespace Advent2021.Advent24.Constraints
     {
         public static AndConstraint None() => AndConstraint.None();
 
+        public static AndConstraint Impossible() => AndConstraint.Impossible();
+
         public abstract Constraint And(Constraint constraint);
 
-        public abstract OrConstraint Or(Constraint constraint);
+        public abstract Constraint Or(Constraint constraint);
 
         public abstract bool IsEquivalentTo(Constraint constraint);
 

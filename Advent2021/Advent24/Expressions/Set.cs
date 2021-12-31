@@ -88,31 +88,25 @@ namespace Advent2021.Advent24.Expressions
         {
             // equivalences
 
-            // if there's only one unconstrainted element this expression is equal to that element
-            if (Elements.Length == 1 
-                && 
-                Elements[0].Constraint.IsUnconstrained()) return Elements[0];
-
-            // rewrite to expression if all are the same
-            if (Elements.All(m => m.IsEquivalentTo(Elements[0], true))) return Elements[0];
-
-            var equivalentWithoutConstraints = new List<List<Expression>>();
-            var matched = new bool[Elements.Length];
-
-            for (int n = 0; n < Elements.Length; n++)
+            // if any constraints are impossible their expressions should be removed from the set
+            if (Elements.Any(element => element.Constraint.CannotBeSatisfied()))
             {
-                if (matched[n]) continue;
-                List<Expression> equivalent = new List<Expression>() { Elements[n] };
-                for (int i = n + 1; i < Elements.Length; i++)
-                {
-                    if (Elements[i].IsEquivalentTo(Elements[n], false))
-                    {
-                        equivalent.Add(Elements[i]);
-                        matched[i] = true;
-                    }
-                }
-                equivalentWithoutConstraints.Add(equivalent);
+                return new Set(Elements.Where(el => !el.Constraint.CannotBeSatisfied()).ToArray());
             }
+
+            // if two or more elements are the same, merge them
+            var completelyEquivalent = GetEquivalencesWithConstraints();
+            if (completelyEquivalent.Count < Elements.Length)
+            {
+                Expression[] newElements = new Expression[completelyEquivalent.Count];
+                for (int n = 0; n < newElements.Length; n++) newElements[n] = completelyEquivalent[n][0];
+
+                return new Set(newElements);
+            }
+
+            // merge equivalent elements with different constraints into or-constrained expressions
+            var equivalentWithoutConstraints = GetEquivalencesWithoutConstraints();
+
             if (equivalentWithoutConstraints.Count < Elements.Length)
             {
                 Expression[] newElements = new Expression[equivalentWithoutConstraints.Count];
@@ -121,7 +115,7 @@ namespace Advent2021.Advent24.Expressions
                     if (equivalentWithoutConstraints[n].Count == 1) newElements[n] = equivalentWithoutConstraints[n][0];
                     else
                     {
-                        var newConstraint = new OrConstraint(equivalentWithoutConstraints[n].Select(ex => ex.Constraint));
+                        var newConstraint = new OrConstraint(equivalentWithoutConstraints[n].Select(ex => ex.Constraint)).Simplify();
                         newElements[n] = equivalentWithoutConstraints[n][0].CopyAndSetConstraint(newConstraint);
                     }
                 }
@@ -129,6 +123,32 @@ namespace Advent2021.Advent24.Expressions
             }
 
             return this;
+        }
+
+        private List<List<Expression>> GetEquivalencesWithoutConstraints() => GetEquivalences(false);
+        private List<List<Expression>> GetEquivalencesWithConstraints() => GetEquivalences(true);
+
+        private List<List<Expression>> GetEquivalences(bool withConstraints)
+        {
+            var equivalentWithConstraints = new List<List<Expression>>();
+            var matched = new bool[Elements.Length];
+
+            for (int n = 0; n < Elements.Length; n++)
+            {
+                if (matched[n]) continue;
+                List<Expression> equivalent = new List<Expression>() { Elements[n] };
+                for (int i = n + 1; i < Elements.Length; i++)
+                {
+                    if (Elements[i].IsEquivalentTo(Elements[n], withConstraints))
+                    {
+                        equivalent.Add(Elements[i]);
+                        matched[i] = true;
+                    }
+                }
+                equivalentWithConstraints.Add(equivalent);
+            }
+
+            return equivalentWithConstraints;
         }
 
         public override Expression CopyAndAddConstraint(Constraint constraint)

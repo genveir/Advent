@@ -16,8 +16,6 @@ namespace Advent2021.Advent24.Expressions
         {
             if (Left is Constant && Right is Constant) return new Constant(Left.Value == Right.Value ? 1 : 0, Left.Constraint.And(Right.Constraint));
 
-            if (Left is Set setL && Right is Set setR) return this;
-
             if (Left is Set) return ((Set)Left).ApplyLeft(new Eql(null, Right, true));
             if (Right is Set) return ((Set)Right).ApplyRight(new Eql(Left, null, true));
 

@@ -12,7 +12,7 @@ namespace Advent2021.Advent24.Expressions
 
         public Constant(long? value, Constraint constraint = null) : base(null, null, value, constraint: constraint) { }
 
-        public override Expression Simplify() => this;
+        public override Expression Simplify() => new Set(new[] { this });
 
         public override long UniqueSimplifyableExpressionCount() => 0;
 

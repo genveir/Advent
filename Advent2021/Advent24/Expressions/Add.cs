@@ -19,7 +19,7 @@ namespace Advent2021.Advent24.Expressions
 
             if (Left is Constant && Right is Constant) return new Constant(Left.Value + Right.Value, Left.Constraint.And(Right.Constraint));
 
-            if (Left is Set && Right is Set) return this;
+            if (Left is Set && Right is Set) return this; // need a product apply
             if (Left is Set) return ((Set)Left).ApplyLeft(new Add(null, Right, true));
             if (Right is Set) return ((Set)Right).ApplyRight(new Add(Left, null, true));
 

@@ -8,7 +8,7 @@ namespace Advent2021.Advent24.Constraints
 {
     public class AndConstraint : Constraint
     {
-        private AndConstraint()
+        private AndConstraint(bool setAllValuesTo = true)
         {
             AllowedValues = new bool[14][];
             for (int n = 0; n < 14; n++)
@@ -26,19 +26,21 @@ namespace Advent2021.Advent24.Constraints
             }
         }
 
-        public new static AndConstraint None() => new AndConstraint();
+        public new static AndConstraint None() => new AndConstraint(true);
+        public new static AndConstraint Impossible() => new AndConstraint(false);
+
 
         public bool[][] AllowedValues { get; }
 
         public override Constraint And(Constraint constraint)
         {
-            if (constraint is AndConstraint ac) return And(ac);
-            else return constraint.And(this);
+            if (constraint is AndConstraint ac) return And(ac).Simplify();
+            else return constraint.And(this).Simplify();
         }
 
-        public override OrConstraint Or(Constraint constraint)
+        public override Constraint Or(Constraint constraint)
         {
-            return new OrConstraint(new[] { constraint, this });
+            return new OrConstraint(new[] { constraint, this }).Simplify();
         }
 
         public AndConstraint And(AndConstraint other)
