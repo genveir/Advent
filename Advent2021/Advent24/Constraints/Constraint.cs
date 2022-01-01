@@ -22,6 +22,13 @@ namespace Advent2021.Advent24.Constraints
 
         public abstract bool CannotBeSatisfied();
 
+        /// <summary>
+        /// does this constrain one input to one value
+        /// </summary>
+        /// <returns></returns>
+        public abstract bool IsSimple();
+        public abstract (int input, int value) SimpleValue();
+
         public abstract Constraint Simplify();
     }
 }

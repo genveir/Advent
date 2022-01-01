@@ -18,8 +18,20 @@ namespace Advent2021.Advent24.Expressions.Values
             this.Constraint = constraint;
         }
 
-        public Constant CopyAndAddConstraint(Constraint constraint) => new Constant(Value, Constraint.And(constraint));
         public Constant CopyAndSetConstraint(Constraint constraint) => new Constant(Value, constraint);
+
+        private Constant _simplified;
+        public Constant Simplify()
+        {
+            if (_simplified == null)
+            {
+                var simplifiedConstraint = Constraint.Simplify();
+
+                _simplified = (simplifiedConstraint == Constraint) ? 
+                    this : new Constant(Value, simplifiedConstraint);
+            }
+            return _simplified;
+        }
 
         public bool IsEquivalentTo(Constant other, bool checkConstraint)
         {

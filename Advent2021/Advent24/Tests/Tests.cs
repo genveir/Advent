@@ -18,7 +18,9 @@ namespace Advent2021.Advent24.Tests
         {
             var sol = new Solution(input);
 
-            var str = sol.Z.Value.PrintToDepth(10);
+            var strX = sol.X.Value.PrintToDepth(10);
+            var strY = sol.X.Value.PrintToDepth(10);
+            var strZ = sol.Z.Value.PrintToDepth(10);
 
             Assert.AreEqual(output, sol.GetResult1());
         }

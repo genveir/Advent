@@ -55,40 +55,55 @@ namespace Advent2021.Advent24.Expressions.Values
 
             // if any constraints are impossible their expressions should be removed from the set
             if (Elements.Any(element => element.Constraint.CannotBeSatisfied()))
-            {
                 return new Set(Elements.Where(el => !el.Constraint.CannotBeSatisfied()).ToArray()).Simplify();
-            }
 
             // if two or more elements are the same, merge them
             var completelyEquivalent = GetEquivalencesWithConstraints();
             if (completelyEquivalent.Count < Elements.Length)
-            {
-                Constant[] newElements = new Constant[completelyEquivalent.Count];
-                for (int n = 0; n < newElements.Length; n++) newElements[n] = completelyEquivalent[n][0];
-
-                return new Set(newElements).Simplify();
-            }
+                return WithoutCompleteEquivalents(completelyEquivalent);
 
             // merge equivalent elements with different constraints into or-constrained expressions
             var equivalentWithoutConstraints = GetEquivalencesWithoutConstraints();
-
             if (equivalentWithoutConstraints.Count < Elements.Length)
+                return WithMergedConstantsUnderValue(equivalentWithoutConstraints);
+
+            // simplify all the remaining elements
+            bool hasChanged = false;
+            var newElements = new List<Constant>();
+            foreach (var element in Elements)
             {
-                Constant[] newElements = new Constant[equivalentWithoutConstraints.Count];
-                for (int n = 0; n < newElements.Length; n++)
-                {
-                    if (equivalentWithoutConstraints[n].Count == 1) newElements[n] = equivalentWithoutConstraints[n][0];
-                    else
-                    {
-                        var newConstraint = new OrConstraint(equivalentWithoutConstraints[n].Select(ex => ex.Constraint)).Simplify();
-                        newElements[n] = equivalentWithoutConstraints[n][0].CopyAndSetConstraint(newConstraint);
-                    }
-                }
-                return new Set(newElements).Simplify();
+                var simplified = element.Simplify();
+                newElements.Add(simplified);
+
+                if (!(simplified == element)) hasChanged = true;
             }
+            if (hasChanged) return new Set(newElements.ToArray());
 
             // we are fully simplified
             return this;
+        }
+
+        private Set WithoutCompleteEquivalents(List<List<Constant>> completelyEquivalent)
+        {
+            Constant[] newElements = new Constant[completelyEquivalent.Count];
+            for (int n = 0; n < newElements.Length; n++) newElements[n] = completelyEquivalent[n][0];
+
+            return new Set(newElements).Simplify();
+        }
+
+        private Set WithMergedConstantsUnderValue(List<List<Constant>> equivalentWithoutConstraints)
+        {
+            Constant[] newElements = new Constant[equivalentWithoutConstraints.Count];
+            for (int n = 0; n < newElements.Length; n++)
+            {
+                if (equivalentWithoutConstraints[n].Count == 1) newElements[n] = equivalentWithoutConstraints[n][0];
+                else
+                {
+                    var newConstraint = new OrConstraint(equivalentWithoutConstraints[n].Select(ex => ex.Constraint)).Simplify();
+                    newElements[n] = equivalentWithoutConstraints[n][0].CopyAndSetConstraint(newConstraint);
+                }
+            }
+            return new Set(newElements).Simplify();
         }
 
         private List<List<Constant>> _equivalencesWithoutConstraints;

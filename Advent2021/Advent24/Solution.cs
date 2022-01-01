@@ -93,6 +93,8 @@ namespace Advent2021.Advent24
                     case "mod": target.Value = new Mod(target.Value, source.Value).Apply(); break;
                     case "eql": target.Value = new Eql(target.Value, source.Value).Apply(); break;
                 };
+
+                Console.WriteLine("applied " + line);
             }
         }
 
