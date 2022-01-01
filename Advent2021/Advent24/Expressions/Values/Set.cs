@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Advent2021.Advent24.Expressions
+namespace Advent2021.Advent24.Expressions.Values
 {
-    public class Set : Expression
+    public class Set : ExpressionValue
     {
-        private Expression[] _elements;
-        public Expression[] Elements
+        private Constant[] _elements;
+        public Constant[] Elements
         {
             get => _elements;
             set
@@ -20,7 +20,7 @@ namespace Advent2021.Advent24.Expressions
             }
         }
 
-        public Set(Expression[] elements) : base(null, null) 
+        public Set(Constant[] elements) :base()
         {
             Mutable = true;
 
@@ -37,7 +37,7 @@ namespace Advent2021.Advent24.Expressions
             return builder.ToString();
         }
 
-        public override bool IsEquivalentTo(Expression other, bool checkConstraint)
+        public bool IsEquivalentTo(Expression other, bool checkConstraint)
         {
             if (ReferenceEquals(other, this)) return true;
 
@@ -49,59 +49,24 @@ namespace Advent2021.Advent24.Expressions
             return true;
         }
 
-        public Expression ApplyLeft(Expression baseExpression)
-        {
-            var newExpressions = new Expression[Elements.Length];
-            for (int n = 0; n < Elements.Length; n++)
-            {
-                baseExpression.Left = Elements[n];
-                newExpressions[n] = baseExpression.CopyAndAddConstraint(Elements[n].Constraint).Simplify();
-            }
-            return new Set(newExpressions).Simplify();
-        }
-
-        public Expression ApplyRight(Expression baseExpression)
-        {
-            var newExpressions = new Expression[Elements.Length];
-            for (int n = 0; n < Elements.Length; n++)
-            {
-                baseExpression.Right = Elements[n];
-                newExpressions[n] = baseExpression.CopyAndAddConstraint(Elements[n].Constraint).Simplify();
-            }
-            return new Set(newExpressions).Simplify();
-        }
-
-        public bool IsDisjunct(Set otherSet)
-        {
-            for (int my = 0; my < Elements.Length; my++)
-            {
-                for (int their = 0; their < otherSet.Elements.Length; their++)
-                {
-                    if (Elements[my].IsEquivalentTo(otherSet.Elements[their], false)) return false;
-                }
-            }
-
-            return true;
-        }
-
-        public override Expression Simplify()
+        public Set Simplify()
         {
             // equivalences
 
             // if any constraints are impossible their expressions should be removed from the set
             if (Elements.Any(element => element.Constraint.CannotBeSatisfied()))
             {
-                return new Set(Elements.Where(el => !el.Constraint.CannotBeSatisfied()).ToArray());
+                return new Set(Elements.Where(el => !el.Constraint.CannotBeSatisfied()).ToArray()).Simplify();
             }
 
             // if two or more elements are the same, merge them
             var completelyEquivalent = GetEquivalencesWithConstraints();
             if (completelyEquivalent.Count < Elements.Length)
             {
-                Expression[] newElements = new Expression[completelyEquivalent.Count];
+                Constant[] newElements = new Constant[completelyEquivalent.Count];
                 for (int n = 0; n < newElements.Length; n++) newElements[n] = completelyEquivalent[n][0];
 
-                return new Set(newElements);
+                return new Set(newElements).Simplify();
             }
 
             // merge equivalent elements with different constraints into or-constrained expressions
@@ -109,7 +74,7 @@ namespace Advent2021.Advent24.Expressions
 
             if (equivalentWithoutConstraints.Count < Elements.Length)
             {
-                Expression[] newElements = new Expression[equivalentWithoutConstraints.Count];
+                Constant[] newElements = new Constant[equivalentWithoutConstraints.Count];
                 for (int n = 0; n < newElements.Length; n++)
                 {
                     if (equivalentWithoutConstraints[n].Count == 1) newElements[n] = equivalentWithoutConstraints[n][0];
@@ -119,24 +84,42 @@ namespace Advent2021.Advent24.Expressions
                         newElements[n] = equivalentWithoutConstraints[n][0].CopyAndSetConstraint(newConstraint);
                     }
                 }
-                return new Set(newElements);
+                return new Set(newElements).Simplify();
             }
 
+            // we are fully simplified
             return this;
         }
 
-        private List<List<Expression>> GetEquivalencesWithoutConstraints() => GetEquivalences(false);
-        private List<List<Expression>> GetEquivalencesWithConstraints() => GetEquivalences(true);
-
-        private List<List<Expression>> GetEquivalences(bool withConstraints)
+        private List<List<Constant>> _equivalencesWithoutConstraints;
+        private List<List<Constant>> GetEquivalencesWithoutConstraints()
         {
-            var equivalentWithConstraints = new List<List<Expression>>();
+            if (_equivalencesWithoutConstraints == null)
+            {
+                _equivalencesWithoutConstraints = GetEquivalences(false);
+            }
+            return _equivalencesWithoutConstraints;
+        }
+
+        private List<List<Constant>> _equivalencesWithConstraints;
+        private List<List<Constant>> GetEquivalencesWithConstraints()
+        {
+            if (_equivalencesWithConstraints == null)
+            {
+                _equivalencesWithConstraints = GetEquivalences(true);
+            }
+            return _equivalencesWithConstraints;
+        }
+
+        private List<List<Constant>> GetEquivalences(bool withConstraints)
+        {
+            var equivalentWithConstraints = new List<List<Constant>>();
             var matched = new bool[Elements.Length];
 
             for (int n = 0; n < Elements.Length; n++)
             {
                 if (matched[n]) continue;
-                List<Expression> equivalent = new List<Expression>() { Elements[n] };
+                List<Constant> equivalent = new List<Constant>() { Elements[n] };
                 for (int i = n + 1; i < Elements.Length; i++)
                 {
                     if (Elements[i].IsEquivalentTo(Elements[n], withConstraints))
@@ -149,20 +132,6 @@ namespace Advent2021.Advent24.Expressions
             }
 
             return equivalentWithConstraints;
-        }
-
-        public override Expression CopyAndAddConstraint(Constraint constraint)
-        {
-            var newElements = Elements.Select(e => e.CopyAndAddConstraint(constraint)).ToArray();
-
-            return new Set(newElements);
-        }
-
-        public override Expression CopyAndSetConstraint(Constraint constraint)
-        {
-            var newElements = Elements.Select(e => e.CopyAndSetConstraint(constraint)).ToArray();
-
-            return new Set(newElements);
         }
     }
 }

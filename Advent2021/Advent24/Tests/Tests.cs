@@ -1,5 +1,7 @@
 ﻿using Advent2021.Advent24.Constraints;
 using Advent2021.Advent24.Expressions;
+using Advent2021.Advent24.Expressions.Operators;
+using Advent2021.Advent24.Expressions.Values;
 using Advent2021.Shared;
 using NUnit.Framework;
 using System;
@@ -40,9 +42,9 @@ namespace Advent2021.Advent24.Tests
 
             var expr = new Eql(set1, set2);
 
-            var collapsed = expr.Simplify();
+            var collapsed = expr.Apply();
 
-            Assert.That(collapsed.IsEquivalentTo(new Constant(0, Constraint.None()), true));
+            Assert.That(collapsed.IsEquivalentTo(new SetWithConstant(0), true));
         }
 
         private Set ParseSimpleSetFromOutput(string output)

@@ -1,4 +1,6 @@
-﻿using Advent2021.Advent24.Expressions;
+﻿using Advent2021.Advent24.Constraints;
+using Advent2021.Advent24.Expressions.Operators;
+using Advent2021.Advent24.Expressions.Values;
 using Advent2021.Shared;
 using OneOf;
 using System;
@@ -14,7 +16,7 @@ namespace Advent2021.Advent24
 
         public Solution(string input)
         {
-            var zero = new Constant(0);
+            var zero = new SetWithConstant(0);
 
             W = new Register("W", zero);
             X = new Register("X", zero);
@@ -32,12 +34,10 @@ namespace Advent2021.Advent24
 
             for (int n = 1; n < 10; n++)
             {
-                Registers.Add(n.ToString(), new Register(n.ToString(), new Constant(n)));
+                Registers.Add(n.ToString(), new Register(n.ToString(), new SetWithConstant(n)));
             }
 
             var lines = Input.GetInputLines(input).ToArray();
-
-            var inputParser = new InputParser<string, char, string>("op arg1 arg2");
 
             foreach (var line in lines) ExpressionBuilder.Parse(Registers, line);
         }
@@ -48,9 +48,9 @@ namespace Advent2021.Advent24
         {
             public string Name;
 
-            public Expression Value;
+            public Set Value;
 
-            public Register(string name, Expression value)
+            public Register(string name, Set value)
             {
                 this.Name = name;
                 this.Value = value;
@@ -76,7 +76,7 @@ namespace Advent2021.Advent24
                     {
                         if (!registers.ContainsKey(data[2]))
                         {
-                            registers[data[2]] = new Register(val.ToString(), new Constant(val));
+                            registers[data[2]] = new Register(val.ToString(), new Set(new[] { new Constant(val, Constraint.None()) }));
                         }
                     }
 
@@ -87,20 +87,18 @@ namespace Advent2021.Advent24
                 switch (data[0])
                 {
                     case "inp": target.Value = new InputSet(inputCursor++); break;
-                    case "add": target.Value = new Add(target.Value, source.Value).Simplify(); break;
-                    case "mul": target.Value = new Mul(target.Value, source.Value).Simplify(); break;
-                    case "div": target.Value = new Div(target.Value, source.Value).Simplify(); break;
-                    case "mod": target.Value = new Mod(target.Value, source.Value).Simplify(); break;
-                    case "eql": target.Value = new Eql(target.Value, source.Value).Simplify(); break;
+                    case "add": target.Value = new Add(target.Value, source.Value).Apply(); break;
+                    case "mul": target.Value = new Mul(target.Value, source.Value).Apply(); break;
+                    case "div": target.Value = new Div(target.Value, source.Value).Apply(); break;
+                    case "mod": target.Value = new Mod(target.Value, source.Value).Apply(); break;
+                    case "eql": target.Value = new Eql(target.Value, source.Value).Apply(); break;
                 };
             }
         }
 
         public object GetResult1()
         {
-            var numNodes = Z.Value.Count();
-            var depth = Z.Value.Depth();
-            var numExpressions = Z.Value.UniqueSimplifyableExpressionCount();
+
 
             return "";
         }

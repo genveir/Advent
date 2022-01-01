@@ -7,113 +7,16 @@ using System.Threading.Tasks;
 
 namespace Advent2021.Advent24.Expressions
 {
-    public abstract class Expression
+    public abstract class Expression : IPrintable
     {
-        public virtual bool IsSet => false;
-        public bool Mutable = true;
-
-        private Constraint _constraint;
-        public Constraint Constraint 
-        {
-            get => _constraint;
-            set
-            {
-                if (!Mutable) throw new ImmutableObjectException("can't set Constraint on immutable expressions");
-                _constraint = value;
-            }
-        }
-
-        private long? _value;
-        public long? Value 
-        {
-            get => _value;
-            set
-            {
-                if (!Mutable) throw new ImmutableObjectException("can't set Value on immutable expressions");
-                _value = value;
-            }
-        }
-
-        private Expression _left, _right;
-        public Expression Left 
-        {
-            get => _left;
-            set
-            {
-                if (!Mutable) throw new ImmutableObjectException("can't set Left on immutable expressions");
-                _left = value;
-            }
-        }
-        public Expression Right 
-        {
-            get => _right;
-            set
-            {
-                if (!Mutable) throw new ImmutableObjectException("can't set Right on immutable expressions");
-                _right = value;
-            }
-        }
+        public bool Mutable = false;   
 
         public static long _idCursor = 0;
         public long Id { get; }
 
-        public Expression(Expression left, Expression right, long? value = null, bool mutable = false, Constraint constraint = null) 
+        public Expression() 
         { 
             Id = _idCursor++;
-
-            Left = left;
-            Right = right;
-            Value = value;
-            Constraint = constraint ?? Constraint.None();
-            Mutable = mutable;
-        }
-
-        private long _uniqueCount;
-        public virtual long UniqueSimplifyableExpressionCount()
-        {
-            var val = 1 - _uniqueCount;
-            _uniqueCount = 1;
-            return val + (Left?.UniqueSimplifyableExpressionCount() ?? 0) + (Right?.UniqueSimplifyableExpressionCount() ?? 0);
-        }
-
-        private long _count;
-        public long Count()
-        {
-            if (_count == 0 || Mutable)
-            {
-                _count = (Left?.Count() ?? 0) + 1 + (Right?.Count() ?? 0);
-            }
-            return _count;
-        }
-
-        private long _depth;
-        public long Depth()
-        {
-            if (_depth == 0 || Mutable)
-            {
-                _depth = Math.Max((Left?.Depth() ?? 0), (Right?.Depth() ?? 0)) + 1;
-            }
-            return _depth;
-        }
-
-        public abstract Expression CopyAndAddConstraint(Constraint constraint);
-        public abstract Expression CopyAndSetConstraint(Constraint constraint);
-
-        public abstract Expression Simplify();
-
-        public virtual bool IsEquivalentTo(Expression other, bool checkConstraint)
-        {
-            if (ReferenceEquals(other, this)) return true;
-
-            if (other.GetType() == this.GetType())
-            {
-                if (!checkConstraint || Constraint.IsEquivalentTo(other.Constraint))
-                {
-                    return Left.IsEquivalentTo(other.Left, checkConstraint) && Right.IsEquivalentTo(other.Right, checkConstraint);
-                }
-            }
-
-            return false;
         }
 
         public abstract string PrintToDepth(int depth);
