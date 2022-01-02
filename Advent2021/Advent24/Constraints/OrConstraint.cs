@@ -138,7 +138,8 @@ namespace Advent2021.Advent24.Constraints
 
         public override bool IsUnconstrained()
         {
-            return Constraints.Aggregate((a, b) => a.And(b)).IsUnconstrained();
+            // not complete, but at least correct
+            return Constraints.Any(c => c.IsUnconstrained());
         }
 
         public override bool CannotBeSatisfied()
