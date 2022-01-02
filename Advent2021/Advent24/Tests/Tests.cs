@@ -46,7 +46,8 @@ namespace Advent2021.Advent24.Tests
 
             var collapsed = expr.Apply();
 
-            Assert.That(collapsed.IsEquivalentTo(new SetWithConstant(0), true));
+            Assert.That(collapsed.IsEquivalentTo(new SetWithConstant(0), false), "sets did not collapse to 0");
+            Assert.That(collapsed.IsEquivalentTo(new SetWithConstant(0), true), "constraint did not collapse to None");
         }
 
         private Set ParseSimpleSetFromOutput(string output)

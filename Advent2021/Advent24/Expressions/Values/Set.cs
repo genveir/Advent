@@ -41,10 +41,11 @@ namespace Advent2021.Advent24.Expressions.Values
         {
             if (ReferenceEquals(other, this)) return true;
 
-            if (other is InputSet set)
+            if (other is Set set)
             {
                 for (int n = 0; n < Elements.Length; n++) if (!Elements[n].IsEquivalentTo(set.Elements[n], checkConstraint)) return false;
             }
+            else return false;
 
             return true;
         }
