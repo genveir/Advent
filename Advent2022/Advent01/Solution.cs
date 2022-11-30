@@ -31,12 +31,12 @@ namespace Advent2022.Advent01
 
         public object GetResult1()
         {
-            return "";
+            return "beep";
         }
 
         public object GetResult2()
         {
-            return "";
+            return "boop";
         }
     }
 }

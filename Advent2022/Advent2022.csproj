@@ -2,8 +2,8 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net5.0</TargetFramework>
-		<StartupObject>Advent2021.Program</StartupObject>
+		<TargetFramework>net6.0</TargetFramework>
+		<StartupObject>Advent2022.Program</StartupObject>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -13,62 +13,6 @@
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
-
-	<ItemGroup>
-	  <None Remove="Advent01\Input.txt" />
-	  <None Remove="Advent02\Input.txt" />
-	  <None Remove="Advent03\Input.txt" />
-	  <None Remove="Advent04\Input.txt" />
-	  <None Remove="Advent05\Input.txt" />
-	  <None Remove="Advent06\Input.txt" />
-	  <None Remove="Advent07\Input.txt" />
-	  <None Remove="Advent08\Input.txt" />
-	  <None Remove="Advent09\Input.txt" />
-	  <None Remove="Advent10\Input.txt" />
-	  <None Remove="Advent11\Input.txt" />
-	  <None Remove="Advent12\Input.txt" />
-	  <None Remove="Advent13\Input.txt" />
-	  <None Remove="Advent14\Input.txt" />
-	  <None Remove="Advent15\Input.txt" />
-	  <None Remove="Advent16\Input.txt" />
-	  <None Remove="Advent17\Input.txt" />
-	  <None Remove="Advent18\Input.txt" />
-	  <None Remove="Advent19\Input.txt" />
-	  <None Remove="Advent20\Input.txt" />
-	  <None Remove="Advent21\Input.txt" />
-	  <None Remove="Advent23\Input.txt" />
-	  <None Remove="Advent24\Input.txt" />
-	  <None Remove="AdventBase\Input.txt" />
-	  <None Remove="Advent22\Input.txt" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <EmbeddedResource Include="Advent01\Input.txt" />
-	  <EmbeddedResource Include="Advent02\Input.txt" />
-	  <EmbeddedResource Include="Advent03\Input.txt" />
-	  <EmbeddedResource Include="Advent04\Input.txt" />
-	  <EmbeddedResource Include="Advent05\Input.txt" />
-	  <EmbeddedResource Include="Advent06\Input.txt" />
-	  <EmbeddedResource Include="Advent07\Input.txt" />
-	  <EmbeddedResource Include="Advent08\Input.txt" />
-	  <EmbeddedResource Include="Advent09\Input.txt" />
-	  <EmbeddedResource Include="Advent10\Input.txt" />
-	  <EmbeddedResource Include="Advent11\Input.txt" />
-	  <EmbeddedResource Include="Advent12\Input.txt" />
-	  <EmbeddedResource Include="Advent13\Input.txt" />
-	  <EmbeddedResource Include="Advent14\Input.txt" />
-	  <EmbeddedResource Include="Advent15\Input.txt" />
-	  <EmbeddedResource Include="Advent16\Input.txt" />
-	  <EmbeddedResource Include="Advent17\Input.txt" />
-	  <EmbeddedResource Include="Advent18\Input.txt" />
-	  <EmbeddedResource Include="Advent19\Input.txt" />
-	  <EmbeddedResource Include="Advent20\Input.txt" />
-	  <EmbeddedResource Include="Advent21\Input.txt" />
-	  <EmbeddedResource Include="Advent23\Input.txt" />
-	  <EmbeddedResource Include="Advent24\Input.txt" />
-	  <EmbeddedResource Include="AdventBase\Input.txt" />
-	  <EmbeddedResource Include="Advent22\Input.txt" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Collections" Version="3.0.4" />
