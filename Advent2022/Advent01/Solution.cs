@@ -8,35 +8,42 @@ namespace Advent2022.Advent01
 {
     public class Solution : ISolution
     {
-        public List<ParsedInput> modules;
+        public List<Elf> elves = new();
 
         public Solution(string input)
         {
-            var lines = Input.GetInputLines(input).ToArray();
+            var blocks = Input.GetBlockLines(input).ToArray();
 
-            var inputParser = new InputParser<ParsedInput>("line");
-
-            modules = inputParser.Parse(lines);
+            foreach (var block in blocks) elves.Add(new(block));
         }
         public Solution() : this("Input.txt") { }
 
-        public class ParsedInput
+        public class Elf
         {
-            [ComplexParserConstructor]
-            public ParsedInput()
-            {
+            public int[] calories;
 
+            [ComplexParserConstructor]
+            public Elf(string[] lines)
+            {
+                calories = lines.Select(l => int.Parse(l)).ToArray();
             }
+
+            public int TotalCalories => calories.Sum();
         }
 
         public object GetResult1()
         {
-            return "beep";
+            return elves
+                .Max(m => m.TotalCalories);
         }
 
         public object GetResult2()
         {
-            return "boop";
+            return elves
+                .Select(m => m.TotalCalories)
+                .OrderByDescending(m => m)
+                .Take(3)
+                .Sum();
         }
     }
 }

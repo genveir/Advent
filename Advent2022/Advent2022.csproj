@@ -15,6 +15,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Advent01\Input.txt" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Advent01\Input.txt" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Collections" Version="3.0.4" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.0" />
 		<PackageReference Include="NetTopologySuite" Version="2.4.0" />
