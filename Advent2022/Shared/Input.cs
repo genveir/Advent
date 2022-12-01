@@ -36,7 +36,8 @@ namespace Advent2022.Shared
             else
             {
                 var callingClass = GetCallingType();
-                var folder = callingClass.Assembly.Location.Replace("file:///", "").Replace("Advent2021.dll", "");
+                var assemblyName = callingClass.Assembly.GetName().Name + ".dll";
+                var folder = callingClass.Assembly.Location.Replace("file:///", "").Replace(assemblyName, "");
                 var dir = new DirectoryInfo(folder).Parent.Parent.Parent;
                 var nameSpace = callingClass.Namespace.Split(".");
 
