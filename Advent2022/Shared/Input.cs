@@ -138,9 +138,12 @@ namespace Advent2022.Shared
         {
             var rawInput = GetInput(input);
 
-            var blocks = rawInput.Split(Environment.NewLine + Environment.NewLine);
+            var blocks = rawInput
+                .Split(Environment.NewLine + Environment.NewLine);
 
-            return blocks.Select(block => block.Split(Environment.NewLine)).ToArray();
+            return blocks
+                .Select(block => block.Split(Environment.NewLine))
+                .ToArray();
         }
 
         public static long[] GetNumbers(string input)
