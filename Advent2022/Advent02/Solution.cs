@@ -27,13 +27,18 @@ namespace Advent2022.Advent02
             Scissors = 2
         }
 
-        public enum WLS { Win, Lose, Draw }
+        public enum DWL 
+        { 
+            Draw = 0, 
+            Win = 1, 
+            Lose = 2 
+        }
 
         public class Round
         {
             private RPS Other;
             private RPS Yours;
-            private WLS WLS;
+            private DWL DWL;
 
             [ComplexParserConstructor]
             public Round(char other, char yours)
@@ -51,39 +56,27 @@ namespace Advent2022.Advent02
                     'Z' => RPS.Scissors
                 };
 
-                WLS = yours switch
+                DWL = yours switch
                 {
-                    'X' => WLS.Lose,
-                    'Y' => WLS.Draw,
-                    'Z' => WLS.Win
+                    'X' => DWL.Lose,
+                    'Y' => DWL.Draw,
+                    'Z' => DWL.Win
                 };
 
             }
 
             public int Score()
             {
-                var typeScore = Yours switch
-                {
-                    RPS.Rock => 1,
-                    RPS.Paper => 2,
-                    RPS.Scissors => 3
-                };
+                var typeScore = (int)Yours + 1;
 
                 var comp = (Other - Yours + 2) % 3;
 
                 return typeScore + comp * 3;
             }
 
-            public void SetMineFromWLS()
+            public void SetYoursFromWLD()
             {
-                var otherVal = (int)Other;
-
-                int newVal = WLS switch
-                {
-                    WLS.Win => (otherVal + 1) % 3,
-                    WLS.Draw => otherVal,
-                    WLS.Lose => (otherVal + 2) % 3
-                };
+                int newVal = ((int)Other + (int)DWL) % 3;
 
                 Yours = (RPS)newVal;
             }
@@ -96,7 +89,7 @@ namespace Advent2022.Advent02
 
         public object GetResult2()
         {
-            foreach (var round in rounds) round.SetMineFromWLS();
+            foreach (var round in rounds) round.SetYoursFromWLD();
 
             return rounds.Sum(round => round.Score());
         }
