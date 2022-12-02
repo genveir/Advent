@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Advent2022.Shared
 {
-    public class ModList<T> : ICollection<T>
+    public class CircularList<T> : ICollection<T>
     {
         private List<T> innerList;
 
-        public ModList() : this(new List<T>()) { }
-        public ModList(IEnumerable<T> collection)
+        public CircularList() : this(new List<T>()) { }
+        public CircularList(IEnumerable<T> collection)
         {
             innerList = new List<T>(collection);
         }
@@ -31,22 +31,23 @@ namespace Advent2022.Shared
         public void Insert(long index, T item) => Insert(index, new T[] { item });
         public void Insert(long index, IEnumerable<T> items)
         {
-            // Should do copyto's.
+            var currentArray = innerList.ToArray();
             var itemArray = items.ToArray();
 
             index = PosMod(index);
 
-            var newList = new List<T>();
-            for (long n = 0; n < index; n++) newList.Add(this[n]);
-            for (long i = 0; i < items.Count(); i++) newList.Add(itemArray[i]);
-            for (long n = index; n < innerList.Count; n++) newList.Add(this[n]);
+            var newArray = new T[this.Count + itemArray.Length];
 
-            innerList = newList;
+            Array.Copy(currentArray, newArray, index);
+            Array.Copy(itemArray, 0, newArray, index, itemArray.Length);
+            Array.Copy(currentArray, index, newArray, index + itemArray.Length, innerList.Count - index);
+
+            innerList = newArray.ToList();
         }
 
         public void ReverseRange(long index, int number)
         {
-            var copy = new ModList<T>(this);
+            var copy = new CircularList<T>(this);
 
             index = PosMod(index);
 
