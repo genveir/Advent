@@ -9,7 +9,7 @@ namespace Advent2022.Advent02
 {
     class Tests
     {
-        [TestCase(example, "")]
+        [TestCase(example, 15)]
         public void Test1(string input, object output)
         {
             var sol = new Solution(input);
@@ -17,7 +17,7 @@ namespace Advent2022.Advent02
             Assert.AreEqual(output, sol.GetResult1());
         }
 
-        [TestCase(example, "")]
+        [TestCase(example, 12)]
         public void Test2(string input, object output)
         {
             var sol = new Solution(input);
@@ -25,6 +25,8 @@ namespace Advent2022.Advent02
             Assert.AreEqual(output, sol.GetResult2());
         }
 
-        public const string example = @"";
+        public const string example = @"A Y
+B X
+C Z";
     }
 }
