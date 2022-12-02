@@ -18,7 +18,7 @@ namespace Advent2022
             stopWatch.Start();
             for (int n = 0; n < numRuns; n++)
             {
-                ISolution solution = new AdventBase.Solution();
+                ISolution solution = new AdventActive.Solution();
 
                 result1 = solution.GetResult1().ToString();
                 result2 = solution.GetResult2().ToString();
