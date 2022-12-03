@@ -41,7 +41,14 @@ namespace Advent2022.Shared
 
         public Coordinate ShiftX(long shift) => new Coordinate(this.X + shift, this.Y, this.Z);
         public Coordinate ShiftY(long shift) => new Coordinate(this.X, this.Y + shift, this.Z);
-        public Coordinate ShiftZ(long shift) => new Coordinate(this.X, this.Y, this.Z + shift);
+        public Coordinate ShiftZ(long shift)
+        {
+            if (this.Z == null)
+            {
+                return new Coordinate(this.X, this.Y, shift);
+            }
+            else return new Coordinate(this.X, this.Y, this.Z + shift);
+        }
         public Coordinate Shift(long shiftX, long shiftY, long shiftZ) =>
             new Coordinate(this.X + shiftX, this.Y + shiftY, this.Z + shiftZ);
 
@@ -54,9 +61,9 @@ namespace Advent2022.Shared
 
                 for (int xShift = -1; xShift <= 1; xShift++)
                 {
-                    for (int yShift = -1; yShift <=1; yShift++)
+                    for (int yShift = -1; yShift <= 1; yShift++)
                     {
-                        if (Z != null)
+                        if (Z.HasValue)
                         {
                             for (int zShift = -1; zShift <= 1; zShift++)
                             {
@@ -85,9 +92,9 @@ namespace Advent2022.Shared
 
         public long ManhattanDistance(Coordinate second)
         {
-            return 
-                Math.Abs(this.X - second.X) 
-                + Math.Abs(this.Y - second.Y) 
+            return
+                Math.Abs(this.X - second.X)
+                + Math.Abs(this.Y - second.Y)
                 + Math.Abs((this.Z ?? 0) - (second.Z ?? 0));
         }
 
@@ -98,8 +105,8 @@ namespace Advent2022.Shared
             long ZVal = Z.HasValue ? Z.Value : 0;
 
             var squared =
-                Math.Abs(X - x) * Math.Abs(X - x) + 
-                Math.Abs(Y - y) * Math.Abs(Y - y) + 
+                Math.Abs(X - x) * Math.Abs(X - x) +
+                Math.Abs(Y - y) * Math.Abs(Y - y) +
                 Math.Abs(ZVal - zVal) * Math.Abs(ZVal - zVal);
 
             return Math.Sqrt(squared);
