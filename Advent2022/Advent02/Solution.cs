@@ -47,20 +47,23 @@ namespace Advent2022.Advent02
                 {
                     'A' => RPS.Rock,
                     'B' => RPS.Paper,
-                    'C' => RPS.Scissors
+                    'C' => RPS.Scissors,
+                    _ => throw new NotSupportedException()
                 };
                 Yours = yours switch
                 {
                     'X' => RPS.Rock,
                     'Y' => RPS.Paper,
-                    'Z' => RPS.Scissors
+                    'Z' => RPS.Scissors,
+                    _ => throw new NotSupportedException()
                 };
 
                 DWL = yours switch
                 {
                     'X' => DWL.Lose,
                     'Y' => DWL.Draw,
-                    'Z' => DWL.Win
+                    'Z' => DWL.Win,
+                    _ => throw new NotSupportedException()
                 };
 
             }
