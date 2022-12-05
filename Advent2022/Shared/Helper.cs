@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel.Client;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 
 namespace Advent2022.Shared
@@ -28,6 +30,34 @@ namespace Advent2022.Shared
             var result = new T[length];
             Array.Copy(input, startIndex, result, 0, length);
             return result;
+        }
+
+        public static string[] Parts(this string input, int elementLength, int dividerLength)
+        {
+            List<string> parts = new();
+            for (int n = 0; n < input.Length;)
+            {
+                parts.Add(input.Substring(n, elementLength));
+
+                n += elementLength + dividerLength;
+            }
+
+            return parts.ToArray();
+        }
+
+        public static T Parse<T>(this string input, string pattern) => new InputParser<T>(pattern).Parse(input);
+        public static (T1, T2) Parse<T1, T2>(this string input, string pattern) => new InputParser<T1, T2>(pattern).Parse(input);
+        public static (T1, T2, T3) Parse<T1, T2, T3>(this string input, string pattern) => new InputParser<T1, T2, T3>(pattern).Parse(input);
+        public static (T1, T2, T3, T4) Parse<T1, T2, T3, T4>(this string input, string pattern) => new InputParser<T1, T2, T3, T4>(pattern).Parse(input);
+        public static (T1, T2, T3, T4, T5) Parse<T1, T2, T3, T4, T5>(this string input, string pattern) => new InputParser<T1, T2, T3, T4, T5>(pattern).Parse(input);
+        public static (T1, T2, T3, T4, T5, T6) Parse<T1, T2, T3, T4, T5, T6>(this string input, string pattern) => new InputParser<T1, T2, T3, T4, T5, T6>(pattern).Parse(input);
+        public static (T1, T2, T3, T4, T5, T6, T7) Parse<T1, T2, T3, T4, T5, T6, T7>(this string input, string pattern) => new InputParser<T1, T2, T3, T4, T5, T6, T7>(pattern).Parse(input);
+
+        public static T Parse<T>(this string input, string pattern, Func<T> defaultOnEmpty)
+        {
+            if (string.IsNullOrWhiteSpace(input)) return defaultOnEmpty();
+
+            else return input.Parse<T>(pattern);
         }
 
         public static T[] Rotate<T>(this T[] input, int rotation)
@@ -174,6 +204,7 @@ namespace Advent2022.Shared
             dict[key] = action(dict[key]);
         }
 
+        public const char cBLOCK = '\U00002588';
         public const string BLOCK = "\U00002588";
     }
 }

@@ -8,25 +8,40 @@ namespace Advent2022.Advent05
 {
     public class Solution : ISolution
     {
+        private readonly string input;
+
         public List<Stack> stacks = new();
         public List<Move> moves = new();
 
         public Solution(string input)
         {
+            this.input = input;
+
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+            stacks = new();
+            moves = new();
+
             var blocks = Input.GetBlockLines(input).ToArray();
 
-            var stackLines = blocks[0];
+            var stackLines = blocks[0]
+                .Take(blocks[0].Length - 1);
             var moveLines = blocks[1];
 
-            stackLines = stackLines.Where(sl => sl.Contains('[')).ToArray();
-            stackLines = stackLines.Select(s => s + " ").ToArray();
-            for (int n = 0; n < stackLines[0].Length; n += 4)
+            char[][] boxes = stackLines
+                .Select(sl => sl.Parts(elementLength: 3, dividerLength: 1)
+                    .Select(p => p.Parse<char>(pattern: "[a]", defaultOnEmpty: () => ' '))
+                    .ToArray()
+                ).ToArray();
+
+            for (int n = 0; n < boxes[0].Length; n++)
             {
-                var stackChars = stackLines.Select(sl => sl.Substring(n, 4)).ToArray();
-                var withoutSyntax = stackChars.Select(sc => sc.Trim(' ', '[', ']'));
-                var withoutEmpty = withoutSyntax.Where(sc => !string.IsNullOrWhiteSpace(sc));
-                var asChars = withoutEmpty.Select(Sc => Sc.Single());
-                var reversedToArray = asChars.Reverse().ToArray();
+                var stackChars = boxes.Select(b => b[n]);
+                var withoutEmpty = stackChars.Where(sc => sc != ' ');
+                var reversedToArray = withoutEmpty.Reverse().ToArray();
 
                 stacks.Add(new Stack(reversedToArray));
             }
@@ -108,9 +123,9 @@ namespace Advent2022.Advent05
 
         public object GetResult1()
         {
-            foreach(var move in moves)
+            foreach (var move in moves)
             {
-                //ExecuteMove(move);
+                ExecuteMove(move);
             }
 
             StringBuilder result = new();
@@ -124,6 +139,8 @@ namespace Advent2022.Advent05
 
         public object GetResult2()
         {
+            Initialize();
+
             foreach (var move in moves)
             {
                 ExecuteMove2(move);
