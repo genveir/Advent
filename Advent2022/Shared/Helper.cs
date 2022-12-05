@@ -94,7 +94,7 @@ namespace Advent2022.Shared
 
                     var nextLevel = GetPermutations(inputWithoutNth);
 
-                    foreach(var perm in nextLevel)
+                    foreach (var perm in nextLevel)
                     {
                         var singleResult = new T[input.Length];
                         singleResult[0] = input[n];
@@ -197,11 +197,46 @@ namespace Advent2022.Shared
             return output;
         }
 
-        public static void InitAndUpdate<KeyType, ValueType>(this Dictionary<KeyType, ValueType> dict, 
+        public static void InitAndUpdate<KeyType, ValueType>(this Dictionary<KeyType, ValueType> dict,
             KeyType key, Func<ValueType, ValueType> action, ValueType defaultValue = default(ValueType))
         {
             if (!dict.ContainsKey(key)) dict[key] = defaultValue;
             dict[key] = action(dict[key]);
+        }
+
+        public static void PrintGrid(IEnumerable<Coordinate> coordinates, bool flipX = false, bool flipY = false) =>
+            PrintGrid(coordinates, c => c, c => cBLOCK, ' ', flipX, flipY);
+
+        public static void PrintGrid<T>(IEnumerable<T> toPrint, Func<T, Coordinate> convertToCoordinate, Func<T, char> convertToChar,
+            char emptyChar = ' ', bool flipX = false, bool flipY = false)
+        {
+            var lookup = toPrint.ToDictionary(c => convertToCoordinate(c), c => c);
+            var coordinates = lookup.Keys;
+
+            var minX = (int)coordinates.Min(c => c.X);
+            var maxX = (int)coordinates.Max(c => c.X);
+            var minY = (int)coordinates.Min(c => c.Y);
+            var maxY = (int)coordinates.Max(c => c.Y);
+
+            var fromX = flipX ? maxX : minX;
+            Func<int, bool> xCondition = (int x) => flipX ? x >= minX : x <= maxX;
+            Func<int, int> xIncrement = (int x) => flipX ? x - 1 : x + 1;
+
+            var fromY = flipY ? minY : maxY;
+            Func<int, bool> yCondition = (int y) => flipY ? y <= maxY : y >= minY;
+            Func<int, int> yIncrement = (int y) => flipY ? y + 1 : y - 1;
+
+            for (int y = fromY; yCondition(y); y = yIncrement(y))
+            {
+                for (int x = fromX; xCondition(x); x = xIncrement(x))
+                {
+                    var coord = new Coordinate(x, y);
+                    var cToPrint = lookup.TryGetValue(coord, out T value) ? convertToChar(value) : emptyChar;
+
+                    Console.Write(cToPrint);
+                }
+                Console.WriteLine();
+            }
         }
 
         public const char cBLOCK = '\U00002588';

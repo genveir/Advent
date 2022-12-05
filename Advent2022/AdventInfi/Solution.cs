@@ -112,7 +112,7 @@ namespace Advent2022.AdventInfi
                 move.Execute(santa);
             }
 
-            Print(santa.positionsReached);
+            Helper.PrintGrid(santa.positionsReached);
 
             return santa.Position.ManhattanDistance(new(0, 0));
         }
@@ -120,23 +120,6 @@ namespace Advent2022.AdventInfi
         public object GetResult2()
         {
             return "";
-        }
-
-        public void Print(HashSet<Coordinate> coords)
-        {
-            var minX = (int)coords.Min(c => c.X);
-            var maxX = (int)coords.Max(c => c.X);
-            var minY = (int)coords.Min(c => c.Y);
-            var maxY = (int)coords.Max(c => c.Y);
-
-            for (int y = maxY; y >= minY; y--)
-            {
-                for (int x = minX; x <= maxX; x++)
-                {
-                    Console.Write(coords.Contains(new(x, y)) ? Helper.cBLOCK : ' ');
-                }
-                Console.WriteLine();
-            }
         }
     }
 }
