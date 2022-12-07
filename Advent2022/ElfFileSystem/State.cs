@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Advent2022.ElfFS
+namespace Advent2022.ElfFileSystem
 {
     public class State
     {
@@ -40,7 +40,7 @@ namespace Advent2022.ElfFS
             }
             else if (input == "$ ls")
             {
-
+                Current.HasBeenListed = true;
             }
             else if (input.StartsWith("dir "))
             {

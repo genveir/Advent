@@ -5,13 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Advent2022.ElfFS
+namespace Advent2022.ElfFileSystem
 {
     public class Folder
     {
         public Folder Parent;
         public string Name;
         public string Path;
+
+        public bool HasBeenListed;
 
         public List<Folder> SubFolders;
         public List<File> Files;
