@@ -174,9 +174,9 @@ namespace Advent2022.Shared
             return angle;
         }
 
-        public static int[] AsDigits(this string input)
+        public static long[] AsDigits(this string input)
         {
-            return input.Select(c => c - 48).ToArray();
+            return input.Select(c => (long)(c - 48)).ToArray();
         }
 
         public static List<List<T>> Pivot<T>(this IEnumerable<IEnumerable<T>> input)
