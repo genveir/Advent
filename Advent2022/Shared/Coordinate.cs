@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Advent2022.Shared
 {
@@ -39,18 +38,26 @@ namespace Advent2022.Shared
         public long Y;
         public long? Z;
 
+        public long AbsX => Math.Abs(X);
+        public long AbsY => Math.Abs(Y);
+        public long? AbsZ => Z == null ? null : Math.Abs(Z.Value);
+
         public Coordinate ShiftX(long shift) => new Coordinate(this.X + shift, this.Y, this.Z);
         public Coordinate ShiftY(long shift) => new Coordinate(this.X, this.Y + shift, this.Z);
         public Coordinate ShiftZ(long shift)
         {
             if (this.Z == null)
             {
-                return new Coordinate(this.X, this.Y, shift);
+                if (shift == 0)
+                    return new Coordinate(this.X, this.Y);
+                else
+                    return new Coordinate(this.X, this.Y, shift);
             }
             else return new Coordinate(this.X, this.Y, this.Z + shift);
         }
-        public Coordinate Shift(long shiftX, long shiftY, long shiftZ) =>
-            new Coordinate(this.X + shiftX, this.Y + shiftY, this.Z + shiftZ);
+
+        public Coordinate Shift(long shiftX, long shiftY, long shiftZ = 0) =>
+            ShiftX(shiftX).ShiftY(shiftY).ShiftZ(shiftZ);
 
         private IEnumerable<Coordinate> _neighbours;
         public IEnumerable<Coordinate> GetNeighbours()
@@ -92,10 +99,9 @@ namespace Advent2022.Shared
 
         public long ManhattanDistance(Coordinate second)
         {
-            return
-                Math.Abs(this.X - second.X)
-                + Math.Abs(this.Y - second.Y)
-                + Math.Abs((this.Z ?? 0) - (second.Z ?? 0));
+            var diff = Difference(second);
+
+            return diff.AbsX + diff.AbsY + (diff.AbsZ ?? 0);
         }
 
         public long IntegerDistance(long x, long y, long z) { return (long)Distance(x, y, z); }
@@ -111,6 +117,17 @@ namespace Advent2022.Shared
 
             return Math.Sqrt(squared);
         }
+        public static Coordinate operator +(Coordinate first, Coordinate second) =>
+            first.Sum(second);
+
+        public Coordinate Sum(Coordinate second) =>
+            new(X + second.X, Y + second.Y, Z + second.Z);
+
+        public static Coordinate operator -(Coordinate first, Coordinate second) =>
+            first.Difference(second);
+
+        public Coordinate Difference(Coordinate second) =>
+            new(X - second.X, Y - second.Y, Z - second.Z);
 
         public override string ToString()
         {
