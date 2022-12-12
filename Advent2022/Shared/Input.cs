@@ -114,7 +114,7 @@ namespace Advent2022.Shared
             return bytes;
         }
 
-        public static IEnumerable<string> GetInputLines(string input, char[] splitOn = null)
+        public static List<string> GetInputLines(string input, char[] splitOn = null)
         {
             var rawInput = GetInput(input);
 
@@ -122,7 +122,14 @@ namespace Advent2022.Shared
 
             if (splitOn != null) lines = lines.SelectMany(l => l.Split(splitOn, StringSplitOptions.RemoveEmptyEntries)).ToArray();
 
-            return lines;
+            return lines.ToList();
+        }
+
+        public static char[][] GetLetterGrid(string input)
+        {
+            return GetInputLines(input)
+                .Select(line => line.ToCharArray())
+                .ToArray();
         }
 
         public static List<long> GetNumberLines(string input, char[] splitOn = null)
