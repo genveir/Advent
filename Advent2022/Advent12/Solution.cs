@@ -52,13 +52,12 @@ namespace Advent2022.Advent12
                 if (Exploration == exploration) return Enumerable.Empty<Tile>();
                 Exploration = exploration;
 
-                var unexploredNeighbours = Neighbours
-                    .Where(n => n.Exploration != this.Exploration)
+                var adjacent = Neighbours
                     .Where(n => n.Height - 1 <= this.Height);
 
-                foreach (var n in unexploredNeighbours) n.BeExplored(this);
+                foreach (var adjacentTile in adjacent) adjacentTile.BeExplored(this);
 
-                return unexploredNeighbours;
+                return adjacent;
             }
 
             public void BeExplored(Tile explorer)
