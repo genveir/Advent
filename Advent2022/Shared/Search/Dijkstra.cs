@@ -14,16 +14,12 @@ namespace Advent2022.Shared.Search
 
         public List<TNode> EndNodes { get; }
         public List<TNode> StartNodes { get; }
-        public TransitionCost TransitionCostFunction { get; }
-        public HeuristicCost HeuristicCostFunction { get; }
-        public FindNeighbours FindNeighbourFunction { get; }
+        public Func<TNode, TNode, long> TransitionCostFunction { get; }
+        public Func<TNode, long> HeuristicCostFunction { get; }
+        public Func<TNode, IEnumerable<TNode>> FindNeighbourFunction { get; }
 
-        public delegate long TransitionCost(TNode start, TNode target);
-        public delegate long HeuristicCost(TNode node);
-        public delegate IEnumerable<TNode> FindNeighbours(TNode node);
-
-        private static TransitionCost DefaultTransitionCost = (TNode a, TNode b) => 1L;
-        private static HeuristicCost DefaultHeuristicCost = (TNode a) => 0L;
+        private static Func<TNode, TNode, long> DefaultTransitionCost = (TNode a, TNode b) => 1L;
+        private static Func<TNode, long> DefaultHeuristicCost = (TNode a) => 0L;
 
         /// <summary>
         /// Create Dijkstra Setup
@@ -33,9 +29,10 @@ namespace Advent2022.Shared.Search
         /// <param name="findNeighbourFunction">A function to find the reachable neighbours of a node</param>
         /// <param name="transitionCostFunction">A function to calculate the transition cost between two nodes. Leave null for (_, _) => 1</param>
         /// <param name="heuristicCostFunction">A function to calculate the heuristic distance to the target. Leave null for _ => 0</param>
-        public Dijkstra(TNode startNode, IEnumerable<TNode> endNodes, FindNeighbours findNeighbourFunction,
-            TransitionCost transitionCostFunction = null,
-            HeuristicCost heuristicCostFunction = null) :
+        public Dijkstra(TNode startNode, IEnumerable<TNode> endNodes, 
+            Func<TNode, IEnumerable<TNode>> findNeighbourFunction,
+            Func<TNode, TNode, long> transitionCostFunction = null,
+            Func<TNode, long> heuristicCostFunction = null) :
                 this(new[] { startNode }, endNodes, findNeighbourFunction, transitionCostFunction, heuristicCostFunction)
         { }
 
@@ -47,9 +44,9 @@ namespace Advent2022.Shared.Search
         /// <param name="findNeighbourFunction">A function to find the reachable neighbours of a node</param>
         /// <param name="transitionCostFunction">A function to calculate the transition cost between two nodes. Leave null for (_, _) => 1</param>
         /// <param name="heuristicCostFunction">A function to calculate the heuristic distance to the target. Leave null for _ => 0</param>
-        public Dijkstra(IEnumerable<TNode> startNodes, TNode endNode, FindNeighbours findNeighbourFunction,
-            TransitionCost transitionCostFunction = null,
-            HeuristicCost heuristicCostFunction = null) :
+        public Dijkstra(IEnumerable<TNode> startNodes, TNode endNode, Func<TNode, IEnumerable<TNode>> findNeighbourFunction,
+            Func<TNode, TNode, long> transitionCostFunction = null,
+            Func<TNode, long> heuristicCostFunction = null) :
             this(startNodes, new[] { endNode }, findNeighbourFunction, transitionCostFunction, heuristicCostFunction)
         { }
 
@@ -61,9 +58,9 @@ namespace Advent2022.Shared.Search
         /// <param name="findNeighbourFunction">A function to find the reachable neighbours of a node</param>
         /// <param name="transitionCostFunction">A function to calculate the transition cost between two nodes. Leave null for (_, _) => 1</param>
         /// <param name="heuristicCostFunction">A function to calculate the heuristic distance to the target. Leave null for _ => 0</param>
-        public Dijkstra(TNode startNode, TNode endNode, FindNeighbours findNeighbourFunction, 
-            TransitionCost transitionCostFunction = null, 
-            HeuristicCost heuristicCostFunction = null) :
+        public Dijkstra(TNode startNode, TNode endNode, Func<TNode, IEnumerable<TNode>> findNeighbourFunction, 
+            Func<TNode, TNode, long> transitionCostFunction = null, 
+            Func<TNode, long> heuristicCostFunction = null) :
             this(new[] { startNode }, new[] { endNode }, findNeighbourFunction, transitionCostFunction, heuristicCostFunction)
         { }
 
@@ -75,9 +72,9 @@ namespace Advent2022.Shared.Search
         /// <param name="findNeighbourFunction">A function to find the reachable neighbours of a node</param>
         /// <param name="transitionCostFunction">A function to calculate the transition cost between two nodes. Leave null for (_, _) => 1</param>
         /// <param name="heuristicCostFunction">A function to calculate the heuristic distance to the target. Leave null for _ => 0</param>
-        public Dijkstra(IEnumerable<TNode> startNodes, IEnumerable<TNode> endNodes, FindNeighbours findNeighbourFunction, 
-            TransitionCost transitionCostFunction = null, 
-            HeuristicCost heuristicCostFunction = null)
+        public Dijkstra(IEnumerable<TNode> startNodes, IEnumerable<TNode> endNodes, Func<TNode, IEnumerable<TNode>> findNeighbourFunction, 
+            Func<TNode, TNode, long> transitionCostFunction = null, 
+            Func<TNode, long> heuristicCostFunction = null)
         {
             StartNodes = startNodes.ToList();
             EndNodes = endNodes.ToList();
@@ -86,8 +83,11 @@ namespace Advent2022.Shared.Search
             HeuristicCostFunction = heuristicCostFunction ?? DefaultHeuristicCost;
         }
 
-        public HashSet<TNode> HasBeenExplored;
-        public Dictionary<TNode, NodeData> ExplorationData;
+        /// <summary>
+        /// If a node was exploited, it will be in here, with NodeData (i.e. cost at which it was exploited, and node it was discovered from with
+        /// the lowest cost)
+        /// </summary>
+        public Dictionary<TNode, NodeData> ExploitationData;
 
         /// <summary>
         /// Returns the cost of the shortest path
@@ -95,8 +95,7 @@ namespace Advent2022.Shared.Search
         /// <returns></returns>
         public NodeData FindShortest()
         {
-            HasBeenExplored = new();
-            ExplorationData = new();
+            ExploitationData = new();
 
             Queue.Clear();
             SetupStartNodes();
@@ -107,9 +106,8 @@ namespace Advent2022.Shared.Search
                 var node = nodeData.Node;
                 var cost = nodeData.Cost;
                 
-                if (HasBeenExplored.Contains(node)) continue;
-                HasBeenExplored.Add(node);
-                ExplorationData.Add(node, nodeData);
+                if (ExploitationData.ContainsKey(node)) continue;
+                ExploitationData.Add(node, nodeData);
 
                 if (EndNodes.Contains(node))
                 {
