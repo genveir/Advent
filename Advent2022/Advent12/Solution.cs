@@ -1,5 +1,6 @@
 ﻿using Advent2022.ElfFileSystem;
 using Advent2022.Shared;
+using Advent2022.Shared.Search;
 using Advent2022.Shared.Tiles;
 using System;
 using System.Collections.Generic;
@@ -17,11 +18,11 @@ namespace Advent2022.Advent12
         {
             var grid = Input.GetLetterGrid(input).ToArray();
 
-            var constructor = (char c) => c switch
+            var constructor = (char c, Coordinate coord) => c switch
             {
-                'S' => new Tile(0, isStart: true),
-                'E' => new Tile(25, isEnd: true),
-                _ => new Tile(c - 'a')
+                'S' => new Tile(coord, 0, isStart: true),
+                'E' => new Tile(coord, 25, isEnd: true),
+                _ => new Tile(coord, c - 'a')
             };
 
             tileGrid = new(grid, constructor);
@@ -29,8 +30,9 @@ namespace Advent2022.Advent12
         }
         public Solution() : this("Input.txt") { }
 
-        public class Tile : BaseTile<Tile>
+        public class Tile : BaseTile<Tile>, IEquatable<Tile>
         {
+            public Coordinate Coordinate;
             public long Height;
             public bool IsStart;
             public bool IsEnd;
@@ -39,18 +41,21 @@ namespace Advent2022.Advent12
             public long ExploreLength = 0;
 
             [ComplexParserConstructor]
-            public Tile(long height, bool isStart = false, bool isEnd = false)
+            public Tile(Coordinate coordinate, long height, bool isStart = false, bool isEnd = false)
             {
+                Coordinate = coordinate;
                 Height = height;
                 IsStart = isStart;
                 IsEnd = isEnd;
             }
 
+            public IEnumerable<Tile> Reachable() =>
+                Neighbours.Where(n => n.Height - 1 <= this.Height);
+
             public IEnumerable<Tile> Explore(long exploration)
             {
-                var adjacent = Neighbours
+                var adjacent = Reachable()
                     .Where(n => n.Exploration != this.Exploration)
-                    .Where(n => n.Height - 1 <= this.Height)
                     .ToList();
 
                 foreach (var adjacentTile in adjacent) 
@@ -64,7 +69,32 @@ namespace Advent2022.Advent12
                 Exploration = explorer.Exploration;
                 ExploreLength = explorer.ExploreLength + 1;
             }
+
+            public bool Equals(Tile other)
+            {
+                return other.Coordinate.Equals(Coordinate);
+            }
+
+            public override string ToString()
+            {
+                return $"Tile {Coordinate} Height {Height}";
+            }
         }
+
+        public long DijkstraToGoal(IEnumerable<Tile> startNodes)
+        {
+            var target = tileGrid.Single(t => t.IsEnd);
+
+            var dijkstra = new Dijkstra<Tile>(
+                startNodes: startNodes, 
+                endNodes: new[] { target },
+                transitionCostFunction: (_, _) => 1, 
+                heuristicCostFunction: tile => tile.Coordinate.ManhattanDistance(target.Coordinate),
+                findNeighbourFunction: tile => tile.Reachable());
+
+            return dijkstra.FindShortest().Cost;
+        }
+
 
         private long BFSNum = 0;
         public long BFSToGoal(Tile bfsStart)
@@ -96,13 +126,7 @@ namespace Advent2022.Advent12
 
         public object GetResult2()
         {
-            List<long> results = new();
-            foreach(var tile in tileGrid.Where(t => t.Height == 0))
-            {
-                results.Add(BFSToGoal(tile));
-            }
-            // 396 too high
-            return results.Min();
+            return DijkstraToGoal(tileGrid.Where(t => t.Height == 0));
         }
     }
 }
