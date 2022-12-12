@@ -32,7 +32,7 @@ namespace Advent2022.Advent11
             for (int n = 0; n < lines.Length; n += 7)
             {
                 long index = lines[n].Split(' ')[1].Parse<long>("val:");
-                List<Item> items = lines[n + 1].Trim().Split(' ', 3)[2].Split(',').Select(s => s.Parse<Item>("id")).ToList();
+                List<Item> items = lines[n + 1].Trim().Split(' ', 3)[2].Parse<long[]>("array").Select(id => new Item(id)).ToList();
                 Action<Item> operation = ParseFunc(lines[n + 2].Trim().Split('=')[1].Trim());
                 long divisor = lines[n + 3].Split(' ').Last().Parse<long>("val");
                 int throwOnTrue = lines[n + 4].Split(' ').Last().Parse<int>("val");
