@@ -20,9 +20,9 @@ namespace Advent2022.Advent12
 
             var constructor = (char c) => c switch
             {
-                'S' => new Tile(0, true, false),
-                'E' => new Tile(25, false, true),
-                _ => new Tile(c - 'a', false, false)
+                'S' => new Tile(0, isStart: true),
+                'E' => new Tile(25, isEnd: true),
+                _ => new Tile(c - 'a')
             };
 
             tileGrid = new(grid, constructor);
@@ -40,7 +40,7 @@ namespace Advent2022.Advent12
             public long ExploreLength = 0;
 
             [ComplexParserConstructor]
-            public Tile(long height, bool isStart, bool isEnd)
+            public Tile(long height, bool isStart = false, bool isEnd = false)
             {
                 Height = height;
                 IsStart = isStart;
