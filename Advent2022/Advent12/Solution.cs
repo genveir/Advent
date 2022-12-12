@@ -55,7 +55,8 @@ namespace Advent2022.Advent12
                 var adjacent = Neighbours
                     .Where(n => n.Height - 1 <= this.Height);
 
-                foreach (var adjacentTile in adjacent) adjacentTile.BeExplored(this);
+                foreach (var adjacentTile in adjacent) 
+                    adjacentTile.BeExplored(this);
 
                 return adjacent;
             }
