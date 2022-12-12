@@ -71,14 +71,15 @@ namespace Advent2022.Advent12
         public long BFSToGoal(Tile bfsStart)
         {
             BFSNum++;
-
-            Queue<Tile> tiles= new Queue<Tile>();
-            tiles.Enqueue(bfsStart);
             bfsStart.ExploreLength = 0;
 
+            Queue<Tile> tiles= new Queue<Tile>();
+
+            tiles.Enqueue(bfsStart);
             while (tiles.Count > 0)
             {
                 var tile = tiles.Dequeue();
+
                 if (tile.IsEnd) return tile.ExploreLength;
 
                 var newTiles = tile.Explore(BFSNum);
