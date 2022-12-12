@@ -18,20 +18,21 @@ namespace Advent2022.Advent12
         {
             var grid = Input.GetLetterGrid(input).ToArray();
 
-            var constructor = (char c) => c switch
+            var constructor = (char c, Coordinate coord) => c switch
             {
-                'S' => new Tile(0, isStart: true),
-                'E' => new Tile(25, isEnd: true),
-                _ => new Tile(c - 'a')
+                'S' => new Tile(coord, 0, isStart: true),
+                'E' => new Tile(coord, 25, isEnd: true),
+                _ => new Tile(coord, c - 'a')
             };
 
-            tileGrid = new(grid, constructor);
+            tileGrid = new(grid, constructor, LinkMode.Orthogonal);
             start = tileGrid.Single(t => t.IsStart);
         }
         public Solution() : this("Input.txt") { }
 
         public class Tile : BaseTile<Tile>
         {
+            public Coordinate Coordinate;
             public long Height;
             public bool IsStart;
             public bool IsEnd;
@@ -40,8 +41,9 @@ namespace Advent2022.Advent12
             public long ExploreLength = 0;
 
             [ComplexParserConstructor]
-            public Tile(long height, bool isStart = false, bool isEnd = false)
+            public Tile(Coordinate coordinate, long height, bool isStart = false, bool isEnd = false)
             {
+                Coordinate = coordinate;
                 Height = height;
                 IsStart = isStart;
                 IsEnd = isEnd;
@@ -49,11 +51,10 @@ namespace Advent2022.Advent12
 
             public IEnumerable<Tile> Explore(long exploration)
             {
-                if (Exploration == exploration) return Enumerable.Empty<Tile>();
-                Exploration = exploration;
-
                 var adjacent = Neighbours
-                    .Where(n => n.Height - 1 <= this.Height);
+                    .Where(n => n.Exploration != this.Exploration)
+                    .Where(n => n.Height - 1 <= this.Height)
+                    .ToList();
 
                 foreach (var adjacentTile in adjacent) 
                     adjacentTile.BeExplored(this);
@@ -63,7 +64,13 @@ namespace Advent2022.Advent12
 
             public void BeExplored(Tile explorer)
             {
+                Exploration = explorer.Exploration;
                 ExploreLength = explorer.ExploreLength + 1;
+            }
+
+            public override string ToString()
+            {
+                return $"Tile {Coordinate}, {Neighbours.Count} neighbours";
             }
         }
 
@@ -72,6 +79,7 @@ namespace Advent2022.Advent12
         {
             BFSNum++;
             bfsStart.ExploreLength = 0;
+            bfsStart.Exploration = BFSNum;
 
             Queue<Tile> tiles= new Queue<Tile>();
 

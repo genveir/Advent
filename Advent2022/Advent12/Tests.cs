@@ -11,9 +11,10 @@ namespace Advent2022.Advent12
     {
         [TestCase(example, 31)]
         [TestCase(example2, 29)]
+        [TestCase(diagDiff, 26)]
         public void Test1(string input, object output)
         {
-            var sol = new Solution(input);
+            var sol = new Solution(input.Trim());
 
             Assert.AreEqual(output, sol.GetResult1());
         }
@@ -26,11 +27,16 @@ namespace Advent2022.Advent12
             Assert.AreEqual(output, sol.GetResult2());
         }
 
-        public const string example = @"Sabqponm
+        public const string example = @"
+Sabqponm
 abcryxxl
 accszExk
 acctuvwj
 abdefghi";
+
+        public const string diagDiff = @"
+Saaaaaaaaaaaaaaaaaaaaaaaaa
+abcdefghijklmnopqrstuvwxyE";
 
         public const string example2 = @"aabqponm
 abcryxxl

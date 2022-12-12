@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace Advent2022.Shared.Tiles
 {
+    public enum LinkMode { Orthogonal, Diagonal }
+
     public class TileGrid<TInput, TTileType> : IEnumerable<TTileType>
         where TTileType : BaseTile<TTileType>
     {
         public List<TTileType> AllTiles = new();
         public Dictionary<Coordinate, TTileType> TileMap = new();
 
-        public enum LinkMode { Orthogonal, Diagonal }
-
-        public TileGrid(TInput[][] grid, Func<TInput, TTileType> constructTile, LinkMode linkMode = LinkMode.Orthogonal)
+        public TileGrid(TInput[][] grid, Func<TInput, Coordinate, TTileType> constructTile, LinkMode linkMode = LinkMode.Orthogonal)
         {
             AllTiles = new();
             TileMap = new();
@@ -26,8 +26,8 @@ namespace Advent2022.Shared.Tiles
                 {
                     TInput input = grid[y][x];
 
-                    var tile = constructTile(input);
                     var coordinate = new Coordinate(x, y);
+                    var tile = constructTile(input, coordinate);
 
                     AllTiles.Add(tile);
                     TileMap.Add(coordinate, tile);
@@ -39,6 +39,9 @@ namespace Advent2022.Shared.Tiles
                 }
             }
         }
+        public TileGrid(TInput[][] grid, Func<TInput, TTileType> constructTile, LinkMode linkMode = LinkMode.Orthogonal) : 
+            this(grid, (input, _) => constructTile(input), linkMode)
+        { }
 
         public void AddTile(TTileType tile) 
         { 
