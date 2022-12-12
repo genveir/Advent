@@ -86,13 +86,30 @@ namespace Advent2022.Advent12
             var target = tileGrid.Single(t => t.IsEnd);
 
             var dijkstra = new Dijkstra<Tile>(
-                startNodes: startNodes, 
-                endNodes: new[] { target },
-                transitionCostFunction: (_, _) => 1, 
-                heuristicCostFunction: tile => tile.Coordinate.ManhattanDistance(target.Coordinate),
-                findNeighbourFunction: tile => tile.Reachable());
+                startNodes: startNodes, // hier een set, mag er ook 1 zijn
+                endNode: target, // hier 1, mag ook een set zijn
+                findNeighbourFunction: tile => tile.Reachable(), // een functie van tile -> tiles om transities te vinden
+                transitionCostFunction: (_, _) => 1, // een functie van tile -> tile -> int om de kosten van een transitie te bepalen
+                heuristicCostFunction: tile => tile.Coordinate.ManhattanDistance(target.Coordinate)); // functie van tile -> int voor de heuristiek
 
-            return dijkstra.FindShortest().Cost;
+            // het resultaat is een objectje (NodeData)
+            var nodeData = dijkstra.FindShortest();
+            
+            // met:
+
+            // het doel dat gevonden is
+            var foundTarget = nodeData.Node;
+            // de cost van deze search
+            var cost = nodeData.Cost;
+            // waarvandaan de node gevonden is (ook weer een NodeData-object)
+            var foundFrom = nodeData.DiscoveredBy;
+
+            // met die laatste kan je makkelijk het pad teruggeven met alle nodes
+            List<Tile> path = nodeData.PathNodes();
+            // of als je meer data wil, het pad maar in NodeData-objectjes
+            List<Dijkstra<Tile>.NodeData> alsJeMeerInfoWil = nodeData.Path();
+
+            return cost;
         }
 
 

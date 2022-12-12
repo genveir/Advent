@@ -89,34 +89,6 @@ namespace Advent2022.Shared.Search
         public HashSet<TNode> HasBeenExplored;
         public Dictionary<TNode, NodeData> ExplorationData;
 
-        public List<TNode> PathToNode(TNode node)
-        {
-            if (ExplorationData.ContainsKey(node))
-            {
-                return PathToNode(ExplorationData[node])
-                    .Select(nd => nd.Node)
-                    .ToList();
-            }
-
-            return null;
-        }
-        public List<NodeData> PathToNode(NodeData nodeData)
-        {
-            List<NodeData> aggregate = new();
-
-            PathToNode(nodeData, aggregate);
-
-            return aggregate;
-        }
-
-        public void PathToNode(NodeData nodeData, List<NodeData> aggregate)
-        {
-            if (nodeData.DiscoveredBy != null) 
-                PathToNode(nodeData.DiscoveredBy, aggregate);
-
-            aggregate.Add(nodeData);
-        }
-
         /// <summary>
         /// Returns the cost of the shortest path
         /// </summary>
@@ -183,6 +155,28 @@ namespace Advent2022.Shared.Search
                 Node = node;
                 Cost = cost;
                 DiscoveredBy = discoveredBy;
+            }
+
+            public List<TNode> PathNodes() => Path()
+                .Select(nd => nd.Node)
+                .ToList();
+
+            public List<NodeData> Path()
+            {
+                var aggregate = new List<NodeData>();
+
+                Path(aggregate);
+
+                return aggregate;
+            }
+
+            public void Path(List<NodeData> aggregate)
+            {
+                if (DiscoveredBy != null)
+                    DiscoveredBy.Path(aggregate);
+
+                aggregate.Add(this);
+
             }
         }
     }
