@@ -1,9 +1,8 @@
-﻿using NetTopologySuite.GeometriesGraph;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Advent2022.Shared.Search
@@ -89,20 +88,26 @@ namespace Advent2022.Shared.Search
         /// </summary>
         public Dictionary<TNode, NodeData> ExploitationData;
 
+        public delegate void NodeDataEventHandler(Dijkstra<TNode> dijkstra, NodeData nodeData);
+        public event NodeDataEventHandler OnDequeue;
+        public event NodeDataEventHandler BeforeEnqueue;
+
+        public delegate void NeighboursEventHandler(Dijkstra<TNode> dijkstra, NodeData nodeData, IEnumerable<TNode> neighbours);
+        public event NeighboursEventHandler BeforeHandlingNeighbours;
+
         /// <summary>
         /// Returns the cost of the shortest path
         /// </summary>
         /// <returns></returns>
         public NodeData FindShortest()
         {
-            ExploitationData = new();
-
-            Queue.Clear();
-            SetupStartNodes();
+            Reset();
 
             while(Queue.Count > 0)
             {
                 var nodeData = Queue.Dequeue();
+                OnDequeue(this, nodeData);
+
                 var node = nodeData.Node;
                 var cost = nodeData.Cost;
                 
@@ -114,8 +119,9 @@ namespace Advent2022.Shared.Search
                     return nodeData;
                 }
 
-                var neighbours = FindNeighbourFunction(node).ToArray();
+                var neighbours = FindNeighbourFunction(node).ToList();
 
+                BeforeHandlingNeighbours(this, nodeData, neighbours);
                 foreach(var neighbour in neighbours)
                 {
                     var transitionCost = TransitionCostFunction(node, neighbour);
@@ -124,11 +130,21 @@ namespace Advent2022.Shared.Search
                     var costToReach = cost + transitionCost;
                     var priority = costToReach + heuristicCost;
 
-                    Queue.Enqueue(new(neighbour, costToReach, nodeData), priority);
+                    var toEnqueue = new NodeData(neighbour, costToReach, nodeData);
+
+                    BeforeEnqueue(this, toEnqueue);
+                    Queue.Enqueue(toEnqueue, priority);
                 }
             }
 
             return new(default, long.MaxValue, null);
+        }
+
+        private void Reset()
+        {
+            ExploitationData = new();
+            Queue.Clear();
+            SetupStartNodes();
         }
 
         private void SetupStartNodes()

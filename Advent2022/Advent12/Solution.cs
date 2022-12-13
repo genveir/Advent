@@ -112,7 +112,6 @@ namespace Advent2022.Advent12
             return cost;
         }
 
-
         private long BFSNum = 0;
         public long BFSToGoal(Tile bfsStart)
         {
