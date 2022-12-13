@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace Advent2022.AdventActive
+namespace Advent2022.Advent13
 {
     public class Solution : ISolution
     {
