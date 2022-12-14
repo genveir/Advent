@@ -85,7 +85,7 @@ namespace Advent2022.Advent12
         {
             var target = tileGrid.Single(t => t.IsEnd);
 
-            var dijkstra = new Dijkstra<Tile>(
+            var dijkstra = new AStar<Tile>(
                 startNodes: startNodes, // hier een set, mag er ook 1 zijn
                 endNode: target, // hier 1, mag ook een set zijn
                 findNeighbourFunction: tile => tile.Reachable(), // een functie van tile -> tiles om transities te vinden
@@ -107,7 +107,7 @@ namespace Advent2022.Advent12
             // met die laatste kan je makkelijk het pad teruggeven met alle nodes
             List<Tile> path = nodeData.PathNodes();
             // of als je meer data wil, het pad maar in NodeData-objectjes
-            List<Dijkstra<Tile>.NodeData> alsJeMeerInfoWil = nodeData.Path();
+            List<AStar<Tile>.NodeData> alsJeMeerInfoWil = nodeData.Path();
 
             return cost;
         }

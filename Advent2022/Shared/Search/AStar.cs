@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Advent2022.Shared.Search
 {
-    public class Dijkstra<TNode> where TNode : IEquatable<TNode>
+    public class AStar<TNode> where TNode : IEquatable<TNode>
     {
         public PriorityQueue<NodeData, long> Queue = new();
 
-        public List<TNode> EndNodes { get; }
+        public HashSet<TNode> EndNodes { get; }
         public List<TNode> StartNodes { get; }
         public Func<TNode, TNode, long> TransitionCostFunction { get; }
         public Func<TNode, long> HeuristicCostFunction { get; }
@@ -21,14 +21,14 @@ namespace Advent2022.Shared.Search
         private static Func<TNode, long> DefaultHeuristicCost = (TNode a) => 0L;
 
         /// <summary>
-        /// Create Dijkstra Setup
+        /// Create AStar Setup
         /// </summary>
         /// <param name="startNodes">The Node from which the algorithm will start it's search (at cost 0)</param>
         /// <param name="endNodes">The Nodes at which the algorithm will stop and return</param>
         /// <param name="findNeighbourFunction">A function to find the reachable neighbours of a node</param>
         /// <param name="transitionCostFunction">A function to calculate the transition cost between two nodes. Leave null for (_, _) => 1</param>
         /// <param name="heuristicCostFunction">A function to calculate the heuristic distance to the target. Leave null for _ => 0</param>
-        public Dijkstra(TNode startNode, IEnumerable<TNode> endNodes, 
+        public AStar(TNode startNode, IEnumerable<TNode> endNodes, 
             Func<TNode, IEnumerable<TNode>> findNeighbourFunction,
             Func<TNode, TNode, long> transitionCostFunction = null,
             Func<TNode, long> heuristicCostFunction = null) :
@@ -36,47 +36,47 @@ namespace Advent2022.Shared.Search
         { }
 
         /// <summary>
-        /// Create Dijkstra Setup
+        /// Create AStar Setup
         /// </summary>
         /// <param name="startNodes">The Nodes from which the algorithm will start it's search (at cost 0)</param>
         /// <param name="endNodes">The Node at which the algorithm will stop and return</param>
         /// <param name="findNeighbourFunction">A function to find the reachable neighbours of a node</param>
         /// <param name="transitionCostFunction">A function to calculate the transition cost between two nodes. Leave null for (_, _) => 1</param>
         /// <param name="heuristicCostFunction">A function to calculate the heuristic distance to the target. Leave null for _ => 0</param>
-        public Dijkstra(IEnumerable<TNode> startNodes, TNode endNode, Func<TNode, IEnumerable<TNode>> findNeighbourFunction,
+        public AStar(IEnumerable<TNode> startNodes, TNode endNode, Func<TNode, IEnumerable<TNode>> findNeighbourFunction,
             Func<TNode, TNode, long> transitionCostFunction = null,
             Func<TNode, long> heuristicCostFunction = null) :
             this(startNodes, new[] { endNode }, findNeighbourFunction, transitionCostFunction, heuristicCostFunction)
         { }
 
         /// <summary>
-        /// Create Dijkstra Setup
+        /// Create AStar Setup
         /// </summary>
         /// <param name="startNodes">The Node from which the algorithm will start it's search (at cost 0)</param>
         /// <param name="endNodes">The Node at which the algorithm will stop and return</param>
         /// <param name="findNeighbourFunction">A function to find the reachable neighbours of a node</param>
         /// <param name="transitionCostFunction">A function to calculate the transition cost between two nodes. Leave null for (_, _) => 1</param>
         /// <param name="heuristicCostFunction">A function to calculate the heuristic distance to the target. Leave null for _ => 0</param>
-        public Dijkstra(TNode startNode, TNode endNode, Func<TNode, IEnumerable<TNode>> findNeighbourFunction, 
+        public AStar(TNode startNode, TNode endNode, Func<TNode, IEnumerable<TNode>> findNeighbourFunction, 
             Func<TNode, TNode, long> transitionCostFunction = null, 
             Func<TNode, long> heuristicCostFunction = null) :
             this(new[] { startNode }, new[] { endNode }, findNeighbourFunction, transitionCostFunction, heuristicCostFunction)
         { }
 
         /// <summary>
-        /// Create Dijkstra Setup
+        /// Create AStar Setup
         /// </summary>
         /// <param name="startNodes">The Nodes from which the algorithm will start it's search (at cost 0)</param>
         /// <param name="endNodes">The Nodes at which the algorithm will stop and return</param>
         /// <param name="findNeighbourFunction">A function to find the reachable neighbours of a node</param>
         /// <param name="transitionCostFunction">A function to calculate the transition cost between two nodes. Leave null for (_, _) => 1</param>
         /// <param name="heuristicCostFunction">A function to calculate the heuristic distance to the target. Leave null for _ => 0</param>
-        public Dijkstra(IEnumerable<TNode> startNodes, IEnumerable<TNode> endNodes, Func<TNode, IEnumerable<TNode>> findNeighbourFunction, 
+        public AStar(IEnumerable<TNode> startNodes, IEnumerable<TNode> endNodes, Func<TNode, IEnumerable<TNode>> findNeighbourFunction, 
             Func<TNode, TNode, long> transitionCostFunction = null, 
             Func<TNode, long> heuristicCostFunction = null)
         {
             StartNodes = startNodes.ToList();
-            EndNodes = endNodes.ToList();
+            EndNodes = new HashSet<TNode>(endNodes);
             FindNeighbourFunction = findNeighbourFunction;
             TransitionCostFunction = transitionCostFunction ?? DefaultTransitionCost;
             HeuristicCostFunction = heuristicCostFunction ?? DefaultHeuristicCost;
@@ -88,11 +88,11 @@ namespace Advent2022.Shared.Search
         /// </summary>
         public Dictionary<TNode, NodeData> ExploitationData;
 
-        public delegate void NodeDataEventHandler(Dijkstra<TNode> dijkstra, NodeData nodeData);
+        public delegate void NodeDataEventHandler(AStar<TNode> AStar, NodeData nodeData);
         public event NodeDataEventHandler OnDequeue;
         public event NodeDataEventHandler BeforeEnqueue;
 
-        public delegate void NeighboursEventHandler(Dijkstra<TNode> dijkstra, NodeData nodeData, IEnumerable<TNode> neighbours);
+        public delegate void NeighboursEventHandler(AStar<TNode> AStar, NodeData nodeData, IEnumerable<TNode> neighbours);
         public event NeighboursEventHandler BeforeHandlingNeighbours;
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace Advent2022.Shared.Search
             while(Queue.Count > 0)
             {
                 var nodeData = Queue.Dequeue();
-                OnDequeue(this, nodeData);
+                OnDequeue?.Invoke(this, nodeData);
 
                 var node = nodeData.Node;
                 var cost = nodeData.Cost;
@@ -115,7 +115,7 @@ namespace Advent2022.Shared.Search
                 {
                     if (previousExploitation.Cost <= cost) continue;
                 }
-                ExploitationData.Add(node, nodeData);
+                ExploitationData[node] = nodeData;
 
                 if (EndNodes.Contains(node))
                 {
@@ -124,7 +124,7 @@ namespace Advent2022.Shared.Search
 
                 var neighbours = FindNeighbourFunction(node).ToList();
 
-                BeforeHandlingNeighbours(this, nodeData, neighbours);
+                BeforeHandlingNeighbours?.Invoke(this, nodeData, neighbours);
                 foreach(var neighbour in neighbours)
                 {
                     var transitionCost = TransitionCostFunction(node, neighbour);
@@ -135,7 +135,7 @@ namespace Advent2022.Shared.Search
 
                     var toEnqueue = new NodeData(neighbour, costToReach, nodeData);
 
-                    BeforeEnqueue(this, toEnqueue);
+                    BeforeEnqueue?.Invoke(this, toEnqueue);
                     Queue.Enqueue(toEnqueue, priority);
                 }
             }
