@@ -110,8 +110,11 @@ namespace Advent2022.Shared.Search
 
                 var node = nodeData.Node;
                 var cost = nodeData.Cost;
-                
-                if (ExploitationData.ContainsKey(node)) continue;
+
+                if (ExploitationData.TryGetValue(node, out NodeData previousExploitation))
+                {
+                    if (previousExploitation.Cost <= cost) continue;
+                }
                 ExploitationData.Add(node, nodeData);
 
                 if (EndNodes.Contains(node))
