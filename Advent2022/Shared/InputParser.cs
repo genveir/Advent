@@ -14,6 +14,9 @@ namespace Advent2022.Shared
         public int NumberOfValues { get => simpleParser.NumberOfValues; set => simpleParser.NumberOfValues = value; }
         public bool EmptyArrayDelimiter { get => simpleParser.EmptyArrayDelimiter; set => simpleParser.EmptyArrayDelimiter = value; }
 
+        public InputParser(bool startsWithValue, int numberOfValues, params string[] delimiters) :
+            this(startsWithValue, numberOfValues, (IEnumerable<string>)delimiters) { }
+
         public InputParser(bool startsWithValue, int numberOfValues, IEnumerable<string> delimiters)
         {
             simpleParser = new SimpleParser(startsWithValue, numberOfValues, delimiters);
