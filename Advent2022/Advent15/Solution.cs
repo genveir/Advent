@@ -68,8 +68,7 @@ namespace Advent2022.Advent15
                 Right = right;
             }
 
-            // must fold from the left, does not work for all cases
-            public static bool TryMergeOrderedSegments(RowSegment left, RowSegment right, out RowSegment result)
+            public static bool TryMergeSegments(RowSegment left, RowSegment right, out RowSegment result)
             {
                 result = left;
 
@@ -166,7 +165,7 @@ namespace Advent2022.Advent15
                     else
                     {
                         var curSegment = Segments[index];
-                        if (RowSegment.TryMergeOrderedSegments(curSegment, segment, out RowSegment result))
+                        if (RowSegment.TryMergeSegments(curSegment, segment, out RowSegment result))
                         {
                             Segments[index] = result;
                             added = true;
