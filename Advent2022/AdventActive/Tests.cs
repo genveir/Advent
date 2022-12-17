@@ -21,9 +21,9 @@ namespace Advent2022.AdventActive
         }
 
         [TestCase(example, 1707)]
-        [TestCase(simple11, 44)]
-        [TestCase(simple21, 66)]
-        [TestCase(d2_12, 64)]
+        [TestCase(simple11, 48)]
+        [TestCase(simple21, 72)]
+        [TestCase(d2_12, 70)]
         public void Test2(string input, object output)
         {
             var sol = new Solution(input);

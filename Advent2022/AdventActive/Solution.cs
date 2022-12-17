@@ -289,7 +289,7 @@ namespace Advent2022.AdventActive
             var me = new Actor(valveMap["AA"], 0);
             var elephant = new Actor(valveMap["AA"], 0);
 
-            return DP(new State(new[] { me, elephant }, Array.Empty<Valve>(), 24));
+            return DP(new State(new[] { me, elephant }, Array.Empty<Valve>(), 26));
         }
 
         public object GetResult1()
