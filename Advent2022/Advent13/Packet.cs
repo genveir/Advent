@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Advent2022.AdventActive.Solution;
 
 namespace Advent2022.Advent13
 {
