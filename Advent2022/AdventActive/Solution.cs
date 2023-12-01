@@ -9,30 +9,36 @@ namespace Advent2022.AdventActive
 {
     public class Solution : ISolution
     {
-        public List<ParsedInput> modules;
+        public List<int> inputs;
+
+        public Coordinate[] grid;
+        public long[] heights = new long[7];
 
         public Solution(string input)
         {
-            var lines = Input.GetInputLines(input).ToArray();
+            var chars = Input.GetInput(input).ToArray();
 
-            var inputParser = new InputParser<ParsedInput>("line");
-
-            modules = inputParser.Parse(lines);
+            inputs = chars.Select(c => c switch
+            {
+                '<' => -1,
+                '>' => 1,
+                _ => throw new NotSupportedException("unexpected things gonna unexpect")
+            }).ToList();
         }
         public Solution() : this("Input.txt") { }
 
-        public class ParsedInput
-        {
-            [ComplexParserConstructor]
-            public ParsedInput()
-            {
 
-            }
+
+        private void Simulate(long numberOfBlocks)
+        {
+
         }
 
         public object GetResult1()
         {
-            return "";
+            Simulate(2022);
+
+            return heights.Max();
         }
 
         public object GetResult2()
