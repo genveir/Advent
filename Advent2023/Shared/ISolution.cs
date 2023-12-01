@@ -1,8 +1,7 @@
-﻿namespace Advent2023.Shared
+﻿namespace Advent2023.Shared;
+
+public interface ISolution
 {
-    public interface ISolution
-    {
-        object GetResult1();
-        object GetResult2();
-    }
+    object GetResult1();
+    object GetResult2();
 }

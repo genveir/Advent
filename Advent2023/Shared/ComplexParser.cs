@@ -4,80 +4,79 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace Advent2023.Shared
+namespace Advent2023.Shared;
+
+[AttributeUsage(AttributeTargets.Constructor, Inherited = false, AllowMultiple = false)]
+sealed class ComplexParserConstructorAttribute : Attribute { }
+
+public class ComplexParser
 {
-    [AttributeUsage(AttributeTargets.Constructor, Inherited = false, AllowMultiple = false)]
-    sealed class ComplexParserConstructorAttribute : Attribute { }
+    SimpleParser innerParser;
 
-    public class ComplexParser
+    public ComplexParser(string pattern)
     {
-        SimpleParser innerParser;
+        innerParser = new SimpleParser(pattern);
+    }
 
-        public ComplexParser(string pattern)
+    public ComplexParser(bool startsWithValue, int numberOfValues, IEnumerable<string> delimiters)
+    {
+        innerParser = new SimpleParser(startsWithValue, numberOfValues, delimiters);
+    }
+
+    public ComplexParser(SimpleParser simpleParser)
+    {
+        innerParser = simpleParser;
+    }
+
+    public List<ComplexType> Parse<ComplexType>(IEnumerable<string> inputs)
+        => inputs.Select(Parse<ComplexType>).ToList();
+    public ComplexType Parse<ComplexType>(string input)
+    {
+        var types = GetConstructorInputTypes<ComplexType>();
+
+        object[] values = new object[0];
+        if (types.Length != 0)
         {
-            innerParser = new SimpleParser(pattern);
-        }
+            var method = typeof(SimpleParser)
+            .GetMethods()
+            .Where(m => m.Name == nameof(SimpleParser.Parse))
+            .Where(m => m.GetGenericArguments().Length == types.Length)
+            .SingleOrDefault();
 
-        public ComplexParser(bool startsWithValue, int numberOfValues, IEnumerable<string> delimiters)
-        {
-            innerParser = new SimpleParser(startsWithValue, numberOfValues, delimiters);
-        }
+            var generic = method.MakeGenericMethod(types);
 
-        public ComplexParser(SimpleParser simpleParser)
-        {
-            innerParser = simpleParser;
-        }
+            object result = generic.Invoke(innerParser, new object[] { input });
 
-        public List<ComplexType> Parse<ComplexType>(IEnumerable<string> inputs)
-            => inputs.Select(Parse<ComplexType>).ToList();
-        public ComplexType Parse<ComplexType>(string input)
-        {
-            var types = GetConstructorInputTypes<ComplexType>();
+            var resultType = result.GetType();
 
-            object[] values = new object[0];
-            if (types.Length != 0)
+            if (resultType.GetInterfaces().Contains(typeof(ITuple)))
             {
-                var method = typeof(SimpleParser)
-                .GetMethods()
-                .Where(m => m.Name == nameof(SimpleParser.Parse))
-                .Where(m => m.GetGenericArguments().Length == types.Length)
-                .SingleOrDefault();
-
-                var generic = method.MakeGenericMethod(types);
-
-                object result = generic.Invoke(innerParser, new object[] { input });
-
-                var resultType = result.GetType();
-
-                if (resultType.GetInterfaces().Contains(typeof(ITuple)))
-                {
-                    values = resultType.GetFields().Select(f => f.GetValue(result)).ToArray();
-                }
-                else
-                {
-                    values = new object[] { result };
-                }
+                values = resultType.GetFields().Select(f => f.GetValue(result)).ToArray();
             }
-            return (ComplexType)Activator.CreateInstance(typeof(ComplexType), values);
+            else
+            {
+                values = new object[] { result };
+            }
         }
+        return (ComplexType)Activator.CreateInstance(typeof(ComplexType), values);
+    }
 
-        public Type[] GetConstructorInputTypes<ComplexType>()
-        {
-            var constructorToUse = GetConstructor<ComplexType>();
+    public Type[] GetConstructorInputTypes<ComplexType>()
+    {
+        var constructorToUse = GetConstructor<ComplexType>();
 
-            var parameters = constructorToUse.GetParameters();
-            return parameters.Select(p => p.ParameterType).ToArray();
-        }
+        var parameters = constructorToUse.GetParameters();
+        return parameters.Select(p => p.ParameterType).ToArray();
+    }
 
-        private ConstructorInfo GetConstructor<ComplexType>()
-        {
-            var constructors = typeof(ComplexType).GetConstructors();
-            
-            var withAttribute = constructors.Where(c => c.GetCustomAttribute(typeof(ComplexParserConstructorAttribute)) != null);
-            if (withAttribute.Count() > 0) constructors = withAttribute.ToArray();
+    private ConstructorInfo GetConstructor<ComplexType>()
+    {
+        var constructors = typeof(ComplexType).GetConstructors();
+        
+        var withAttribute = constructors.Where(c => c.GetCustomAttribute(typeof(ComplexParserConstructorAttribute)) != null);
+        if (withAttribute.Count() > 0) constructors = withAttribute.ToArray();
 
-            if (constructors.Length == 1) return constructors.Single();
-            else return constructors.OrderBy(c => c.GetParameters().Count()).Last(); // more parameters more better
-        }
+        if (constructors.Length == 1) return constructors.Single();
+        else return constructors.OrderBy(c => c.GetParameters().Count()).Last(); // more parameters more better
     }
 }
