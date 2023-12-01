@@ -10,7 +10,7 @@ class Tests
     {
         var sol = new Solution(input);
 
-        output.Should().Be(sol.GetResult1());
+        sol.GetResult1().Should().Be(output);
     }
 
     [TestCase(example, "")]
@@ -18,7 +18,7 @@ class Tests
     {
         var sol = new Solution(input);
 
-        output.Should().Be(sol.GetResult2());
+        sol.GetResult2().Should().Be(output);
     }
 
     public const string example = @"";
