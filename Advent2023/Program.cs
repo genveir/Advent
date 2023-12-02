@@ -18,7 +18,7 @@ class Program
         stopWatch.Start();
         for (int n = 0; n < numRuns; n++)
         {
-            ISolution solution = new Advent02.Solution();
+            ISolution solution = new AdventActive.Solution();
 
             result1 = solution.GetResult1();
             result2 = solution.GetResult2();

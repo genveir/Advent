@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
 
-namespace Advent2023.AdventBase;
+namespace Advent2023.AdventActive;
 
 class Tests
 {
