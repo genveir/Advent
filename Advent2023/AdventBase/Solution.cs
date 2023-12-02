@@ -19,7 +19,7 @@ public class Solution : ISolution
 
     public class ParsedInput
     {
-        [ComplexParserConstructor]
+        [ComplexParserConstructor("line")]
         public ParsedInput()
         {
 
