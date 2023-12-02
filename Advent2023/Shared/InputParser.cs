@@ -11,9 +11,11 @@ public class InputParser
     public char[] ArrayDelimiters { get => simpleParser.ArrayDelimiters; set => simpleParser.ArrayDelimiters = value; }
     public int NumberOfValues { get => simpleParser.NumberOfValues; set => simpleParser.NumberOfValues = value; }
     public bool EmptyArrayDelimiter { get => simpleParser.EmptyArrayDelimiter; set => simpleParser.EmptyArrayDelimiter = value; }
+    public bool ShouldTrimBeforeParsing { get => simpleParser.ShouldTrimBeforeParsing; set => simpleParser.ShouldTrimBeforeParsing = value; }
 
     public InputParser(bool startsWithValue, int numberOfValues, params string[] delimiters) :
-        this(startsWithValue, numberOfValues, (IEnumerable<string>)delimiters) { }
+        this(startsWithValue, numberOfValues, (IEnumerable<string>)delimiters)
+    { }
 
     public InputParser(bool startsWithValue, int numberOfValues, IEnumerable<string> delimiters)
     {
@@ -25,35 +27,54 @@ public class InputParser
         simpleParser = new SimpleParser(pattern);
     }
 
+    private bool CheckValues(params Type[] types)
+    {
+        // hacky but simple
+        foreach(var type in types)
+        {
+            if (!simpleParser.CanConvert(type))
+                throw new InvalidOperationException($"Parser cannot convert type {type.Name}");
+        }
+
+        return true;
+    }
+
     public dynamic Parse(string input) => simpleParser.Parse(input);
 
     public List<T1> Parse<T1>(IEnumerable<string> inputs) => inputs.Select(Parse<T1>).ToList();
-    public T1 Parse<T1>(string input)
-    {
-        if (simpleParser.CanConvert(typeof(T1))) return simpleParser.Parse<T1>(input);
-        else
-        {
-            return new ComplexParser(simpleParser).Parse<T1>(input);
-        }
-    }
+    public T1 Parse<T1>(string input) => 
+        CheckValues(typeof(T1)) ? 
+        simpleParser.Parse<T1>(input) : default;
 
     public List<(T1, T2)> Parse<T1, T2>(IEnumerable<string> inputs) => inputs.Select(Parse<T1, T2>).ToList();
-    public (T1, T2) Parse<T1, T2>(string input) => simpleParser.Parse<T1, T2>(input);
+    public (T1, T2) Parse<T1, T2>(string input) => 
+        CheckValues(typeof(T1), typeof(T2)) ? 
+        simpleParser.Parse<T1, T2>(input) : default;
 
     public List<(T1, T2, T3)> Parse<T1, T2, T3>(IEnumerable<string> inputs) => inputs.Select(Parse<T1, T2, T3>).ToList();
-    public (T1, T2, T3) Parse<T1, T2, T3>(string input) => simpleParser.Parse<T1, T2, T3>(input);
+    public (T1, T2, T3) Parse<T1, T2, T3>(string input) =>
+        CheckValues(typeof(T1), typeof(T2), typeof(T3)) ?
+        simpleParser.Parse<T1, T2, T3>(input) : default;
 
     public List<(T1, T2, T3, T4)> Parse<T1, T2, T3, T4>(IEnumerable<string> inputs) => inputs.Select(Parse<T1, T2, T3, T4>).ToList();
-    public (T1, T2, T3, T4) Parse<T1, T2, T3, T4>(string input) => simpleParser.Parse<T1, T2, T3, T4>(input);
+    public (T1, T2, T3, T4) Parse<T1, T2, T3, T4>(string input) =>
+        CheckValues(typeof(T1), typeof(T2), typeof(T3), typeof(T4)) ?
+        simpleParser.Parse<T1, T2, T3, T4>(input) : default;
 
     public List<(T1, T2, T3, T4, T5)> Parse<T1, T2, T3, T4, T5>(IEnumerable<string> inputs) => inputs.Select(Parse<T1, T2, T3, T4, T5>).ToList();
-    public (T1, T2, T3, T4, T5) Parse<T1, T2, T3, T4, T5>(string input) => simpleParser.Parse<T1, T2, T3, T4, T5>(input);
+    public (T1, T2, T3, T4, T5) Parse<T1, T2, T3, T4, T5>(string input) =>
+        CheckValues(typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5)) ?
+        simpleParser.Parse<T1, T2, T3, T4, T5>(input) : default;
 
     public List<(T1, T2, T3, T4, T5, T6)> Parse<T1, T2, T3, T4, T5, T6>(IEnumerable<string> inputs) => inputs.Select(Parse<T1, T2, T3, T4, T5, T6>).ToList();
-    public (T1, T2, T3, T4, T5, T6) Parse<T1, T2, T3, T4, T5, T6>(string input) => simpleParser.Parse<T1, T2, T3, T4, T5, T6>(input);
+    public (T1, T2, T3, T4, T5, T6) Parse<T1, T2, T3, T4, T5, T6>(string input) =>
+        CheckValues(typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6)) ?
+        simpleParser.Parse<T1, T2, T3, T4, T5, T6>(input) : default;
 
     public List<(T1, T2, T3, T4, T5, T6, T7)> Parse<T1, T2, T3, T4, T5, T6, T7>(IEnumerable<string> inputs) => inputs.Select(Parse<T1, T2, T3, T4, T5, T6, T7>).ToList();
-    public (T1, T2, T3, T4, T5, T6, T7) Parse<T1, T2, T3, T4, T5, T6, T7>(string input) => simpleParser.Parse<T1, T2, T3, T4, T5, T6, T7>(input);
+    public (T1, T2, T3, T4, T5, T6, T7) Parse<T1, T2, T3, T4, T5, T6, T7>(string input) =>
+        CheckValues(typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7)) ?
+        simpleParser.Parse<T1, T2, T3, T4, T5, T6, T7>(input) : default;
 }
 
 public class InputParser<T1> : InputParser
@@ -61,18 +82,12 @@ public class InputParser<T1> : InputParser
     public InputParser(bool startsWithValue, int numberOfValues, params string[] delimiters)
         : base(startsWithValue, numberOfValues, delimiters)
     {
-        if (simpleParser.CanConvert(typeof(T1)))
-        {
-            if (NumberOfValues != 1) throw new NotImplementedException("number of values does not match number of type arguments");
-        }
+        if (NumberOfValues != 1) throw new NotImplementedException("number of values does not match number of type arguments");
     }
 
     public InputParser(string pattern) : base(pattern)
     {
-        if (simpleParser.CanConvert(typeof(T1)))
-        {
-            if (NumberOfValues != 1) throw new NotImplementedException("number of values does not match number of type arguments");
-        }
+        if (NumberOfValues != 1) throw new NotImplementedException("number of values does not match number of type arguments");
     }
 
     public List<T1> Parse(IEnumerable<string> inputs) => inputs.Select(Parse).ToList();

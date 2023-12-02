@@ -145,15 +145,6 @@ class InputParserTests
     }
 
     [Test]
-    public void CanParseComplexObjectsWithNoParameters()
-    {
-        var parser = new InputParser("begin -> end");
-        var testClass = parser.Parse<EmptyConstructorClass>("1,1 -> 10,10");
-
-        testClass.Should().NotBeNull();
-    }
-
-    [Test]
     public void CanParseComplexObjectWithSingleParameter()
     {
         var parser = new InputParser<SingleParameterTestClass>("coord");
@@ -166,38 +157,67 @@ class InputParserTests
     [Test]
     public void CanParseComplexObjects()
     {
-        var parser = new InputParser("begin -> endx,endy");
-        var testClass = parser.Parse<ParsingTestClass>("1,2 -> 10,11");
+        var parser = new InputParser("line");
+        var testClass = parser.Parse<ParsingTestClass>("1,2 -> 3,4 -> 10,11");
 
-        testClass.Begin.X.Should().Be(1);
-        testClass.Begin.Y.Should().Be(2);
-        testClass.End.X.Should().Be(10);
-        testClass.End.Y.Should().Be(11);
+        testClass.Should()
+            .BeEquivalentTo(new ParsingTestClass(new long[] { 1, 2 }, new Coordinate(3, 4), 10, 11));
+    }
+
+    [Test]
+    public void CanParseNestedObjects()
+    {
+        var parser = new InputParser("num |- testclass");
+        var (num, nestedClass) = parser.Parse<int, NestingTestClass>("5 |- 1: 1,2 -> 3,4 -> 10,11; 2,3 -> 4,5 -> 12,13");
+
+        num.Should().Be(5);
+
+        nestedClass.Number.Should().Be(1);
+        nestedClass.TestClasses.Should().HaveCount(2);
+
+        nestedClass.TestClasses.First().Should()
+            .BeEquivalentTo(new ParsingTestClass(new long[] { 1, 2 }, new Coordinate(3, 4), 10, 11));
+        nestedClass.TestClasses.Last().Should()
+            .BeEquivalentTo(new ParsingTestClass(new long[] { 2, 3 }, new Coordinate(4, 5), 12, 13));
     }
 
     // ReSharper disable ClassNeverInstantiated.Local
-    private class EmptyConstructorClass { }
-
     private class SingleParameterTestClass
     {
         public readonly Coordinate Coordinate;
 
+        [ComplexParserConstructor("coord")]
         public SingleParameterTestClass(long[] coords)
         {
             Coordinate = new Coordinate(coords[0], coords[1]);
         }
     }
 
-    private class ParsingTestClass 
+    private class ParsingTestClass
     {
         public readonly Coordinate Begin;
+        public readonly Coordinate Middle;
         public readonly Coordinate End;
 
-        [ComplexParserConstructor]
-        public ParsingTestClass(long[] begin, long endX, long endY)
+        [ComplexParserConstructor("begin -> middle -> endx,endy")]
+        public ParsingTestClass(long[] begin, Coordinate middle, long endX, long endY)
         {
             Begin = new Coordinate(begin);
+            Middle = middle;
             End = new Coordinate(endX, endY);
+        }
+    }
+
+    private class NestingTestClass
+    {
+        public int Number;
+        public ParsingTestClass[] TestClasses;
+
+        [ComplexParserConstructor("num: testClasses", ArrayDelimiters = new[] { ';' })]
+        public NestingTestClass(int number, ParsingTestClass[] testClasses)
+        {
+            Number = number;
+            TestClasses = testClasses;
         }
     }
 }

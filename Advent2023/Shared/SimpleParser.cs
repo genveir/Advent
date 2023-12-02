@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Reflection;
 
 namespace Advent2023.Shared;
 
@@ -19,6 +21,8 @@ public class SimpleParser
         }
     }
     public string[] delimiters;
+
+    public bool ShouldTrimBeforeParsing { get; set; } = true;
 
     public SimpleParser(bool startsWithValue, int numberOfValues, IEnumerable<string> delimiters)
     {
@@ -74,6 +78,8 @@ public class SimpleParser
 
     public dynamic Parse(string input)
     {
+        if (ShouldTrimBeforeParsing) input = input.Trim();
+
         Type vtType = GetVTType();
 
         var instance = Activator.CreateInstance(vtType);
@@ -101,7 +107,7 @@ public class SimpleParser
     public T1 Parse<T1>(string input)
     {
         ValueTuple<string> halfway = Parse(input);
-        T1 output = Convert(typeof(T1), halfway.Item1);
+        T1 output = (T1)Convert<T1>(halfway.Item1);
 
         return output;
     }
@@ -110,8 +116,8 @@ public class SimpleParser
     {
         ValueTuple<string, string> halfway = Parse(input);
         ValueTuple<T1, T2> output = new ValueTuple<T1, T2>();
-        output.Item1 = Convert(typeof(T1), halfway.Item1);
-        output.Item2 = Convert(typeof(T2), halfway.Item2);
+        output.Item1 = (T1)Convert<T1>(halfway.Item1);
+        output.Item2 = (T2)Convert<T2>(halfway.Item2);
 
         return output;
     }
@@ -120,9 +126,9 @@ public class SimpleParser
     {
         ValueTuple<string, string, string> halfway = Parse(input);
         ValueTuple<T1, T2, T3> output = new ValueTuple<T1, T2, T3>();
-        output.Item1 = Convert(typeof(T1), halfway.Item1);
-        output.Item2 = Convert(typeof(T2), halfway.Item2);
-        output.Item3 = Convert(typeof(T3), halfway.Item3);
+        output.Item1 = (T1)Convert<T1>(halfway.Item1);
+        output.Item2 = (T2)Convert<T2>(halfway.Item2);
+        output.Item3 = (T3)Convert<T3>(halfway.Item3);
 
         return output;
     }
@@ -131,10 +137,10 @@ public class SimpleParser
     {
         ValueTuple<string, string, string, string> halfway = Parse(input);
         ValueTuple<T1, T2, T3, T4> output = new ValueTuple<T1, T2, T3, T4>();
-        output.Item1 = Convert(typeof(T1), halfway.Item1);
-        output.Item2 = Convert(typeof(T2), halfway.Item2);
-        output.Item3 = Convert(typeof(T3), halfway.Item3);
-        output.Item4 = Convert(typeof(T4), halfway.Item4);
+        output.Item1 = (T1)Convert<T1>(halfway.Item1);
+        output.Item2 = (T2)Convert<T2>(halfway.Item2);
+        output.Item3 = (T3)Convert<T3>(halfway.Item3);
+        output.Item4 = (T4)Convert<T4>(halfway.Item4);
 
         return output;
     }
@@ -143,11 +149,11 @@ public class SimpleParser
     {
         ValueTuple<string, string, string, string, string> halfway = Parse(input);
         ValueTuple<T1, T2, T3, T4, T5> output = new ValueTuple<T1, T2, T3, T4, T5>();
-        output.Item1 = Convert(typeof(T1), halfway.Item1);
-        output.Item2 = Convert(typeof(T2), halfway.Item2);
-        output.Item3 = Convert(typeof(T3), halfway.Item3);
-        output.Item4 = Convert(typeof(T4), halfway.Item4);
-        output.Item5 = Convert(typeof(T5), halfway.Item5);
+        output.Item1 = (T1)Convert<T1>(halfway.Item1);
+        output.Item2 = (T2)Convert<T2>(halfway.Item2);
+        output.Item3 = (T3)Convert<T3>(halfway.Item3);
+        output.Item4 = (T4)Convert<T4>(halfway.Item4);
+        output.Item5 = (T5)Convert<T5>(halfway.Item5);
 
         return output;
     }
@@ -156,12 +162,12 @@ public class SimpleParser
     {
         ValueTuple<string, string, string, string, string, string> halfway = Parse(input);
         ValueTuple<T1, T2, T3, T4, T5, T6> output = new ValueTuple<T1, T2, T3, T4, T5, T6>();
-        output.Item1 = Convert(typeof(T1), halfway.Item1);
-        output.Item2 = Convert(typeof(T2), halfway.Item2);
-        output.Item3 = Convert(typeof(T3), halfway.Item3);
-        output.Item4 = Convert(typeof(T4), halfway.Item4);
-        output.Item5 = Convert(typeof(T5), halfway.Item5);
-        output.Item6 = Convert(typeof(T6), halfway.Item6);
+        output.Item1 = (T1)Convert<T1>(halfway.Item1);
+        output.Item2 = (T2)Convert<T2>(halfway.Item2);
+        output.Item3 = (T3)Convert<T3>(halfway.Item3);
+        output.Item4 = (T4)Convert<T4>(halfway.Item4);
+        output.Item5 = (T5)Convert<T5>(halfway.Item5);
+        output.Item6 = (T6)Convert<T6>(halfway.Item6);
 
         return output;
     }
@@ -170,45 +176,70 @@ public class SimpleParser
     {
         ValueTuple<string, string, string, string, string, string, string> halfway = Parse(input);
         ValueTuple<T1, T2, T3, T4, T5, T6, T7> output = new ValueTuple<T1, T2, T3, T4, T5, T6, T7>();
-        output.Item1 = Convert(typeof(T1), halfway.Item1);
-        output.Item2 = Convert(typeof(T2), halfway.Item2);
-        output.Item3 = Convert(typeof(T3), halfway.Item3);
-        output.Item4 = Convert(typeof(T4), halfway.Item4);
-        output.Item5 = Convert(typeof(T5), halfway.Item5);
-        output.Item6 = Convert(typeof(T6), halfway.Item6);
-        output.Item7 = Convert(typeof(T7), halfway.Item7);
+        output.Item1 = (T1)Convert<T1>(halfway.Item1);
+        output.Item2 = (T2)Convert<T2>(halfway.Item2);
+        output.Item3 = (T3)Convert<T3>(halfway.Item3);
+        output.Item4 = (T4)Convert<T4>(halfway.Item4);
+        output.Item5 = (T5)Convert<T5>(halfway.Item5);
+        output.Item6 = (T6)Convert<T6>(halfway.Item6);
+        output.Item7 = (T7)Convert<T7>(halfway.Item7);
 
         return output;
     }
 
     public bool CanConvert(Type t)
     {
+        if (t.IsArray) return CanConvert(t.GetElementType());
+
         if (t == typeof(int)) return true;
         if (t == typeof(long)) return true;
         if (t == typeof(char)) return true;
         if (t == typeof(bool)) return true;
         if (t == typeof(string)) return true;
-        if (t == typeof(int[])) return true;
-        if (t == typeof(long[])) return true;
-        if (t == typeof(char[])) return true;
-        if (t == typeof(bool[])) return true;
-        if (t == typeof(string[])) return true;
-        else return false;
+        if (ComplexParser.CanParse(t)) return true;
+
+        return false;
     }
 
-    private dynamic Convert(Type t, string input)
+    private dynamic Convert<T>(string input)
     {
+        var t = typeof(T);
+
+        if (t.IsArray) return ConvertArray<T>(input);
+
         if (t == typeof(int)) return int.Parse(input);
         if (t == typeof(long)) return long.Parse(input);
         if (t == typeof(char)) return char.Parse(input);
         if (t == typeof(bool)) return bool.Parse(input);
         if (t == typeof(string)) return input;
-        if (t == typeof(int[])) return ParseIntArray(input);
-        if (t == typeof(long[])) return ParseLongArray(input);
-        if (t == typeof(char[])) return ParseCharArray(input);
-        if (t == typeof(bool[])) return ParseBoolArray(input);
-        if (t == typeof(string[])) return ParseStringArray(input);
-        else throw new NotImplementedException("cannot convert non-primitive types");
+        if (ComplexParser.CanParse(t)) return new ComplexParser().Parse<T>(input);
+
+        throw new NotImplementedException("cannot convert non-primitive types or types without marked complex parser constructors");
+    }
+
+    private dynamic ConvertArray<T>(string input)
+    {
+        var t = typeof(T);
+
+        var elementType = t.GetElementType();
+
+        MethodInfo method = GetType().GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
+            .Where(m => m.GetCustomAttribute(typeof(ConvertArrayTargetAttribute)) != null)
+            .Single()
+            .MakeGenericMethod(elementType);
+
+        return method.Invoke(this, new object[] { input });
+    }
+
+    [ConvertArrayTarget]
+    private TElement[] ConvertElements<TElement>(string input)
+    {
+        var elementType = typeof(TElement);
+        
+        var elements = SplitElements(input);
+        return elements
+            .Select(el => (TElement)Convert<TElement>(el))
+            .ToArray();
     }
 
     public char[] ArrayDelimiters { get; set; } = new char[] { ',' };
@@ -218,36 +249,6 @@ public class SimpleParser
         var elements = input.Split(ArrayDelimiters, StringSplitOptions.RemoveEmptyEntries);
         if (EmptyArrayDelimiter) elements = elements.SelectMany(el => el.ToCharArray().Select(c => c.ToString())).ToArray();
 
-        return elements;
-    }
-
-    private int[] ParseIntArray(string input)
-    {
-        var elements = SplitElements(input);
-        return elements.Select(el => int.Parse(el)).ToArray();
-    }
-
-    private long[] ParseLongArray(string input)
-    {
-        var elements = SplitElements(input);
-        return elements.Select(el => long.Parse(el)).ToArray();
-    }
-
-    private bool[] ParseBoolArray(string input)
-    {
-        var elements = SplitElements(input);
-        return elements.Select(el => bool.Parse(el)).ToArray();
-    }
-
-    private char[] ParseCharArray(string input)
-    {
-        var elements = SplitElements(input);
-        return elements.Select(el => el[0]).ToArray();
-    }
-
-    private string[] ParseStringArray(string input)
-    {
-        var elements = SplitElements(input);
         return elements;
     }
 
@@ -264,6 +265,10 @@ public class SimpleParser
             case 7: return typeof(ValueTuple<string, string, string, string, string, string, string>);
             default: throw new NotImplementedException("can't go over 7 fields yet");
         }
+    }
+
+    private class ConvertArrayTargetAttribute : Attribute
+    {
     }
 }
 
