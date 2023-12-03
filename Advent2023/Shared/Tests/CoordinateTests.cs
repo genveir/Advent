@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -128,5 +129,89 @@ internal class CoordinateTests
         newCoord.X.Should().Be(coord.X);
         newCoord.Y.Should().Be(coord.Y);
         newCoord.Z.Should().Be(1);
+    }
+
+    [Test]
+    public void CanGetNeighboursInTwoDimensions()
+    {
+        var coord = new Coordinate(10, -5);
+
+        var neighbours = coord.GetNeighbours();
+
+        neighbours.Should().HaveCount(8);
+        neighbours.Should().Contain(new Coordinate(9, -6));
+        neighbours.Should().Contain(new Coordinate(10, -6));
+        neighbours.Should().Contain(new Coordinate(11, -6));
+        neighbours.Should().Contain(new Coordinate(9, -5));
+        neighbours.Should().Contain(new Coordinate(11, -5));
+        neighbours.Should().Contain(new Coordinate(9, -4));
+        neighbours.Should().Contain(new Coordinate(10, -4));
+        neighbours.Should().Contain(new Coordinate(11, -4));
+    }
+
+    [Test]
+    public void CanGetOrthogonalNeighboursInTwoDimensions()
+    {
+        var coord = new Coordinate(10, -5);
+
+        var neighbours = coord.GetNeighbours(orthogonalOnly: true);
+
+        neighbours.Should().HaveCount(4);
+        neighbours.Should().Contain(new Coordinate(10, -6));
+        neighbours.Should().Contain(new Coordinate(9, -5));
+        neighbours.Should().Contain(new Coordinate(11, -5));
+        neighbours.Should().Contain(new Coordinate(10, -4));
+    }
+
+    [Test]
+    public void CanGetNeighboursInThreeDimensions()
+    {
+        var coord = new Coordinate(10, -5, 1000);
+
+        var neighbours = coord.GetNeighbours();
+
+        neighbours.Should().HaveCount(26);
+        neighbours.Should().Contain(new Coordinate(9, -6 , 999));
+        neighbours.Should().Contain(new Coordinate(10, -6, 999));
+        neighbours.Should().Contain(new Coordinate(11, -6, 999));
+        neighbours.Should().Contain(new Coordinate(9, -5 , 999));
+        neighbours.Should().Contain(new Coordinate(10, -5, 999));
+        neighbours.Should().Contain(new Coordinate(11, -5, 999));
+        neighbours.Should().Contain(new Coordinate(9, -4 , 999));
+        neighbours.Should().Contain(new Coordinate(10, -4, 999));
+        neighbours.Should().Contain(new Coordinate(11, -4, 999));
+        neighbours.Should().Contain(new Coordinate(9, -6 , 1000));
+        neighbours.Should().Contain(new Coordinate(10, -6, 1000));
+        neighbours.Should().Contain(new Coordinate(11, -6, 1000));
+        neighbours.Should().Contain(new Coordinate(9, -5 , 1000));
+        neighbours.Should().Contain(new Coordinate(11, -5, 1000));
+        neighbours.Should().Contain(new Coordinate(9, -4 , 1000));
+        neighbours.Should().Contain(new Coordinate(10, -4, 1000));
+        neighbours.Should().Contain(new Coordinate(11, -4, 1000));
+        neighbours.Should().Contain(new Coordinate(9, -6 , 1001));
+        neighbours.Should().Contain(new Coordinate(10, -6, 1001));
+        neighbours.Should().Contain(new Coordinate(11, -6, 1001));
+        neighbours.Should().Contain(new Coordinate(9, -5 , 1001));
+        neighbours.Should().Contain(new Coordinate(10, -5, 1001));
+        neighbours.Should().Contain(new Coordinate(11, -5, 1001));
+        neighbours.Should().Contain(new Coordinate(9, -4 , 1001));
+        neighbours.Should().Contain(new Coordinate(10, -4, 1001));
+        neighbours.Should().Contain(new Coordinate(11, -4, 1001));
+    }
+
+    [Test]
+    public void CanGetOrthogonalNeighboursInThreeDimensions()
+    {
+        var coord = new Coordinate(10, -5, 1000);
+
+        var neighbours = coord.GetNeighbours(orthogonalOnly: true);
+
+        neighbours.Should().HaveCount(6);
+        neighbours.Should().Contain(new Coordinate(10, -5, 999));
+        neighbours.Should().Contain(new Coordinate(10, -6, 1000));
+        neighbours.Should().Contain(new Coordinate(9, -5 , 1000));
+        neighbours.Should().Contain(new Coordinate(11, -5, 1000));
+        neighbours.Should().Contain(new Coordinate(10, -4, 1000));
+        neighbours.Should().Contain(new Coordinate(10, -5, 1001));
     }
 }

@@ -60,7 +60,7 @@ public class Coordinate
         ShiftX(shiftX).ShiftY(shiftY).ShiftZ(shiftZ);
 
     private IEnumerable<Coordinate> _neighbours;
-    public IEnumerable<Coordinate> GetNeighbours()
+    public IEnumerable<Coordinate> GetNeighbours(bool orthogonalOnly = false)
     {
         if (_neighbours == null)
         {
@@ -74,14 +74,20 @@ public class Coordinate
                     {
                         for (int zShift = -1; zShift <= 1; zShift++)
                         {
-                            if (xShift == 0 && yShift == 0 && zShift == 0) continue;
-                            else neighbours.Add(new Coordinate(X + xShift, Y + yShift, Z.Value + zShift));
+                            var zeroCount = (xShift == 0 ? 1 : 0) + (yShift == 0 ? 1 : 0) + (zShift == 0 ? 1 : 0);
+                            if (zeroCount == 3) continue;
+                            if (orthogonalOnly && zeroCount != 2) continue;
+
+                            neighbours.Add(new Coordinate(X + xShift, Y + yShift, Z.Value + zShift));
                         }
                     }
                     else
                     {
-                        if (xShift == 0 && yShift == 0) continue;
-                        else neighbours.Add(new Coordinate(X + xShift, Y + yShift));
+                        var zeroCount = (xShift == 0 ? 1 : 0) + (yShift == 0 ? 1 : 0);
+                        if (zeroCount == 2) continue;
+                        if (orthogonalOnly && zeroCount != 1) continue;
+
+                        neighbours.Add(new Coordinate(X + xShift, Y + yShift));
                     }
                 }
             }
