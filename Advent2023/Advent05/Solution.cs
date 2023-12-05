@@ -145,11 +145,9 @@ public class Solution : ISolution
         return value;
     }
 
-    public long MapSeedRange(long start, long length)
+    public long MapSeedRange(long[][] ranges)
     {
-        var initialSegment = new[] { start, start + length - 1L };
-
-        var soilSegments = SeedToSoil.MapSegment(initialSegment).ToArray();
+        var soilSegments = ranges.SelectMany(s => SeedToSoil.MapSegment(s)).ToArray();
         var fertilizerSegments = soilSegments.SelectMany(s => SoilToFertilizer.MapSegment(s)).ToArray();
         var waterSegments = fertilizerSegments.SelectMany(f => FertilizerToWater.MapSegment(f)).ToArray();
         var lightSegments = waterSegments.SelectMany(w => WaterToLight.MapSegment(w)).ToArray();
@@ -167,13 +165,12 @@ public class Solution : ISolution
 
     public object GetResult2()
     {
-        List<long> bestPerRange = new();
-
+        long[][] ranges = new long[Seeds.Length / 2][];
         for (int n = 0; n < Seeds.Length; n += 2)
         {
-            bestPerRange.Add(MapSeedRange(Seeds[n], Seeds[n + 1]));
+            ranges[n / 2] = new long[] { Seeds[n], Seeds[n] + Seeds[n + 1] - 1 };
         }
 
-        return bestPerRange.Min();
+        return MapSeedRange(ranges);
     }
 }

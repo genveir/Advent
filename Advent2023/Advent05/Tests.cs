@@ -35,7 +35,7 @@ class Tests
     {
         var sol = new Solution(example);
 
-        var result = sol.MapSeedRange(82, 1).Should().Be(46);   
+        sol.MapSeedRange(new[] { new long[] { 82, 83 } }).Should().Be(46);   
     }
 
     public const string example = @"seeds: 79 14 55 13
