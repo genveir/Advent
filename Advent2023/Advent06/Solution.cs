@@ -63,10 +63,9 @@ public class Solution : ISolution
                 return isWin ? pushTime : pushTime + 1;
             }
 
+            var step = isWin ? - stepSize : stepSize;
             var newSize = stepSize == 3 ? 2 : stepSize / 2;
-            return isWin ? 
-                FindFirstThatWins(pushTime - stepSize, newSize) : 
-                FindFirstThatWins(pushTime + stepSize, newSize);
+            return FindFirstThatWins(pushTime + step, newSize);
         }
 
         public long NumThatWin => (Time + 1) - 2 * FindFirstThatWins();
