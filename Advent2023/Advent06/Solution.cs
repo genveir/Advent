@@ -57,17 +57,16 @@ public class Solution : ISolution
 
         public long FindFirstThatWins(long pushTime, long stepSize)
         {
+            var isWin = WinsAtPushTime(pushTime);
             if (stepSize == 0)
             {
-                if (WinsAtPushTime(pushTime))
-                {
-                    return WinsAtPushTime(pushTime - 1) ? (pushTime - 1) : pushTime;
-                }
-                else return pushTime + 1;
+                return isWin ? pushTime : pushTime + 1;
             }
 
-            if (WinsAtPushTime(pushTime)) return FindFirstThatWins(pushTime - stepSize, stepSize / 2);
-            return FindFirstThatWins(pushTime + stepSize, stepSize / 2);
+            var newSize = stepSize == 3 ? 2 : stepSize / 2;
+            return isWin ? 
+                FindFirstThatWins(pushTime - stepSize, newSize) : 
+                FindFirstThatWins(pushTime + stepSize, newSize);
         }
 
         public long NumThatWin => (Time + 1) - 2 * FindFirstThatWins();
@@ -75,9 +74,6 @@ public class Solution : ISolution
 
     public object GetResult1()
     {
-        var firstThatWins = races.Select(r => r.FindFirstThatWins()).ToArray();
-        var numsThatWin = races.Select(r => r.NumThatWin).ToList();
-
         return races.Select(r => r.NumThatWin).Aggregate((a, b) => a * b);
     }
 
