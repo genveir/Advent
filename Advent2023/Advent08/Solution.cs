@@ -107,10 +107,7 @@ public class Solution : ISolution
                         if (end != current)
                             throw new InvalidOperationException("unexpected: more ends for one start");
 
-                        if (firstHit % Instructions.Count == n % Instructions.Count)
-                        {
-                            secondHit = n;
-                        }
+                        secondHit = n;
                         break;
                     }
                 }
