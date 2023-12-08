@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Runtime;
 using Advent2023.Shared;
 
 namespace Advent2023.AdventActive;
@@ -36,12 +38,18 @@ public class Solution : ISolution
         public Location Left { get; set; }
         public Location Right { get; set; }
 
+        public bool EndsOnZ { get; set; }
+        public long CycleStart { get; set; }
+        public long CycleLength { get; set; }
+
         [ComplexParserConstructor("loc = (left, right)")]
         public Location(string name, string leftName, string rightName)
         {
             Name = name;
             LeftName = leftName;
             RightName = rightName;
+
+            EndsOnZ = name.EndsWith('Z');
         }
 
         public void LinkUp(Dictionary<string, Location> locations)
@@ -52,6 +60,11 @@ public class Solution : ISolution
 
         public Location Step(char direction) =>
             (direction == 'L') ? Left : Right;
+
+        public override string ToString()
+        {
+            return $"{Name} => {LeftName}, {RightName}";
+        }
     }
 
     public object GetResult1()
@@ -69,12 +82,46 @@ public class Solution : ISolution
 
     public object GetResult2()
     {
-        List<Location> current = locations.Where(l => l.Name.EndsWith('A')).ToList();
+        List<Location> starts = locations.Where(l => l.Name.EndsWith('A')).ToList();
 
         // run each path until it cycles
         // find lengths in cycle between Zs
-        // CRT over all paths
+        foreach (var start in starts)
+        {
+            Location current = start;
 
-        return "";
+            Location end = null;
+            int firstHit = 0;
+            int secondHit = 0;
+            for (int n = 0; true; n++)
+            {
+                if (current.EndsOnZ)
+                {
+                    if (firstHit == 0)
+                    {
+                        firstHit = n;
+                        end = current;
+                    }
+                    else
+                    {
+                        if (end != current)
+                            throw new InvalidOperationException("unexpected: more ends for one start");
+
+                        if (firstHit % Instructions.Count == n % Instructions.Count)
+                        {
+                            secondHit = n;
+                        }
+                        break;
+                    }
+                }
+                var step = Instructions[n];
+                current = current.Step(step);
+            }
+            start.CycleStart = firstHit;
+            start.CycleLength = secondHit - firstHit;
+        }
+
+        // don't need CRT, cycle length is identical from A-Z and Z-Z, so LCM will do
+        return starts.Select(s => s.CycleLength).Aggregate(Helper.LCM);
     }
 }
