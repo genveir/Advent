@@ -132,6 +132,17 @@ public class Coordinate
     public static Coordinate operator -(Coordinate first, Coordinate second) =>
         first.Difference(second);
 
+    public static bool operator ==(Coordinate first, Coordinate second)
+    {
+        if (ReferenceEquals(first, second)) return true;
+        if (ReferenceEquals(first, null)) return false;
+        if (ReferenceEquals(second, null)) return false;
+        return first.Equals(second);
+    }
+
+    public static bool operator !=(Coordinate first, Coordinate second) =>
+        !(first == second);
+
     public Coordinate Difference(Coordinate second) =>
         new(X - second.X, Y - second.Y, Z - second.Z);
 
@@ -150,7 +161,7 @@ public class Coordinate
     public override bool Equals(object obj)
     {
         var other = obj as Coordinate;
-        if (other == null) return false;
+        if (ReferenceEquals(other, null)) return false;
         return other.X == X && other.Y == Y && other.Z == Z;
     }
 }
