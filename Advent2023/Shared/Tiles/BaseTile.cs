@@ -7,7 +7,7 @@ public abstract class BaseTile<TImplementationType>
 {
     public List<TImplementationType> Neighbours = new();
 
-    public void Link(TImplementationType tile, bool linkBack)
+    public virtual void Link(TImplementationType tile, bool linkBack)
     {
         Neighbours.Add(tile);
         if (linkBack) tile.Link((TImplementationType)this, false);

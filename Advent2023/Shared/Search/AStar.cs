@@ -8,7 +8,7 @@ public class AStar<TNode> where TNode : IEquatable<TNode>
 {
     public PriorityQueue<NodeData, long> Queue = new();
 
-    public HashSet<TNode> EndNodes { get; }
+    public Func<TNode, bool> EndStates { get; }
     public List<TNode> StartNodes { get; }
     public Func<TNode, TNode, long> TransitionCostFunction { get; }
     public Func<TNode, long> HeuristicCostFunction { get; }
@@ -73,11 +73,50 @@ public class AStar<TNode> where TNode : IEquatable<TNode>
         Func<TNode, long> heuristicCostFunction = null)
     {
         StartNodes = startNodes.ToList();
-        EndNodes = new HashSet<TNode>(endNodes);
+
+        var _endNodes = new HashSet<TNode>(endNodes);
+        EndStates = _endNodes.Contains;
+
         FindNeighbourFunction = findNeighbourFunction;
         TransitionCostFunction = transitionCostFunction ?? DefaultTransitionCost;
         HeuristicCostFunction = heuristicCostFunction ?? DefaultHeuristicCost;
     }
+
+    /// <summary>
+    /// Create AStar Setup
+    /// </summary>
+    /// <param name="startNode">The Node from which the algorithm will start it's search (at cost 0)</param>
+    /// <param name="endStates">A function to determine if a node is an endstate at which the algorithm will stop and return</param>
+    /// <param name="findNeighbourFunction">A function to find the reachable neighbours of a node</param>
+    /// <param name="transitionCostFunction">A function to calculate the transition cost between two nodes. Leave null for (_, _) => 1</param>
+    /// <param name="heuristicCostFunction">A function to calculate the heuristic distance to the target. Leave null for _ => 0</param>
+    public AStar(TNode startNode, Func<TNode, bool> endStates, Func<TNode, IEnumerable<TNode>> findNeighbourFunction,
+        Func<TNode, TNode, long> transitionCostFunction = null,
+        Func<TNode, long> heuristicCostFunction = null) : 
+        this(new List<TNode>() { startNode }, endStates, findNeighbourFunction, transitionCostFunction, heuristicCostFunction)
+    {
+        
+    }
+
+    /// <summary>
+    /// Create AStar Setup
+    /// </summary>
+    /// <param name="startNodes">The Nodes from which the algorithm will start it's search (at cost 0)</param>
+    /// <param name="endStates">A function to determine if a node is an endstate at which the algorithm will stop and return</param>
+    /// <param name="findNeighbourFunction">A function to find the reachable neighbours of a node</param>
+    /// <param name="transitionCostFunction">A function to calculate the transition cost between two nodes. Leave null for (_, _) => 1</param>
+    /// <param name="heuristicCostFunction">A function to calculate the heuristic distance to the target. Leave null for _ => 0</param>
+    public AStar(IEnumerable<TNode> startNodes, Func<TNode, bool> endStates, Func<TNode, IEnumerable<TNode>> findNeighbourFunction,
+        Func<TNode, TNode, long> transitionCostFunction = null,
+        Func<TNode, long> heuristicCostFunction = null)
+    {
+        StartNodes = startNodes.ToList();
+        EndStates = endStates;
+        FindNeighbourFunction = findNeighbourFunction;
+        TransitionCostFunction = transitionCostFunction ?? DefaultTransitionCost;
+        HeuristicCostFunction = heuristicCostFunction ?? DefaultHeuristicCost;
+    }
+        
 
     /// <summary>
     /// If a node was exploited, it will be in here, with NodeData (i.e. cost at which it was exploited, and node it was discovered from with
@@ -114,7 +153,7 @@ public class AStar<TNode> where TNode : IEquatable<TNode>
             }
             ExploitationData[node] = nodeData;
 
-            if (EndNodes.Contains(node))
+            if (EndStates(node))
             {
                 return nodeData;
             }
@@ -190,7 +229,11 @@ public class AStar<TNode> where TNode : IEquatable<TNode>
                 DiscoveredBy.Path(aggregate);
 
             aggregate.Add(this);
+        }
 
+        public override string ToString()
+        {
+            return $"NodeData for {Node}, Cost {Cost}";
         }
     }
 }

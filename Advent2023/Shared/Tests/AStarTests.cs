@@ -61,6 +61,27 @@ internal class AStarTests
         result.Cost.Should().Be(9);
     }
 
+    [Test]
+    public void CanFindShortestPathWithEndState()
+    {
+        var node1 = new TestNode { Index = 1, CostToGoToEnd = 10, Heuristic = 1 };
+        var node2 = new TestNode { Index = 2, CostToGoToEnd = 9, Heuristic = 9 };
+
+        var endNode = new TestNode { Index = 3, CostToGoToEnd = 0, Heuristic = 0 };
+
+        var aStar = new AStar<TestNode>(
+            startNodes: new[] { node1, node2 },
+            endStates: n => n.Index == 3,
+            findNeighbourFunction: _ => new[] { endNode },
+            heuristicCostFunction: tn => tn.Heuristic,
+            transitionCostFunction: (origin, _) => origin.CostToGoToEnd
+            );
+
+        var result = aStar.FindShortest();
+
+        result.Cost.Should().Be(9);
+    }
+
     private class TestNode : IEquatable<TestNode>
     {
         public int Index;
