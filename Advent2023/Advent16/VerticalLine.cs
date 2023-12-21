@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Advent2023.Advent16.Solution;
-
-namespace Advent2023.Advent16;
+﻿namespace Advent2023.Advent16;
 public class VerticalLine
 {
     public static int _indexCounter = 0;

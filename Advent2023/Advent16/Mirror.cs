@@ -1,9 +1,4 @@
 ﻿using Advent2023.Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Advent2023.Advent16;
 public abstract class Mirror

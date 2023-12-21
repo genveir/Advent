@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime;
 using Advent2023.Shared;
 
 namespace Advent2023.Advent08;

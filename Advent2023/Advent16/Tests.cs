@@ -1,5 +1,4 @@
-﻿using Advent2023.AdventActive;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
 
 namespace Advent2023.Advent16;
