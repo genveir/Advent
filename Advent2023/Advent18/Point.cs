@@ -29,7 +29,7 @@ public class Point
 
     public Dictionary<Direction, Line> Lines { get; set; } = new();
 
-    public char LetterCode => IsInside ? 'I' : 'O';
+    public char LetterCode => IsInside ? (IsCreated ? 'X' : 'I') : 'O';
 
     public override string ToString()
     {
