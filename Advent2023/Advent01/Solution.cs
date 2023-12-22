@@ -27,7 +27,7 @@ public class Solution : ISolution
         public int Value => 10 * FirstNumber[0] + LastNumber[0];
         public int Value2 => 10 * FirstNumber[1] + LastNumber[1];
 
-        [ComplexParserConstructor("line")]
+        [ComplexParserTarget("line")]
         public ParsedInput(string line)
         {
             var padded = line + "     ";

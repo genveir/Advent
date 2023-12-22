@@ -42,7 +42,7 @@ public class Solution : ISolution
         public long CycleStart { get; set; }
         public long CycleLength { get; set; }
 
-        [ComplexParserConstructor("loc = (left, right)")]
+        [ComplexParserTarget("loc = (left, right)")]
         public Location(string name, string leftName, string rightName)
         {
             Name = name;

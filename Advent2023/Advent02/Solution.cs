@@ -26,7 +26,7 @@ public class Solution : ISolution
         public long Id { get; }
         public List<Draw> Draws { get; }
 
-        [ComplexParserConstructor("num: draws", ArrayDelimiters = new[] { ';' })]
+        [ComplexParserTarget("num: draws", ArrayDelimiters = new[] { ';' })]
         public Game(long id, Draw[] draws)
         {
             Id = id;
@@ -38,7 +38,7 @@ public class Solution : ISolution
     {
         public List<DieGroup> DieGroups { get; }
 
-        [ComplexParserConstructor("dieGroups")]
+        [ComplexParserTarget("dieGroups")]
         public Draw(DieGroup[] dieGroups)
         {
             DieGroups = dieGroups.ToList();
@@ -50,7 +50,7 @@ public class Solution : ISolution
         public string Color { get; }
         public long Number { get; }
 
-        [ComplexParserConstructor("number color")]
+        [ComplexParserTarget("number color")]
         public DieGroup(long number, string color)
         {
             Color = color;

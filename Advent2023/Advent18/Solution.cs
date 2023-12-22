@@ -24,7 +24,7 @@ public class Solution : ISolution
 
     public class ParsedInput
     {
-        [ComplexParserConstructor("direction distance (#color)")]
+        [ComplexParserTarget("direction distance (#color)")]
         public ParsedInput(char direction, long distance, string color)
         {
             Direction = direction switch

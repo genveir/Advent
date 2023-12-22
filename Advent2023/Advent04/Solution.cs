@@ -31,7 +31,7 @@ public class Solution : ISolution
         public long[] Winning { get; set; }
         public long[] Actual { get; set; }
 
-        [ComplexParserConstructor("id: winning | actual", ArrayDelimiters = new[] {' '})]
+        [ComplexParserTarget("id: winning | actual", ArrayDelimiters = new[] {' '})]
         public Card(long id, long[] winning, long[] actual)
         {
             Id = id;

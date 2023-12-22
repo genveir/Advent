@@ -14,7 +14,7 @@ public class Part
     public long A { get; set; }
     public long S { get; set; }
 
-    [ComplexParserConstructor("{values}")]
+    [ComplexParserTarget("{values}")]
     public Part(Rating[] ratings)
     {
         X = ratings.Single(r => r.Name == "x").Value;
@@ -32,7 +32,7 @@ public class Rating
     public string Name { get; set; }
     public long Value { get; set; }
 
-    [ComplexParserConstructor("name=value")]
+    [ComplexParserTarget("name=value")]
     public Rating(string name, long value)
     {
         Name = name;

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace Advent2023.Shared.InputParsing;
 
-[AttributeUsage(AttributeTargets.Constructor, Inherited = false, AllowMultiple = false)]
-sealed class ComplexParserConstructorAttribute : Attribute
+[AttributeUsage(AttributeTargets.Constructor | AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
+sealed class ComplexParserTargetAttribute : Attribute
 {
     public char[] ArrayDelimiters { get => InputParser.ArrayDelimiters; set => InputParser.ArrayDelimiters = value; }
     public int NumberOfValues { get => InputParser.NumberOfValues; set => InputParser.NumberOfValues = value; }
@@ -13,12 +13,12 @@ sealed class ComplexParserConstructorAttribute : Attribute
 
     public InputParser InputParser { get; set; }
 
-    public ComplexParserConstructorAttribute(string pattern)
+    public ComplexParserTargetAttribute(string pattern)
     {
         InputParser = new InputParser(pattern);
     }
 
-    public ComplexParserConstructorAttribute(bool startsWithValue, int numberOfValues, IEnumerable<string> delimiters)
+    public ComplexParserTargetAttribute(bool startsWithValue, int numberOfValues, IEnumerable<string> delimiters)
     {
         InputParser = new InputParser(startsWithValue, numberOfValues, delimiters);
     }

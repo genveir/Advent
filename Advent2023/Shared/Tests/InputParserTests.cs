@@ -1,6 +1,9 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using Advent2023.Shared.InputParsing;
 using FluentAssertions;
+using Microsoft.VisualBasic;
 using NUnit.Framework;
 
 namespace Advent2023.Shared.Tests;
@@ -182,12 +185,25 @@ class InputParserTests
             .BeEquivalentTo(new ParsingTestClass(new long[] { 2, 3 }, new Coordinate(4, 5), 12, 13));
     }
 
+    [Test]
+    public void CanUseFactoryMethod()
+    {
+        var parser = new InputParser("line");
+        var factoryTestClass = parser.Parse<FactoryMethodClass>("0: ab,bc,cd,de");
+
+        factoryTestClass.Should().NotBeNull();
+        factoryTestClass.Values[0].Should().Be("ba");
+        factoryTestClass.Values[1].Should().Be("cb");
+        factoryTestClass.Values[2].Should().Be("dc");
+        factoryTestClass.Values[3].Should().Be("ed");
+    }
+
     // ReSharper disable ClassNeverInstantiated.Local
     private class SingleParameterTestClass
     {
         public readonly Coordinate Coordinate;
 
-        [ComplexParserConstructor("coord")]
+        [ComplexParserTarget("coord")]
         public SingleParameterTestClass(long[] coords)
         {
             Coordinate = new Coordinate(coords[0], coords[1]);
@@ -200,7 +216,7 @@ class InputParserTests
         public readonly Coordinate Middle;
         public readonly Coordinate End;
 
-        [ComplexParserConstructor("begin -> middle -> endx,endy")]
+        [ComplexParserTarget("begin -> middle -> endx,endy")]
         public ParsingTestClass(long[] begin, Coordinate middle, long endX, long endY)
         {
             Begin = new Coordinate(begin);
@@ -214,11 +230,33 @@ class InputParserTests
         public int Number;
         public ParsingTestClass[] TestClasses;
 
-        [ComplexParserConstructor("num: testClasses", ArrayDelimiters = new[] { ';' })]
+        [ComplexParserTarget("num: testClasses", ArrayDelimiters = new[] { ';' })]
         public NestingTestClass(int number, ParsingTestClass[] testClasses)
         {
             Number = number;
             TestClasses = testClasses;
+        }
+    }
+
+    private class FactoryMethodClass
+    {
+        public Dictionary<int, string> Values { get; set; }
+
+        [ComplexParserTarget("num: values")]
+        public static FactoryMethodClass FactoryMethod(int number, string[] values)
+        {
+            var dict = new Dictionary<int, string>();
+            foreach (var value in values)
+            {
+                dict.Add(number++, new string(value.Reverse().ToArray()));
+            }
+            
+            return new FactoryMethodClass(dict);
+        }
+
+        public FactoryMethodClass(Dictionary<int, string> values)
+        {
+            Values = values;
         }
     }
 }

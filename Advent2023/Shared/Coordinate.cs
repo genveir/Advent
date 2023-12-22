@@ -13,7 +13,7 @@ public class Coordinate
         this.Z = z;
     }
 
-    [ComplexParserConstructor("coords")]
+    [ComplexParserTarget("coords")]
     public Coordinate(long[] coords)
     {
         if (coords.Length < 2)

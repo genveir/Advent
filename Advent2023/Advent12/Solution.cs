@@ -25,7 +25,7 @@ public class Solution : ISolution
         public string Pattern { get; set; }
         public int[] Values { get; set; }
 
-        [ComplexParserConstructor("pattern values")]
+        [ComplexParserTarget("pattern values")]
         public ParsedInput(string pattern, int[] values)
         {
             Pattern = pattern;

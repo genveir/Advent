@@ -25,7 +25,7 @@ public class Solution : ISolution
 
         public Instruction Instruction { get; set; }
 
-        [ComplexParserConstructor("value")]
+        [ComplexParserTarget("value")]
         public ParsedInput(string value)
         {
             Value = value;

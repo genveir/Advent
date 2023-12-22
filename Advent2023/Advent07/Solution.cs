@@ -46,7 +46,7 @@ public class Solution : ISolution
         public long TotalValue { get; set; }
         public long P2Value { get; set; }
 
-        [ComplexParserConstructor("cards bid")]
+        [ComplexParserTarget("cards bid")]
         public Hand(string cards, long bid)
         {
             Initial = cards;
@@ -146,7 +146,7 @@ public class Solution : ISolution
 
         public string P2ValueString { get; set; }
 
-        [ComplexParserConstructor("card")]
+        [ComplexParserTarget("card")]
         public Card(char representation)
         {
             Representation = representation;
