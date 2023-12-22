@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Advent2023.Shared;
+namespace Advent2023.Shared.InputParsing;
 
 [AttributeUsage(AttributeTargets.Constructor, Inherited = false, AllowMultiple = false)]
-sealed class ComplexParserConstructorAttribute : Attribute 
+sealed class ComplexParserConstructorAttribute : Attribute
 {
     public char[] ArrayDelimiters { get => InputParser.ArrayDelimiters; set => InputParser.ArrayDelimiters = value; }
     public int NumberOfValues { get => InputParser.NumberOfValues; set => InputParser.NumberOfValues = value; }

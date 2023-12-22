@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Advent2023.Shared.InputParsing;
+using System;
 using System.Collections.Generic;
 
 namespace Advent2023.Shared;

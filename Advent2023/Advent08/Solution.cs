@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Advent2023.Shared;
+using Advent2023.Shared.InputParsing;
 
 namespace Advent2023.Advent08;
 

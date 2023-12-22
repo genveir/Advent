@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Advent2023.Shared.InputParsing;
 using FluentAssertions;
 using NUnit.Framework;
 

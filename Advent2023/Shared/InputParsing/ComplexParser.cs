@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace Advent2023.Shared;
+namespace Advent2023.Shared.InputParsing;
 
 public class ComplexParser
 {
@@ -74,7 +74,7 @@ public class ComplexParser
         return constructor;
     }
 
-    public static bool CanParse(Type type) => 
+    public static bool CanParse(Type type) =>
         type.GetConstructors()
             .Where(c => c.GetCustomAttribute(typeof(ComplexParserConstructorAttribute)) != null)
             .Count() == 1;

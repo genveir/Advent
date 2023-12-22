@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Advent2023.Shared;
+namespace Advent2023.Shared.InputParsing;
 
 public class InputParser
 {
@@ -30,7 +30,7 @@ public class InputParser
     private bool CheckValues(params Type[] types)
     {
         // hacky but simple
-        foreach(var type in types)
+        foreach (var type in types)
         {
             if (!simpleParser.CanConvert(type))
                 throw new InvalidOperationException($"Parser cannot convert type {type.Name}");
@@ -42,13 +42,13 @@ public class InputParser
     public dynamic Parse(string input) => simpleParser.Parse(input);
 
     public List<T1> Parse<T1>(IEnumerable<string> inputs) => inputs.Select(Parse<T1>).ToList();
-    public T1 Parse<T1>(string input) => 
-        CheckValues(typeof(T1)) ? 
+    public T1 Parse<T1>(string input) =>
+        CheckValues(typeof(T1)) ?
         simpleParser.Parse<T1>(input) : default;
 
     public List<(T1, T2)> Parse<T1, T2>(IEnumerable<string> inputs) => inputs.Select(Parse<T1, T2>).ToList();
-    public (T1, T2) Parse<T1, T2>(string input) => 
-        CheckValues(typeof(T1), typeof(T2)) ? 
+    public (T1, T2) Parse<T1, T2>(string input) =>
+        CheckValues(typeof(T1), typeof(T2)) ?
         simpleParser.Parse<T1, T2>(input) : default;
 
     public List<(T1, T2, T3)> Parse<T1, T2, T3>(IEnumerable<string> inputs) => inputs.Select(Parse<T1, T2, T3>).ToList();

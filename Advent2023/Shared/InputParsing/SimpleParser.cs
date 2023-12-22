@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Advent2023.Shared;
 
-namespace Advent2023.Shared;
+namespace Advent2023.Shared.InputParsing;
 
 public class SimpleParser
 {
@@ -26,7 +27,7 @@ public class SimpleParser
     public SimpleParser(bool startsWithValue, int numberOfValues, IEnumerable<string> delimiters)
     {
         this.startsWithValue = startsWithValue;
-        this.NumberOfValues = numberOfValues;
+        NumberOfValues = numberOfValues;
         this.delimiters = delimiters.ToArray();
     }
 
@@ -71,7 +72,7 @@ public class SimpleParser
         if (currentDelimiter.Count > 0) delimiters.Add(new string(currentDelimiter.ToArray()));
         if (hasCurrentValue) numberOfValues++;
 
-        this.NumberOfValues = numberOfValues;
+        NumberOfValues = numberOfValues;
         this.delimiters = delimiters.ToArray();
     }
 
@@ -83,13 +84,13 @@ public class SimpleParser
 
         var instance = Activator.CreateInstance(vtType);
 
-        if (!startsWithValue) input = input.Substring(this.delimiters[0].Length);
+        if (!startsWithValue) input = input.Substring(delimiters[0].Length);
         for (int valueIndex = 0; valueIndex < NumberOfValues; valueIndex++)
         {
             int delimiterIndex = valueIndex + (startsWithValue ? 0 : 1);
 
             string val;
-            if (this.delimiters.Length <= delimiterIndex) val = input;
+            if (delimiters.Length <= delimiterIndex) val = input;
             else
             {
                 var split = input.Split(delimiters[delimiterIndex], 2);
@@ -234,7 +235,7 @@ public class SimpleParser
     private TElement[] ConvertElements<TElement>(string input)
     {
         var elementType = typeof(TElement);
-        
+
         var elements = SplitElements(input);
         return elements
             .Select(el => (TElement)Convert<TElement>(el))
