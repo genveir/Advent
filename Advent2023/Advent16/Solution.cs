@@ -23,7 +23,7 @@ public class Solution : ISolution
         {
             for (long x = 0; x < grid[y].Length; x++)
             {
-                var coord = new Coordinate(x, y);
+                var coord = new Coordinate2D(x, y);
 
                 Mirror mirror = grid[y][x] switch
                 {

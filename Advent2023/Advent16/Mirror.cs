@@ -3,9 +3,9 @@
 namespace Advent2023.Advent16;
 public abstract class Mirror
 {
-    public Coordinate Position { get; set; }
+    public Coordinate2D Position { get; set; }
 
-    public Mirror(Coordinate position) => Position = position;
+    public Mirror(Coordinate2D position) => Position = position;
 
     public HorizontalLine Left, Right;
     public VerticalLine Up, Down;
@@ -18,7 +18,7 @@ public abstract class Mirror
 
 public class UprightSplitter : Mirror
 {
-    public UprightSplitter(Coordinate position) : base(position) { }
+    public UprightSplitter(Coordinate2D position) : base(position) { }
 
     public override void OnEnergizeDown() => Up.EnergizeFromBottom();
     public override void OnEnergizeUp() => Down.EnergizeFromTop();
@@ -36,7 +36,7 @@ public class UprightSplitter : Mirror
 
 public class HorizontalSplitter : Mirror
 {
-    public HorizontalSplitter(Coordinate position) : base(position) { }
+    public HorizontalSplitter(Coordinate2D position) : base(position) { }
 
     public override void OnEnergizeLeft() => Right.EnergizeFromLeft();
     public override void OnEnergizeRight() => Left.EnergizeFromRight();
@@ -54,7 +54,7 @@ public class HorizontalSplitter : Mirror
 
 public class LeftBouncer : Mirror
 {
-    public LeftBouncer(Coordinate position) : base(position) { }
+    public LeftBouncer(Coordinate2D position) : base(position) { }
 
     public override void OnEnergizeDown() => Left.EnergizeFromRight();
     public override void OnEnergizeLeft() => Down.EnergizeFromTop();
@@ -64,7 +64,7 @@ public class LeftBouncer : Mirror
 
 public class RightBouncer : Mirror
 {
-    public RightBouncer(Coordinate position) : base(position) { }
+    public RightBouncer(Coordinate2D position) : base(position) { }
 
     public override void OnEnergizeDown() => Right.EnergizeFromLeft();
     public override void OnEnergizeRight() => Down.EnergizeFromTop();
@@ -74,7 +74,7 @@ public class RightBouncer : Mirror
 
 public class Accepter : Mirror
 {
-    public Accepter(Coordinate position) : base(position) { }
+    public Accepter(Coordinate2D position) : base(position) { }
 
     public override void OnEnergizeDown() { }
     public override void OnEnergizeRight() { }

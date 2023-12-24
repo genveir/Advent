@@ -4,13 +4,13 @@ using System.Collections.Generic;
 namespace Advent2023.Advent18;
 public class Point
 {
-    public Point(Coordinate location, Direction directionOfTrench)
+    public Point(Coordinate2D location, Direction directionOfTrench)
     {
         Location = location;
         DirectionOfTrench = directionOfTrench;
     }
 
-    public Point(Coordinate location)
+    public Point(Coordinate2D location)
     {
         Location = location;
         IsCreated = true;
@@ -19,7 +19,7 @@ public class Point
     public long X => Location.X;
     public long Y => Location.Y;
 
-    public Coordinate Location { get; set; }
+    public Coordinate2D Location { get; set; }
 
     public Direction DirectionOfTrench { get; set; }
 

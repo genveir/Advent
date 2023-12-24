@@ -9,7 +9,7 @@ public class Solution : ISolution
     public List<Number> AllNumbers = new();
     public List<Symbol> AllSymbols = new();
 
-    public Dictionary<Coordinate, Number> AllNumberLocations = new();
+    public Dictionary<Coordinate2D, Number> AllNumberLocations = new();
 
     public Solution(string input)
     {
@@ -21,7 +21,7 @@ public class Solution : ISolution
             for (int column = 0; column < grid[line].Length; column++)
             {
                 var value = grid[line][column];
-                var coord = new Coordinate(column, line);
+                var coord = new Coordinate2D(column, line);
 
                 switch (grid[line][column])
                 {
@@ -61,13 +61,13 @@ public class Solution : ISolution
 
     public class Number
     {
-        public List<Coordinate> Coordinates { get; set; } = new();
+        public List<Coordinate2D> Coordinates { get; set; } = new();
 
         public List<Symbol> LinkedSymbols { get; set; } = new();
 
         public long Value { get; set; }
 
-        public void AddDigit(Coordinate coordinate, int value)
+        public void AddDigit(Coordinate2D coordinate, int value)
         {
             Coordinates.Add(coordinate);
             Value *= 10;
@@ -91,13 +91,13 @@ public class Solution : ISolution
 
     public class Symbol
     {
-        public Coordinate Coordinate { get; set; }
+        public Coordinate2D Coordinate { get; set; }
 
         public char Value { get; set; }
 
         public List<Number> LinkedNumbers { get; set; } = new();
 
-        public Symbol(Coordinate coordinate, char value)
+        public Symbol(Coordinate2D coordinate, char value)
         {
             Coordinate = coordinate;
             Value = value;

@@ -7,7 +7,7 @@ namespace Advent2023.Advent11;
 
 public class Solution : ISolution
 {
-    public HashSet<Coordinate> Galaxies { get; set; } = new();
+    public HashSet<Coordinate2D> Galaxies { get; set; } = new();
 
     public Solution(string input)
     {
@@ -20,15 +20,15 @@ public class Solution : ISolution
     public Solution() : this("Input.txt") { }
 
     
-    public HashSet<Coordinate> ExpandedUniverse(HashSet<Coordinate> universe, long shiftSize)
+    public HashSet<Coordinate2D> ExpandedUniverse(HashSet<Coordinate2D> universe, long shiftSize)
     {
         var expandedOverX = Expand(universe, c => c.X, (c, s) => c.ShiftX(s), shiftSize);
         return Expand(expandedOverX, c => c.Y, (c, s) => c.ShiftY(s), shiftSize);
     }
 
-    public HashSet<Coordinate> Expand(HashSet<Coordinate> universe, Func<Coordinate, long> getKey, Func<Coordinate, long, Coordinate> shiftCoord, long shiftSize)
+    public HashSet<Coordinate2D> Expand(HashSet<Coordinate2D> universe, Func<Coordinate2D, long> getKey, Func<Coordinate2D, long, Coordinate2D> shiftCoord, long shiftSize)
     {
-        var byKey = new Dictionary<long, List<Coordinate>>();
+        var byKey = new Dictionary<long, List<Coordinate2D>>();
         foreach(var coord in universe)
         {
             var key = getKey(coord);
@@ -40,7 +40,7 @@ public class Solution : ISolution
 
         var max = byKey.Keys.Max();
         long shift = 0;
-        var expanded = new HashSet<Coordinate>();
+        var expanded = new HashSet<Coordinate2D>();
 
         for (long n = 0; n <= max; n++)
         {

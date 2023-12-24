@@ -7,7 +7,7 @@ namespace Advent2023.Advent10;
 
 public class Solution : ISolution
 {
-    public Dictionary<Coordinate, Pipe> Loop = new();
+    public Dictionary<Coordinate2D, Pipe> Loop = new();
     public Pipe Start;
 
     public Solution(string input)
@@ -23,7 +23,7 @@ public class Solution : ISolution
     }
     public Solution() : this("Input.txt") { }
 
-    public char GetCharFromGrid(char[][] grid, Coordinate toFind)
+    public char GetCharFromGrid(char[][] grid, Coordinate2D toFind)
     {
         if (toFind.X < 0 || toFind.Y < 0 || toFind.Y >= grid.Length || toFind.X >= grid[toFind.Y].Length)
             return '.';
@@ -32,10 +32,10 @@ public class Solution : ISolution
     }
 
     public enum Direction { Up, Right, Down, Left }
-    public bool FindLoop(char[][] grid, Coordinate start)
+    public bool FindLoop(char[][] grid, Coordinate2D start)
     {
         // we're not setting left and right on start. Can fix if it turns out to be necessary
-        Loop.Add(start, new Pipe(Array.Empty<Coordinate>(), Array.Empty<Coordinate>(), false));
+        Loop.Add(start, new Pipe(Array.Empty<Coordinate2D>(), Array.Empty<Coordinate2D>(), false));
 
         var above = GetCharFromGrid(grid, start.ShiftY(-1));
         if (above is '|' or '7' or 'F') return FindLoop(grid, start.ShiftY(-1), Direction.Up, Loop);
@@ -46,7 +46,7 @@ public class Solution : ISolution
         return FindLoop(grid, start.ShiftX(1), Direction.Right, Loop);
     }
 
-    public bool FindLoop(char[][] grid, Coordinate current, Direction direction, Dictionary<Coordinate, Pipe> loop)
+    public bool FindLoop(char[][] grid, Coordinate2D current, Direction direction, Dictionary<Coordinate2D, Pipe> loop)
     {
         while (true)
         {
@@ -60,7 +60,7 @@ public class Solution : ISolution
         }
     }
 
-    public Pipe ParsePipe(char charToParse, Coordinate current, Direction direction) =>
+    public Pipe ParsePipe(char charToParse, Coordinate2D current, Direction direction) =>
         charToParse switch
         {
             '|' => new Pipe(current.ShiftX(-1), current.ShiftX(1), direction != Direction.Up),
@@ -72,7 +72,7 @@ public class Solution : ISolution
             _ => throw new NotImplementedException("invalid pipe char")
         };
 
-    public (Coordinate next, Direction newDirection) FindNext(char charToParse, Coordinate current, Direction direction)
+    public (Coordinate2D next, Direction newDirection) FindNext(char charToParse, Coordinate2D current, Direction direction)
     {
         var newDirection = charToParse switch
         {
@@ -97,25 +97,25 @@ public class Solution : ISolution
 
     public class Pipe
     {
-        public Coordinate[] Left { get; set; }
-        public Coordinate[] Right { get; set; }
+        public Coordinate2D[] Left { get; set; }
+        public Coordinate2D[] Right { get; set; }
 
-        public Pipe(Coordinate[] left, Coordinate[] right, bool swap)
+        public Pipe(Coordinate2D[] left, Coordinate2D[] right, bool swap)
         {
             Left = swap ? right : left;
             Right = swap ? left : right;
         }
 
-        public Pipe(Coordinate left, Coordinate[] right, bool swap) : this(new[] { left }, right, swap) { }
-        public Pipe(Coordinate[] left, Coordinate right, bool swap) : this(left, new[] { right }, swap) { }
-        public Pipe(Coordinate left, Coordinate right, bool swap) : this(new[] { left }, new[] { right }, swap) { }
+        public Pipe(Coordinate2D left, Coordinate2D[] right, bool swap) : this(new[] { left }, right, swap) { }
+        public Pipe(Coordinate2D[] left, Coordinate2D right, bool swap) : this(left, new[] { right }, swap) { }
+        public Pipe(Coordinate2D left, Coordinate2D right, bool swap) : this(new[] { left }, new[] { right }, swap) { }
 
-        public Coordinate[] Inside(bool leftIsOutside) => leftIsOutside ? Right : Left;
+        public Coordinate2D[] Inside(bool leftIsOutside) => leftIsOutside ? Right : Left;
     }
 
-    public void Flood(bool leftIsOutside, HashSet<Coordinate> blockers)
+    public void Flood(bool leftIsOutside, HashSet<Coordinate2D> blockers)
     {
-        Queue<Coordinate> coordinates = new();
+        Queue<Coordinate2D> coordinates = new();
         foreach(var pipe in Loop.Values)
         {
             var insideCoords = pipe.Inside(leftIsOutside);
@@ -145,11 +145,11 @@ public class Solution : ISolution
     {
         var toppest = Loop.Keys.Min(c => c.Y);
         var leftest = Loop.Keys.Where(c => c.Y == toppest).Min(c => c.X);
-        var topLeftCoord = new Coordinate(leftest, toppest);
+        var topLeftCoord = new Coordinate2D(leftest, toppest);
         var topLeftPipe = Loop[topLeftCoord];
 
         bool leftIsOutside = topLeftPipe.Left.Contains(topLeftCoord.ShiftY(-1));
-        var blockers = new HashSet<Coordinate>(Loop.Keys);
+        var blockers = new HashSet<Coordinate2D>(Loop.Keys);
 
         Flood(leftIsOutside, blockers);
 

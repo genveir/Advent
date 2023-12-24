@@ -12,7 +12,7 @@ public class Points
     public Dictionary<long, SortedList<long, Point>> ByX = new();
     public Dictionary<long, SortedList<long, Point>> ByY = new();
 
-    public Dictionary<Coordinate, List<Line>> LinesByCoord = new();
+    public Dictionary<Coordinate2D, List<Line>> LinesByCoord = new();
     public List<Line> Lines { get; set; } = new();
 
     public void Add(Point coord)
@@ -28,7 +28,7 @@ public class Points
         InOrderOfAdding.Add(coord);
     }
 
-    public bool TryGetPoint(Coordinate coordinate, out Point point)
+    public bool TryGetPoint(Coordinate2D coordinate, out Point point)
     {
         point = null;
         if (!ByY.TryGetValue(coordinate.Y, out var list)) return false;
@@ -64,7 +64,7 @@ public class Points
         Add(new Line(point, line.Second, line.IsTrench));
     }
 
-    public record CollisionData(Line line, Coordinate coord, long Distance);
+    public record CollisionData(Line line, Coordinate2D coord, long Distance);
 
     public void SetCollisionPoint(Line line)
     {
@@ -76,7 +76,7 @@ public class Points
         var collisions = new List<CollisionData>();
         foreach (var l in Lines)
         {
-            if (l.TryGetCollisionCoords(line, out List<Coordinate> coords))
+            if (l.TryGetCollisionCoords(line, out List<Coordinate2D> coords))
             {
                 foreach (var c in coords) collisions.Add(new(l, c, c.ManhattanDistance(actualPoint.Location)));
             }
@@ -136,9 +136,9 @@ public class Points
         {
             var loc = line.First.Location;
             var representation = line.IsTrench ? '#' : line.IsVertical ? '|' : '-';
-            Func<Coordinate, Coordinate> shift = line.IsVertical ?
-                ((Coordinate c) => c.ShiftY(1)) :
-                ((Coordinate c) => c.ShiftX(1));
+            Func<Coordinate2D, Coordinate2D> shift = line.IsVertical ?
+                ((Coordinate2D c) => c.ShiftY(1)) :
+                ((Coordinate2D c) => c.ShiftX(1));
 
             while (loc != line.Second.Location)
             {

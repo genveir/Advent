@@ -15,7 +15,7 @@ public class Solution : ISolution
     {
         var grid = Input.GetLetterGrid(input);
 
-        Dictionary<Coordinate, Tile> Tiles = new();
+        Dictionary<Coordinate2D, Tile> Tiles = new();
 
         for (int y = 0; y < grid.Length; y++)
         {
@@ -23,7 +23,7 @@ public class Solution : ISolution
             {
                 if (grid[y][x] == '#') continue;
 
-                var coord = new Coordinate(x, y);
+                var coord = new Coordinate2D(x, y);
                 var tile = new Tile(coord, grid[y][x]);
 
                 Tiles.Add(coord, tile);
@@ -33,7 +33,7 @@ public class Solution : ISolution
         var start = Tiles.Values.Single(t => t.Location.Y == 0);
         Start = new Intersection(start.Location);
 
-        var intersections = new Dictionary<Coordinate, Intersection>() { { start.Location, Start } };
+        var intersections = new Dictionary<Coordinate2D, Intersection>() { { start.Location, Start } };
         Start.ParsePaths(Tiles, intersections);
 
         End = intersections.Values.Single(i => i.Location.Y == Tiles.Max(t => t.Key.Y));
@@ -42,10 +42,10 @@ public class Solution : ISolution
 
     public class Tile
     {
-        public Coordinate Location { get; set; }
+        public Coordinate2D Location { get; set; }
         public char Representation { get; set; }
 
-        public Tile(Coordinate coord, char representation)
+        public Tile(Coordinate2D coord, char representation)
         {
             Location = coord;
             Representation = representation;
@@ -54,16 +54,16 @@ public class Solution : ISolution
 
     public class Intersection
     {
-        public Coordinate Location { get; set; }
+        public Coordinate2D Location { get; set; }
         public List<Path> Paths { get; set; } = new();
         public bool Parsed = false;
 
-        public Intersection(Coordinate location)
+        public Intersection(Coordinate2D location)
         {
             Location = location;
         }
 
-        public void ParsePaths(Dictionary<Coordinate, Tile> tiles, Dictionary<Coordinate, Intersection> intersections)
+        public void ParsePaths(Dictionary<Coordinate2D, Tile> tiles, Dictionary<Coordinate2D, Intersection> intersections)
         {
             if (Parsed) return;
             Parsed = true;
@@ -92,7 +92,7 @@ public class Solution : ISolution
     public class PathParseData
     {
         public bool ThisWay = true;
-        public Coordinate OtherIntersection = null;
+        public Coordinate2D OtherIntersection = null;
         public long Length = 0;
     }
 
@@ -111,8 +111,8 @@ public class Solution : ISolution
             Part2 = part2;
         }
 
-        public static Path Parse(Dictionary<Coordinate, Tile> tiles, Dictionary<Coordinate, Intersection> intersections,
-            Tile pathStart, Coordinate direction)
+        public static Path Parse(Dictionary<Coordinate2D, Tile> tiles, Dictionary<Coordinate2D, Intersection> intersections,
+            Tile pathStart, Coordinate2D direction)
         {
             PathParseData parseData = new();
             ParseToIntersection(tiles, pathStart, direction, parseData);
@@ -126,18 +126,18 @@ public class Solution : ISolution
             return new Path(intersection, parseData.Length, !parseData.ThisWay);
         }
 
-        public static void ParseToIntersection(Dictionary<Coordinate, Tile> tiles,
-            Tile tile, Coordinate direction, PathParseData parseData)
+        public static void ParseToIntersection(Dictionary<Coordinate2D, Tile> tiles,
+            Tile tile, Coordinate2D direction, PathParseData parseData)
         {
             parseData.Length++;
 
-            if (direction == new Coordinate(1, 0) && tile.Representation == '<')
+            if (direction == new Coordinate2D(1, 0) && tile.Representation == '<')
                 parseData.ThisWay = false;
-            if (direction == new Coordinate(-1, 0) && tile.Representation == '>')
+            if (direction == new Coordinate2D(-1, 0) && tile.Representation == '>')
                 parseData.ThisWay = false;
-            if (direction == new Coordinate(0, 1) && tile.Representation == '^')
+            if (direction == new Coordinate2D(0, 1) && tile.Representation == '^')
                 parseData.ThisWay = false;
-            if (direction == new Coordinate(0, -1) && tile.Representation == 'v')
+            if (direction == new Coordinate2D(0, -1) && tile.Representation == 'v')
                 parseData.ThisWay = false;
 
             var neighbours = GetNeighbours(tiles, tile.Location, tile.Location - direction);
@@ -164,7 +164,7 @@ public class Solution : ISolution
             }
         }
 
-        public static List<Tile> GetNeighbours(Dictionary<Coordinate, Tile> tiles, Coordinate start, Coordinate disallowed)
+        public static List<Tile> GetNeighbours(Dictionary<Coordinate2D, Tile> tiles, Coordinate2D start, Coordinate2D disallowed)
         {
             List<Tile> result = new();
             Tile tile;

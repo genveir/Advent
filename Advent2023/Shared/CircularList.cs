@@ -34,7 +34,7 @@ public class CircularList<T> : ICollection<T>
 
         index = PosMod(index);
 
-        var newArray = new T[this.Count + itemArray.Length];
+        var newArray = new T[Count + itemArray.Length];
 
         Array.Copy(currentArray, newArray, index);
         Array.Copy(itemArray, 0, newArray, index, itemArray.Length);

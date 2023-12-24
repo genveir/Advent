@@ -9,8 +9,8 @@ namespace Advent2023.Advent17;
 
 public class Solution : ISolution
 {
-    Dictionary<Coordinate, long> TileValues = new();
-    Coordinate bottomRight;
+    Dictionary<Coordinate2D, long> TileValues = new();
+    Coordinate2D bottomRight;
 
     public Solution(string input)
     {
@@ -30,13 +30,13 @@ public class Solution : ISolution
 
     public class Node : IEquatable<Node>
     {
-        public Coordinate Position { get; set; }
+        public Coordinate2D Position { get; set; }
         public long Value { get; set; }
 
-        public Coordinate LastDirection { get; set; }
+        public Coordinate2D LastDirection { get; set; }
         public long NumOfLast { get; set; }
 
-        public Node(Coordinate position, long value, Coordinate lastMove, long numOfLast)
+        public Node(Coordinate2D position, long value, Coordinate2D lastMove, long numOfLast)
         {
             Position = position;
             Value = value;
@@ -44,7 +44,7 @@ public class Solution : ISolution
             NumOfLast = numOfLast;
         }
 
-        public IEnumerable<Node> FindNeighbours(Dictionary<Coordinate, long> tileValues)
+        public IEnumerable<Node> FindNeighbours(Dictionary<Coordinate2D, long> tileValues)
         {
             var prospects = Position.GetNeighbours(orthogonalOnly: true);
 
@@ -56,7 +56,7 @@ public class Solution : ISolution
 
                 var intendedMove = prospect - Position;
 
-                if (new Coordinate(0, 0) - intendedMove == LastDirection)
+                if (new Coordinate2D(0, 0) - intendedMove == LastDirection)
                     continue;
 
                 if (intendedMove == LastDirection)
@@ -72,9 +72,9 @@ public class Solution : ISolution
             return neighbours;
         }
 
-        public IEnumerable<Node> FindUltraNeighbours(Dictionary<Coordinate, long> tileValues)
+        public IEnumerable<Node> FindUltraNeighbours(Dictionary<Coordinate2D, long> tileValues)
         {
-            List<Coordinate> prospects = new();
+            List<Coordinate2D> prospects = new();
             for (int n = 4; n < 11; n++)
             {
                 prospects.Add(Position.ShiftX(n));
@@ -90,7 +90,7 @@ public class Solution : ISolution
                     continue;
 
                 var intendedMove = prospect - Position;
-                var intendedDirection = new Coordinate(Normalize(intendedMove.X), Normalize(intendedMove.Y));
+                var intendedDirection = new Coordinate2D(Normalize(intendedMove.X), Normalize(intendedMove.Y));
                 var intendedDistance = intendedMove.AbsX + intendedMove.AbsY;
 
                 var pos = Position;
@@ -101,11 +101,11 @@ public class Solution : ISolution
                     value += tileValues[pos];
                 }
 
-                if (new Coordinate(0, 0) - intendedDirection == LastDirection)
+                if (new Coordinate2D(0, 0) - intendedDirection == LastDirection)
                     continue;
                 else if (intendedDirection == LastDirection)
                     continue;
-                else if (LastDirection == new Coordinate(0,0))
+                else if (LastDirection == new Coordinate2D(0,0))
                 {
                     neighbours.Add(new Node(prospect, value, intendedDirection, intendedDistance));
                 }

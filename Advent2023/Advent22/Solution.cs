@@ -13,10 +13,10 @@ public class Solution : ISolution
 
     public class StateObj
     {
-        public Dictionary<Coordinate, Brick> BricksByCoordinate = new();
+        public Dictionary<Coordinate3D, Brick> BricksByCoordinate = new();
         public List<Brick> Bricks = new();
 
-        public StateObj(Dictionary<Coordinate, Brick> bricksByCoordinate)
+        public StateObj(Dictionary<Coordinate3D, Brick> bricksByCoordinate)
         {
             BricksByCoordinate = bricksByCoordinate;
             Bricks = BricksByCoordinate.Values.Distinct().ToList();
@@ -24,7 +24,7 @@ public class Solution : ISolution
 
         public StateObj CopyWithout(Brick dontCopy)
         {
-            var newDict = new Dictionary<Coordinate, Brick>();
+            var newDict = new Dictionary<Coordinate3D, Brick>();
             foreach (var brick in Bricks)
             {
                 if (brick == dontCopy) continue;
@@ -49,7 +49,7 @@ public class Solution : ISolution
 
         var bricks = inputParser.Parse(lines);
 
-        Dictionary<Coordinate, Brick> bricksByCoordinate = new();
+        Dictionary<Coordinate3D, Brick> bricksByCoordinate = new();
         foreach (var brick in bricks)
         {
             foreach (var coord in brick.AllCoords)
@@ -65,11 +65,11 @@ public class Solution : ISolution
         public static long _index = 0;
         public long index = _index++;
 
-        public List<Coordinate> AllCoords = new();
-        public long MinZ => AllCoords.Min(c => c.Z) ?? -1;
+        public List<Coordinate3D> AllCoords = new();
+        public long MinZ => AllCoords.Min(c => c.Z);
 
         [ComplexParserTarget("first~second")]
-        public Brick(Coordinate first, Coordinate second)
+        public Brick(Coordinate3D first, Coordinate3D second)
         {
             if (first.X != second.X) AddXCoords(first, second);
             if (first.Y != second.Y) AddYCoords(first, second);
@@ -89,13 +89,13 @@ public class Solution : ISolution
             };
         }
 
-        public bool Drop(Dictionary<Coordinate, Brick> bricksByCoordinate)
+        public bool Drop(Dictionary<Coordinate3D, Brick> bricksByCoordinate)
         {
             var space = FindSpace(bricksByCoordinate);
 
             if (space == 0) return false;
 
-            var newCoords = new List<Coordinate>();
+            var newCoords = new List<Coordinate3D>();
             foreach (var coord in AllCoords)
             {
                 var newCoord = coord.ShiftZ(space);
@@ -110,7 +110,7 @@ public class Solution : ISolution
             return true;
         }
 
-        public long FindSpace(Dictionary<Coordinate, Brick> bricksByCoordinate)
+        public long FindSpace(Dictionary<Coordinate3D, Brick> bricksByCoordinate)
         {
             var shift = -1;
 
@@ -126,7 +126,7 @@ public class Solution : ISolution
             }
         }
 
-        public void AddXCoords(Coordinate first, Coordinate second)
+        public void AddXCoords(Coordinate3D first, Coordinate3D second)
         {
             if (first.X > second.X) AddXCoords(second, first);
             else
@@ -138,7 +138,7 @@ public class Solution : ISolution
             }
         }
 
-        public void AddYCoords(Coordinate first, Coordinate second)
+        public void AddYCoords(Coordinate3D first, Coordinate3D second)
         {
             if (first.Y > second.Y) AddYCoords(second, first);
             else
@@ -150,12 +150,12 @@ public class Solution : ISolution
             }
         }
 
-        public void AddZCoords(Coordinate first, Coordinate second)
+        public void AddZCoords(Coordinate3D first, Coordinate3D second)
         {
             if (first.Z > second.Z) AddZCoords(second, first);
             else
             {
-                for (long z = first.Z ?? 0; z <= (second.Z ?? 0); z++)
+                for (long z = first.Z; z <= second.Z; z++)
                 {
                     AllCoords.Add(new(first.X, first.Y, z));
                 }

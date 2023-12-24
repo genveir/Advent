@@ -202,10 +202,10 @@ public static class Helper
         dict[key] = action(dict[key]);
     }
 
-    public static void PrintGrid(IEnumerable<Coordinate> coordinates, bool flipX = false, bool flipY = false) =>
+    public static void PrintGrid(IEnumerable<Coordinate2D> coordinates, bool flipX = false, bool flipY = false) =>
         PrintGrid(coordinates, c => c, c => cBLOCK, ' ', flipX, flipY);
 
-    public static void PrintGrid<T>(IEnumerable<T> toPrint, Func<T, Coordinate> convertToCoordinate, Func<T, char> convertToChar,
+    public static void PrintGrid<T>(IEnumerable<T> toPrint, Func<T, Coordinate2D> convertToCoordinate, Func<T, char> convertToChar,
         char emptyChar = ' ', bool flipX = false, bool flipY = false)
     {
         var lookup = toPrint.ToDictionary(c => convertToCoordinate(c), c => c);
@@ -228,7 +228,7 @@ public static class Helper
         {
             for (int x = fromX; xCondition(x); x = xIncrement(x))
             {
-                var coord = new Coordinate(x, y);
+                var coord = new Coordinate2D(x, y);
                 var cToPrint = lookup.TryGetValue(coord, out T value) ? convertToChar(value) : emptyChar;
 
                 Console.Write(cToPrint);

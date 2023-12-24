@@ -165,7 +165,7 @@ class InputParserTests
         var testClass = parser.Parse<ParsingTestClass>("1,2 -> 3,4 -> 10,11");
 
         testClass.Should()
-            .BeEquivalentTo(new ParsingTestClass(new long[] { 1, 2 }, new Coordinate(3, 4), 10, 11));
+            .BeEquivalentTo(new ParsingTestClass(new long[] { 1, 2 }, new Coordinate2D(3, 4), 10, 11));
     }
 
     [Test]
@@ -180,9 +180,9 @@ class InputParserTests
         nestedClass.TestClasses.Should().HaveCount(2);
 
         nestedClass.TestClasses.First().Should()
-            .BeEquivalentTo(new ParsingTestClass(new long[] { 1, 2 }, new Coordinate(3, 4), 10, 11));
+            .BeEquivalentTo(new ParsingTestClass(new long[] { 1, 2 }, new Coordinate2D(3, 4), 10, 11));
         nestedClass.TestClasses.Last().Should()
-            .BeEquivalentTo(new ParsingTestClass(new long[] { 2, 3 }, new Coordinate(4, 5), 12, 13));
+            .BeEquivalentTo(new ParsingTestClass(new long[] { 2, 3 }, new Coordinate2D(4, 5), 12, 13));
     }
 
     [Test]
@@ -201,27 +201,27 @@ class InputParserTests
     // ReSharper disable ClassNeverInstantiated.Local
     private class SingleParameterTestClass
     {
-        public readonly Coordinate Coordinate;
+        public readonly Coordinate2D Coordinate;
 
         [ComplexParserTarget("coord")]
         public SingleParameterTestClass(long[] coords)
         {
-            Coordinate = new Coordinate(coords[0], coords[1]);
+            Coordinate = new Coordinate2D(coords[0], coords[1]);
         }
     }
 
     private class ParsingTestClass
     {
-        public readonly Coordinate Begin;
-        public readonly Coordinate Middle;
-        public readonly Coordinate End;
+        public readonly Coordinate2D Begin;
+        public readonly Coordinate2D Middle;
+        public readonly Coordinate2D End;
 
         [ComplexParserTarget("begin -> middle -> endx,endy")]
-        public ParsingTestClass(long[] begin, Coordinate middle, long endX, long endY)
+        public ParsingTestClass(long[] begin, Coordinate2D middle, long endX, long endY)
         {
-            Begin = new Coordinate(begin);
+            Begin = new Coordinate2D(begin);
             Middle = middle;
-            End = new Coordinate(endX, endY);
+            End = new Coordinate2D(endX, endY);
         }
     }
 

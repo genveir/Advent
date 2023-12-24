@@ -34,7 +34,7 @@ public class Line
         IsTrench = isTrench;
     }
 
-    public bool TryGetCollisionCoords(Line line, out List<Coordinate> coords)
+    public bool TryGetCollisionCoords(Line line, out List<Coordinate2D> coords)
     {
         coords = new();
 
@@ -47,10 +47,10 @@ public class Line
         };
     }
 
-    public static bool IntersectVerticalWithHorizontal(Line vertical, Line horizontal, out List<Coordinate> intersection)
+    public static bool IntersectVerticalWithHorizontal(Line vertical, Line horizontal, out List<Coordinate2D> intersection)
     {
         intersection = new();
-        var prospect = new Coordinate(vertical.First.X, horizontal.First.Y);
+        var prospect = new Coordinate2D(vertical.First.X, horizontal.First.Y);
 
         if (prospect.Y >= vertical.First.Y && prospect.Y <= vertical.Second.Y &&
             prospect.X >= horizontal.First.X && prospect.X <= horizontal.Second.X)
@@ -61,7 +61,7 @@ public class Line
         return intersection.Count > 0;
     }
 
-    public static bool IntersectVerticalLines(Line existing, Line large, out List<Coordinate> intersection)
+    public static bool IntersectVerticalLines(Line existing, Line large, out List<Coordinate2D> intersection)
     {
         intersection = new();
         if (existing.First.X != large.First.X) return false;
@@ -74,7 +74,7 @@ public class Line
         return intersection.Count > 0;
     }
 
-    public static bool IntersectHorizontalLines(Line existing, Line large, out List<Coordinate> intersection)
+    public static bool IntersectHorizontalLines(Line existing, Line large, out List<Coordinate2D> intersection)
     {
         intersection = new();
         if (existing.First.Y != large.First.Y) return false;

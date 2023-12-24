@@ -24,7 +24,7 @@ public class Solution : ISolution
             {
                 if (y == 0) ByX[x] = new();
 
-                var coord = new Coordinate(x, y);
+                var coord = new Coordinate2D(x, y);
                 Rock rock;
                 if (grid[y][x] == 'O')
                 {
@@ -47,19 +47,19 @@ public class Solution : ISolution
 
         for (int x = -1; x <= grid[0].Length; x++)
         {
-            var above = new Coordinate(x, -1);
+            var above = new Coordinate2D(x, -1);
             AddRock(new(above, false));
 
-            var below = new Coordinate(x, grid.Length);
+            var below = new Coordinate2D(x, grid.Length);
             AddRock(new(below, false));
         }
 
         for (int y = 0; y < grid.Length; y++)
         {
-            var left = new Coordinate(-1, y);
+            var left = new Coordinate2D(-1, y);
             AddRock(new(left, false));
 
-            var right = new Coordinate(grid[0].Length, y);
+            var right = new Coordinate2D(grid[0].Length, y);
             AddRock(new(right, false));
         }
 
@@ -81,12 +81,12 @@ public class Solution : ISolution
 
     public class Rock
     {
-        public Coordinate Position;
+        public Coordinate2D Position;
         public bool IsStatic;
 
         public long LastMoved = -1;
 
-        public Rock(Coordinate position, bool canMove)
+        public Rock(Coordinate2D position, bool canMove)
         {
             Position = position;
             IsStatic = !canMove;
@@ -194,7 +194,7 @@ public class Solution : ISolution
         ReOrderLists();
     }
 
-    public void MoveRock(Rock rock, Coordinate destination)
+    public void MoveRock(Rock rock, Coordinate2D destination)
     {
         if (rock.IsStatic) return;
         if (rock.Position == destination) return;

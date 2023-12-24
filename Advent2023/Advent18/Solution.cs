@@ -70,7 +70,7 @@ public class Solution : ISolution
     {
         Points points = new();
 
-        Coordinate current = new(0, 0);
+        Coordinate2D current = new(0, 0);
         Point firstPoint = null;
         Point lastPoint = null;
         for (int n = 0; n < instructions.Length; n++)
@@ -88,7 +88,7 @@ public class Solution : ISolution
             }
             lastPoint = newPoint;
 
-            Coordinate vector = direction switch
+            Coordinate2D vector = direction switch
             {
                 Direction.Left => new(-dist, 0),
                 Direction.Right => new(dist, 0),
@@ -181,10 +181,10 @@ public class Solution : ISolution
     public Line MakeLine(Point source, Direction direction) =>
         direction switch
         {
-            Direction.Up => new Line(source, new(new Coordinate(source.X, -long.MaxValue)), false, true),
-            Direction.Right => new Line(source, new(new Coordinate(long.MaxValue, source.Y)), false, true),
-            Direction.Down => new Line(source, new(new Coordinate(source.X, long.MaxValue)), false, true),
-            Direction.Left => new Line(source, new(new Coordinate(-long.MaxValue, source.Y)), false, true),
+            Direction.Up => new Line(source, new(new Coordinate2D(source.X, -long.MaxValue)), false, true),
+            Direction.Right => new Line(source, new(new Coordinate2D(long.MaxValue, source.Y)), false, true),
+            Direction.Down => new Line(source, new(new Coordinate2D(source.X, long.MaxValue)), false, true),
+            Direction.Left => new Line(source, new(new Coordinate2D(-long.MaxValue, source.Y)), false, true),
             _ => throw new InvalidOperationException("invalid direction")
         };
 
