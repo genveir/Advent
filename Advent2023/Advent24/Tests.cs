@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
 using System;
+using System.Numerics;
 
 namespace Advent2023.Advent24;
 
@@ -16,12 +17,12 @@ class Tests
         sol.GetResult1().Should().Be(output);
     }
 
-    [TestCase(example2, 47)]
-    public void Test2(string input, object output)
+    [TestCase("Input.txt", 677656046662770)]
+    public void Test2(string input, long output)
     {
         var sol = new Solution(input);
 
-        sol.GetResult2().Should().Be(output);
+        sol.GetResult2().Should().Be(new BigInteger(output));
     }
 
     public const string verticalLine = @"0, 0, 0 @ 0, 1, 0";
