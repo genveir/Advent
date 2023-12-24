@@ -98,7 +98,6 @@ public class Coordinate2D
     {
         if (ReferenceEquals(first, second)) return true;
         if (ReferenceEquals(first, null)) return false;
-        if (ReferenceEquals(second, null)) return false;
         return first.Equals(second);
     }
 
