@@ -159,4 +159,45 @@ public class LinearEquationTests
 
         equations.Contains(equation2).Should().BeTrue();
     }
+
+    [Test]
+    public void CanFindIntersection()
+    {
+        var equation = new LinearEquation(new Fraction(5, 9), new Fraction(1, 3));
+        var equation2 = new LinearEquation(new Fraction(1, 2), new Fraction(1, 1));
+
+        var hasIntersection = equation.TryFindIntersection(equation2, out var sameEquation, out var input, out var output);
+
+        hasIntersection.Should().BeTrue();
+        sameEquation.Should().BeFalse();
+        input.Should().Be(new Fraction(12, 1));
+        output.Should().Be(new Fraction(7, 1));
+    }
+
+    [Test]
+    public void CanDetectSameEquation()
+    {
+        var equation = new LinearEquation(new Fraction(5, 9), new Fraction(1, 3));
+
+        var hasIntersection = equation.TryFindIntersection(equation, out var sameEquation, out var input, out var output);
+
+        hasIntersection.Should().BeTrue();
+        sameEquation.Should().BeTrue();
+        input.Should().Be(new Fraction(0, 1));
+        output.Should().Be(new Fraction(1, 3));
+    }
+
+    [Test]
+    public void CanDetectNoIntersection()
+    {
+        var equation = new LinearEquation(new Fraction(1, 1), new Fraction(1, 1));
+        var oneHigher = new LinearEquation(new Fraction(1, 1), new Fraction(2, 1));
+
+        var hasIntersection = equation.TryFindIntersection(oneHigher, out var sameEquation, out var input, out var output);
+
+        hasIntersection.Should().BeFalse();
+        sameEquation.Should().BeFalse();
+        input.Should().BeNull();
+        output.Should().BeNull();
+    }
 }

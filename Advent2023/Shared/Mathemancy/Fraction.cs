@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,22 +12,22 @@ namespace Advent2023.Shared.Mathemancy;
 /// </summary>
 public class Fraction
 {
-    private long _top;
-    public long Top
+    private BigInteger _top;
+    public BigInteger Top
     { 
         get { return _top; }
         set { _top = value; Normalize(); } 
     }
 
-    private long _bottom;
-    public long Bottom
+    private BigInteger _bottom;
+    public BigInteger Bottom
     {
         get { return _bottom; }
         set { _bottom = value; Normalize();}
     }
 
-    public long Numerator { get => Top; set => Top = value; }
-    public long Denominator { get => Bottom; set => Bottom = value; }
+    public BigInteger Numerator { get => Top; set => Top = value; }
+    public BigInteger Denominator { get => Bottom; set => Bottom = value; }
 
     /// <summary>
     /// Creates a fraction from two input values and normalizes it
@@ -34,7 +35,10 @@ public class Fraction
     /// <param name="top">The numerator</param>
     /// <param name="bottom">The denominator</param>
     /// <exception cref="ArgumentException">Bottom can not be 0</exception>
-    public Fraction(long top, long bottom)
+    public Fraction(long top, long bottom) : this((BigInteger)top, bottom)
+    { }
+
+    private Fraction(BigInteger top, BigInteger bottom)
     {
         if (bottom == 0)
             throw new ArgumentException("fraction cannot have a 0 divider");
@@ -53,21 +57,28 @@ public class Fraction
         }
         else
         {
-            var gcd = Helper.GCD(Math.Abs(_top), Math.Abs(_bottom));
             var makeNegative = (_top < 0) ^ (_bottom < 0);
 
-            _top = Math.Abs(_top / gcd);
+            if (_top < 0) _top = -_top;
+            if (_bottom < 0) _bottom = -_bottom;
+
+            var gcd = Helper.GCD(_top, _bottom);
+
+            _top = _top / gcd;
+
             if (makeNegative) _top = -_top;
 
-            _bottom = Math.Abs(_bottom / gcd);
+            _bottom = _bottom / gcd;
         }
     }
 
     public bool IsInteger => Bottom == 1;
 
-    public long ToLong() => Top / Bottom;
+    public BigInteger ToBigint() => Top / Bottom;
 
-    public double ToDouble() => (double)Top / Bottom;
+    public long ToLong() => (long)(Top / Bottom);
+
+    public double ToDouble() => (double)Top / (double)Bottom;
 
     #region operators
     public static implicit operator Fraction(long value) => new(value, 1);
@@ -78,7 +89,7 @@ public class Fraction
     public static Fraction operator -(Fraction toNegate) =>
         new Fraction(-toNegate.Top, toNegate.Bottom);
 
-    public static Fraction operator *(Fraction first, Fraction second) =>
+    public static Fraction operator *(Fraction first, Fraction second) => 
         new(first.Top * second.Top, first.Bottom * second.Bottom);
 
     public static Fraction operator /(Fraction first, Fraction second) =>
@@ -89,6 +100,7 @@ public class Fraction
 
     public static Fraction operator +(Fraction first, Fraction second) =>
         new(first.Top * second.Bottom + second.Top * first.Bottom, first.Bottom * second.Bottom);
+
 
     public static bool operator ==(Fraction first, Fraction second)
     {

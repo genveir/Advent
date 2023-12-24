@@ -12,8 +12,8 @@ namespace Advent2023.Shared.Mathemancy;
 /// </summary>
 public class LinearEquation
 {
-    private Fraction A;
-    private Fraction B;
+    public Fraction A { get; }
+    public Fraction B { get; }
 
     /// <summary>
     /// Construct a linear equation in the form Output = a * Input + b
@@ -73,6 +73,38 @@ public class LinearEquation
     /// <returns>the value of the input, null if none exists</returns>
     public Fraction InputFor(Fraction output) => 
         (A.Top == 0) ? null : (output - B) / A;
+
+    /// <summary>
+    /// Tries to find an intersection between two equations with the same in- and outputs
+    /// </summary>
+    /// <param name="other">the equation to intersect with</param>
+    /// <param name="sameEquation">true if these equations are the same</param>
+    /// <param name="input">the value of the input-parameter at the point of intersection, 0 if the equations are the same</param>
+    /// <param name="output">the value of the output-parameter at the point of intersection, ValueAt(0) if the equations are the same</param>
+    /// <returns>true when an intersection exists</returns>
+    public bool TryFindIntersection(LinearEquation other, out bool sameEquation, out Fraction input, out Fraction output)
+    {
+        sameEquation = false;
+
+        if (A == other.A)
+        {
+            if (B == other.B)
+            {
+                sameEquation = true;
+                input = 0;
+                output = ValueAt(0);
+                return true;
+            }
+            input = null;
+            output = null;
+            return false;
+        }
+
+        input = (B - other.B) / (other.A - A);
+        output = ValueAt(input);
+
+        return true;
+    }
 
     public static bool operator ==(LinearEquation left, LinearEquation right)
     {

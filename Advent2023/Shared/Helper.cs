@@ -161,6 +161,37 @@ public static class Helper
         return second;
     }
 
+    public static BigInteger GCD(BigInteger first, BigInteger second)
+    {
+        if (first == 0) return second;
+        if (second == 0) return first;
+        if (first == 1 || second == 1) return 1;
+
+        if (first == 2) return Non1GCD(second, first);
+
+        return Non1GCD(first, second);
+    }
+
+    public static BigInteger Non1GCD(BigInteger first, BigInteger second)
+    {
+        while (true)
+        {
+            if (first > second)
+            {
+                first = first % second;
+                if (first == 0) break;
+            }
+            else
+            {
+                second = second % first;
+                if (second == 0) break;
+            }
+        }
+
+        if (second == 0) return first;
+        return second;
+    }
+
     public static double GetAngle((long x, long y) from, (long x, long y) target)
     {
         return GetAngle(target.x - from.x, target.y - from.y);
