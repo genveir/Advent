@@ -1,11 +1,11 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
 
-namespace Advent2023.AdventBase;
+namespace Advent2023.Advent25;
 
 class Tests
 {
-    [TestCase(example, "")]
+    [TestCase(example, 54)]
     public void Test1(string input, object output)
     {
         var sol = new Solution(input);
@@ -21,7 +21,19 @@ class Tests
         sol.GetResult2().Should().Be(output);
     }
 
-    public const string example = @"";
+    public const string example = @"jqt: rhn xhk nvd
+rsh: frs pzl lsr
+xhk: hfx
+cmg: qnr nvd lhk bvb
+rhn: xhk bvb hfx
+bvb: xhk hfx
+pzl: lsr hfx nvd
+qnr: nvd
+ntq: jqt hfx bvb xhk
+nvd: lhk
+lsr: lhk
+rzs: qnr cmg lsr rsh
+frs: qnr lhk lsr";
 
     public const string example2 = example;
 }
