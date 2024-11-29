@@ -7,12 +7,20 @@ namespace Advent2024.Shared.InputParsing;
 
 public class SimpleParser
 {
-    private readonly bool startsWithValue;
+    private readonly string pattern;
+
+    private bool parseDone;
+
+    private bool startsWithValue;
     private int numberOfValues;
 
     public int NumberOfValues
     {
-        get { return numberOfValues; }
+        get
+        {
+            if (!parseDone) ParsePattern();
+            return numberOfValues;
+        }
         set
         {
             if (value <= 0) throw new NotImplementedException("can't build a parser for 0 or fewer values");
@@ -23,30 +31,80 @@ public class SimpleParser
 
     public string[] delimiters;
 
-    public bool ShouldTrimBeforeParsing { get; set; } = true;
+    private bool shouldTrimBeforeParsing = true;
+
+    public bool ShouldTrimBeforeParsing
+    {
+        get
+        {
+            if (!parseDone) ParsePattern();
+            return shouldTrimBeforeParsing;
+        }
+        set => shouldTrimBeforeParsing = true;
+    }
 
     public SimpleParser(bool startsWithValue, int numberOfValues, IEnumerable<string> delimiters)
     {
         this.startsWithValue = startsWithValue;
         NumberOfValues = numberOfValues;
         this.delimiters = delimiters.ToArray();
+
+        parseDone = true;
+    }
+
+    private char patternEscapeChar = '\\';
+
+    public char PatternEscapeChar
+    {
+        get
+        {
+            if (!parseDone) ParsePattern();
+            return patternEscapeChar;
+        }
+        set => patternEscapeChar = value;
     }
 
     public SimpleParser(string pattern)
     {
+        this.pattern = pattern ??
+            throw new ArgumentNullException(nameof(pattern));
+        parseDone = false;
+    }
+
+    public void ParsePattern()
+    {
+        parseDone = true;
+
         var numberOfValues = 0;
         var delimiters = new List<string>();
 
         var hasCurrentValue = false;
         var currentDelimiter = new List<char>();
         bool startSet = false;
+        bool escaped = false;
+
+        void AddToDelimiter(char c)
+        {
+            if (hasCurrentValue)
+            {
+                numberOfValues++;
+                hasCurrentValue = false;
+            }
+            currentDelimiter.Add(c);
+        }
+
         foreach (var c in pattern)
         {
             bool isText = false;
+            if (c == PatternEscapeChar)
+            {
+                escaped = true;
+                continue;
+            }
             if (c >= 97 && c <= 122) isText = true;
             if (c >= 65 && c <= 90) isText = true;
 
-            if (isText)
+            if (isText && !escaped)
             {
                 if (currentDelimiter.Count > 0)
                 {
@@ -56,14 +114,16 @@ public class SimpleParser
                 hasCurrentValue = true;
                 if (!startSet) startsWithValue = true;
             }
+            else if (isText && escaped)
+            {
+                AddToDelimiter(c);
+                if (!startSet) startsWithValue = false;
+            }
             else
             {
-                if (hasCurrentValue)
-                {
-                    numberOfValues++;
-                    hasCurrentValue = false;
-                }
-                currentDelimiter.Add(c);
+                escaped = false;
+
+                AddToDelimiter(c);
                 if (!startSet) startsWithValue = false;
             }
 
@@ -79,6 +139,8 @@ public class SimpleParser
 
     public dynamic Parse(string input)
     {
+        if (!parseDone) ParsePattern();
+
         if (ShouldTrimBeforeParsing) input = input.Trim();
 
         Type vtType = GetVTType();
@@ -259,7 +321,18 @@ public class SimpleParser
 
 #pragma warning restore IDE0051
 
-    public char[] ArrayDelimiters { get; set; } = [','];
+    private char[] arrayDelimiters = [','];
+
+    public char[] ArrayDelimiters
+    {
+        get
+        {
+            if (!parseDone) ParsePattern();
+            return arrayDelimiters;
+        }
+        set => arrayDelimiters = value;
+    }
+
     public bool EmptyArrayDelimiter = false;
 
     private string[] SplitElements(string input)

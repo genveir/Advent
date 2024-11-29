@@ -12,6 +12,7 @@ public class InputParser
     public int NumberOfValues { get => simpleParser.NumberOfValues; set => simpleParser.NumberOfValues = value; }
     public bool EmptyArrayDelimiter { get => simpleParser.EmptyArrayDelimiter; set => simpleParser.EmptyArrayDelimiter = value; }
     public bool ShouldTrimBeforeParsing { get => simpleParser.ShouldTrimBeforeParsing; set => simpleParser.ShouldTrimBeforeParsing = value; }
+    public char PatternEscapeChar { get => simpleParser.PatternEscapeChar; set => simpleParser.PatternEscapeChar = value; }
 
     public InputParser(bool startsWithValue, int numberOfValues, params string[] delimiters) :
         this(startsWithValue, numberOfValues, (IEnumerable<string>)delimiters)
