@@ -1,6 +1,5 @@
 ﻿using Advent2024.Shared;
 using Advent2024.Shared.InputParsing;
-using System.Collections.Generic;
 
 namespace Advent2024.AdventActive;
 
