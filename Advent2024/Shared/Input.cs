@@ -164,6 +164,6 @@ public static class Input
 
         var split = rawInput.Split(splitOn, StringSplitOptions.RemoveEmptyEntries);
 
-        return split.Select(s => long.Parse(s)).ToArray();
+        return split.Select(long.Parse).ToArray();
     }
 }
