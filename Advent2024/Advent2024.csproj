@@ -11,16 +11,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Collections" Version="5.0.0" />
 		<PackageReference Include="FluentAssertions" Version="6.12.2" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
-		<PackageReference Include="NetTopologySuite" Version="2.5.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="NUnit" Version="4.2.2" />
 		<PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
-		<PackageReference Include="OneOf" Version="3.0.271" />
-		<PackageReference Include="System.Collections" Version="4.3.0" />
-		<PackageReference Include="System.Runtime.Numerics" Version="4.3.0" />
 		<PackageReference Include="TextCopy" Version="6.2.1" />
 	</ItemGroup>
 
