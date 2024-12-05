@@ -8,6 +8,8 @@ public class Solution : ISolution
     public List<OrderRule> rules;
     public List<Update> updates;
 
+    public RuleComparer comparer;
+
     public Solution(string input)
     {
         var lines = Input.GetBlockLines(input).ToArray();
@@ -17,6 +19,8 @@ public class Solution : ISolution
 
         var inputParser2 = new InputParser<Update>("array");
         updates = inputParser2.Parse(lines[1]);
+
+        comparer = new RuleComparer(rules);
     }
 
     public Solution() : this("Input.txt")
@@ -51,17 +55,11 @@ public class Solution : ISolution
             this.pages = pages;
         }
 
-        public bool MatchesRules(List<OrderRule> rules)
+        public bool IsInOrder(Comparer<int> ruleComparer)
         {
-            foreach (var rule in rules)
-            {
-                var beforeIndex = Array.IndexOf(pages, rule.before);
-                var afterIndex = Array.IndexOf(pages, rule.after);
+            var sorted = SortedPages(ruleComparer);
 
-                if (afterIndex >= 0 && (afterIndex < beforeIndex))
-                    return false;
-            }
-            return true;
+            return pages.SequenceEqual(sorted);
         }
 
         public long GetMiddleNumber()
@@ -69,77 +67,39 @@ public class Solution : ISolution
             return pages[pages.Length / 2];
         }
 
-        public long GetMiddleNumber2(List<int> inOrder)
+        public List<int> SortedPages(Comparer<int> ruleComparer)
         {
-            var ordered = pages.OrderBy(inOrder.IndexOf).ToArray();
+            var asList = pages.ToList();
+            asList.Sort(ruleComparer);
+            return asList;
+        }
 
-            return ordered[pages.Length / 2];
+        public long GetMiddleNumber2(Comparer<int> ruleComparer)
+        {
+            return SortedPages(ruleComparer)[pages.Length / 2];
         }
     }
 
-    public long GetMiddleInOrder(Update update)
+    public class RuleComparer : Comparer<int>
     {
-        List<int> InOrder = [];
+        private readonly List<OrderRule> rules;
 
-        List<int> numbers = [];
-
-        var filteredRules = rules.Where(r => update.pages.Contains(r.before) && update.pages.Contains(r.after)).ToList();
-
-        foreach (var rule in filteredRules)
+        public RuleComparer(List<OrderRule> rules)
         {
-            if (!numbers.Contains(rule.before))
-            {
-                numbers.Add(rule.before);
-            }
-            if (!numbers.Contains(rule.after))
-            {
-                numbers.Add(rule.after);
-            }
+            this.rules = rules;
         }
 
-        foreach (var number in numbers)
+        public override int Compare(int x, int y)
         {
-            if (InOrder.Count == 0)
+            foreach (var rule in rules)
             {
-                InOrder.Add(number);
-                continue;
+                if (rule.before == x && rule.after == y)
+                    return -1;
+                if (rule.before == y && rule.after == x)
+                    return 1;
             }
-
-            for (int n = 0; n < InOrder.Count + 1; n++)
-            {
-                InOrder.Insert(n, number);
-                if (MatchesRules(InOrder, rules))
-                {
-                    break;
-                }
-                InOrder.RemoveAt(n);
-            }
-
-            if (!InOrder.Contains(number))
-            {
-                throw new Exception("Could not find order");
-            }
+            return 0;
         }
-
-        if (InOrder.Count != numbers.Count)
-        {
-            throw new Exception("Could not find order");
-        }
-
-        return InOrder[InOrder.Count / 2];
-    }
-
-    public static bool MatchesRules(List<int> numbers, List<OrderRule> rules)
-    {
-        foreach (var rule in rules)
-        {
-            var beforeIndex = numbers.IndexOf(rule.before);
-            var afterIndex = numbers.IndexOf(rule.after);
-
-            if (afterIndex >= 0 && (afterIndex < beforeIndex))
-                return false;
-        }
-        return true;
     }
 
     public object GetResult1()
@@ -147,10 +107,9 @@ public class Solution : ISolution
         long sum = 0;
         foreach (var update in updates)
         {
-            if (update.MatchesRules(rules))
+            if (update.IsInOrder(comparer))
             {
-                var middle = update.GetMiddleNumber();
-                sum += middle;
+                sum += update.GetMiddleNumber();
             }
         }
 
@@ -160,21 +119,15 @@ public class Solution : ISolution
     // not 5137
     public object GetResult2()
     {
-        List<Update> outofOrder = [];
-
+        long sum = 0;
         foreach (var update in updates)
         {
-            if (!update.MatchesRules(rules))
+            if (!update.IsInOrder(comparer))
             {
-                outofOrder.Add(update);
+                sum += update.GetMiddleNumber2(comparer);
             }
         }
 
-        long sum = 0;
-        foreach (var update in outofOrder)
-        {
-            sum += GetMiddleInOrder(update);
-        }
         return sum;
     }
 }
