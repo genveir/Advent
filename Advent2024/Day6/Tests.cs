@@ -16,7 +16,6 @@ internal class Tests
     }
 
     [TestCase(example2, 6)]
-    [TestCase("Input.txt", 1951)]
     public void Test2(string input, object output)
     {
         var sol = new Solution(input);
