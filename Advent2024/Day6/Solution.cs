@@ -73,7 +73,7 @@ public class Solution : ISolution
         return false;
     }
 
-    // this doesn't work for the main problem, but why not?
+    // this doesn't work for the main problem, but why not? <-- because loops don't have to be on the existing path
     public bool CheckLoop(int loopDir)
     {
         loopDir = (loopDir + 1) % 4;
