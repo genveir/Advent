@@ -21,7 +21,7 @@ internal class Tests
         sol.GetResult1().Should().Be(output);
     }
 
-    [TestCase(example2, "")]
+    [TestCase(example2, 9)]
     public void Test2(string input, object output)
     {
         var sol = new Solution(input);
