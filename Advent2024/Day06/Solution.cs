@@ -1,5 +1,4 @@
-
-namespace Advent2024.Day06;
+﻿namespace Advent2024.Day06;
 
 public class Solution : ISolution
 {
@@ -58,48 +57,9 @@ public class Solution : ISolution
                 turned = true;
                 direction = (direction + 1) % 4;
             }
-            //else
-            //{
-            //    if (CheckLoop(direction))
-            //    {
-            //        loopSpots.Add(nextPos);
-            //    }
-            //}
         }
 
         if (!turned) guard = nextPos;
-
-        return false;
-    }
-
-    // this doesn't work for the main problem, but why not? <-- because loops don't have to be on the existing path
-    public bool CheckLoop(int loopDir)
-    {
-        loopDir = (loopDir + 1) % 4;
-
-        var pos = guard;
-
-        while (IsInBounds(pos))
-        {
-            if (grid[pos.Y][pos.X] == '#') return false;
-
-            if (visited.TryGetValue(pos, out var directions))
-            {
-                if (directions.Contains(loopDir))
-                {
-                    return true;
-                }
-            }
-
-            pos = loopDir switch
-            {
-                0 => pos.ShiftY(-1),
-                1 => pos.ShiftX(1),
-                2 => pos.ShiftY(1),
-                3 => pos.ShiftX(-1),
-                _ => throw new Exception("Invalid direction")
-            };
-        }
 
         return false;
     }
@@ -127,6 +87,11 @@ public class Solution : ISolution
             Move();
         }
 
+        return BruteForce();
+    }
+
+    public long BruteForce()
+    {
         var checkSpots = visited.Keys.ToList();
 
         foreach (var spot in checkSpots)
