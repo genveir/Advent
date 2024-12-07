@@ -116,7 +116,7 @@ public class Coordinate2D
     public Coordinate2D Difference(Coordinate2D second) =>
         new(X - second.X, Y - second.Y);
 
-    public override string ToString() => $"({X}, {Y}";
+    public override string ToString() => $"({X}, {Y})";
 
     public override int GetHashCode()
     {
