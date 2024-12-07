@@ -2,7 +2,7 @@
 
 namespace Advent2024.Day3;
 
-public partial class Solution : ISolution
+public partial class Solution
 {
     public List<Mul> muls = [];
     public List<IInstruction> instructions = [];

@@ -1,9 +1,12 @@
+﻿namespace Advent2024.Day06;
 
-namespace Advent2024.Day06;
-
-public class Solution : ISolution
+public class Solution
 {
     public char[][] grid;
+    public HashSet<Coordinate2D> walls = [];
+    public Dictionary<long, List<long>> wallsByX = [];
+    public Dictionary<long, List<long>> wallsByY = [];
+
     public Coordinate2D start;
     public Coordinate2D guard;
     public int direction = 0;
@@ -23,7 +26,30 @@ public class Solution : ISolution
                     guard = new Coordinate2D(x, y);
                     start = new Coordinate2D(x, y);
                 }
+
+                if (grid[y][x] == '#')
+                {
+                    walls.Add(new Coordinate2D(x, y));
+                }
             }
+
+            walls.Add(new(-2, y));
+            walls.Add(new(grid[y].Length + 1, y));
+        }
+
+        for (int x = 0; x < grid[0].Length; x++)
+        {
+            walls.Add(new(x, -2));
+            walls.Add(new(x, grid.Length + 1));
+        }
+
+        foreach (var wall in walls)
+        {
+            if (!wallsByX.ContainsKey(wall.X)) wallsByX.Add(wall.X, []);
+            if (!wallsByY.ContainsKey(wall.Y)) wallsByY.Add(wall.Y, []);
+
+            wallsByX[wall.X].Add(wall.Y);
+            wallsByY[wall.Y].Add(wall.X);
         }
     }
 
@@ -58,48 +84,9 @@ public class Solution : ISolution
                 turned = true;
                 direction = (direction + 1) % 4;
             }
-            //else
-            //{
-            //    if (CheckLoop(direction))
-            //    {
-            //        loopSpots.Add(nextPos);
-            //    }
-            //}
         }
 
         if (!turned) guard = nextPos;
-
-        return false;
-    }
-
-    // this doesn't work for the main problem, but why not? <-- because loops don't have to be on the existing path
-    public bool CheckLoop(int loopDir)
-    {
-        loopDir = (loopDir + 1) % 4;
-
-        var pos = guard;
-
-        while (IsInBounds(pos))
-        {
-            if (grid[pos.Y][pos.X] == '#') return false;
-
-            if (visited.TryGetValue(pos, out var directions))
-            {
-                if (directions.Contains(loopDir))
-                {
-                    return true;
-                }
-            }
-
-            pos = loopDir switch
-            {
-                0 => pos.ShiftY(-1),
-                1 => pos.ShiftX(1),
-                2 => pos.ShiftY(1),
-                3 => pos.ShiftX(-1),
-                _ => throw new Exception("Invalid direction")
-            };
-        }
 
         return false;
     }
@@ -121,6 +108,17 @@ public class Solution : ISolution
 
     // not 492, not 443
     public object GetResult2()
+    {
+        var solver = new BetterSolver(grid, start, wallsByX, wallsByY);
+
+        var result = solver.Solve();
+
+        loopSpots = solver.LoopSpots;
+
+        return result;
+    }
+
+    public long BruteForce()
     {
         while (IsInBounds(guard))
         {

@@ -1,6 +1,6 @@
 ﻿namespace Advent2024.Day01;
 
-public class Solution : ISolution
+public class Solution
 {
     public List<long> left = [];
     public List<long> right = [];

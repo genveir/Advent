@@ -1,6 +1,6 @@
 ﻿namespace Advent2024.Day05;
 
-public class Solution : ISolution
+public class Solution
 {
     public List<OrderRule> rules;
     public List<Update> updates;

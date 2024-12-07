@@ -1,6 +1,6 @@
 ﻿namespace Advent2024.Day04;
 
-public class Solution : ISolution
+public class Solution
 {
     public char[][] letters;
 
