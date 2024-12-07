@@ -3,6 +3,10 @@
 public class Solution : ISolution
 {
     public char[][] grid;
+    public HashSet<Coordinate2D> walls = [];
+    public Dictionary<long, List<long>> wallsByX = [];
+    public Dictionary<long, List<long>> wallsByY = [];
+
     public Coordinate2D start;
     public Coordinate2D guard;
     public int direction = 0;
@@ -22,7 +26,30 @@ public class Solution : ISolution
                     guard = new Coordinate2D(x, y);
                     start = new Coordinate2D(x, y);
                 }
+
+                if (grid[y][x] == '#')
+                {
+                    walls.Add(new Coordinate2D(x, y));
+                }
             }
+
+            walls.Add(new(-2, y));
+            walls.Add(new(grid[y].Length + 1, y));
+        }
+
+        for (int x = 0; x < grid[0].Length; x++)
+        {
+            walls.Add(new(x, -2));
+            walls.Add(new(x, grid.Length + 1));
+        }
+
+        foreach (var wall in walls)
+        {
+            if (!wallsByX.ContainsKey(wall.X)) wallsByX.Add(wall.X, []);
+            if (!wallsByY.ContainsKey(wall.Y)) wallsByY.Add(wall.Y, []);
+
+            wallsByX[wall.X].Add(wall.Y);
+            wallsByY[wall.Y].Add(wall.X);
         }
     }
 

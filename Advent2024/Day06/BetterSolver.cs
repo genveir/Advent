@@ -5,16 +5,21 @@ internal class BetterSolver
     public char[][] Grid { get; set; }
     public Coordinate2D Start { get; set; }
 
+    public Dictionary<long, List<long>> WallsByX { get; set; }
+    public Dictionary<long, List<long>> WallsByY { get; set; }
+
     public List<Mover> Movers { get; set; }
 
     public Dictionary<MoverData, Coordinate2D> LeadsToOutOfBounds { get; set; } = [];
     public HashSet<Coordinate2D> VisitedByGuard { get; set; } = [];
     public HashSet<Coordinate2D> LoopSpots { get; set; } = [];
 
-    public BetterSolver(char[][] grid, Coordinate2D start)
+    public BetterSolver(char[][] grid, Coordinate2D start, Dictionary<long, List<long>> wallsByX, Dictionary<long, List<long>> wallsByY)
     {
         Grid = grid;
         Start = start;
+        WallsByX = wallsByX;
+        WallsByY = wallsByY;
 
         MakeMovers();
     }
@@ -74,15 +79,7 @@ internal class BetterSolver
                 return true;
             }
 
-            var forward = ghost.Forward();
-            if ((IsInBounds(forward) && Grid[forward.Y][forward.X] is '#' or 'O') || forward == blocked)
-            {
-                ghost.Direction = (ghost.Direction + 1) % 4;
-            }
-            else
-            {
-                ghost.Position = ghost.Forward();
-            }
+            ghost.JumpForwardToWall(WallsByX, WallsByY, blocked);
         }
 
         return false;

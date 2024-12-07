@@ -60,6 +60,33 @@ internal class Mover
         };
     }
 
+    public void JumpForwardToWall(Dictionary<long, List<long>> wallsByX, Dictionary<long, List<long>> wallsByY, Coordinate2D blocked)
+    {
+        IEnumerable<long> xWalls = wallsByX[position.X];
+        if (blocked.X == position.X)
+        {
+            xWalls = xWalls.Append(blocked.Y);
+        }
+
+        IEnumerable<long> yWalls = wallsByY[position.Y];
+        if (blocked.Y == position.Y)
+        {
+            yWalls = yWalls.Append(blocked.X);
+        }
+
+        position = direction switch
+        {
+            0 => new(position.X, xWalls.Where(p => p < position.Y).Max()),
+            1 => new(yWalls.Where(p => p > position.X).Min(), position.Y),
+            2 => new(position.X, xWalls.Where(p => p > position.Y).Min()),
+            3 => new(yWalls.Where(p => p < position.X).Max(), position.Y),
+            _ => throw new Exception("Invalid direction")
+        };
+        position = Backward();
+
+        Direction = (direction + 1) % 4;
+    }
+
     public Coordinate2D Backward()
     {
         return direction switch

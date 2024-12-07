@@ -31,7 +31,7 @@ internal class Tests
     {
         var sol = new Solution(input);
 
-        new BetterSolver(sol.grid, sol.start)
+        new BetterSolver(sol.grid, sol.start, sol.wallsByX, sol.wallsByY)
             .Solve()
             .Should().Be(output);
     }
@@ -46,7 +46,7 @@ internal class Tests
     public void TestBetterSpots(string id, string input, int x, int y)
     {
         var sol = new Solution(input);
-        var solver = new BetterSolver(sol.grid, sol.start);
+        var solver = new BetterSolver(sol.grid, sol.start, sol.wallsByX, sol.wallsByY);
 
         solver.Solve();
 
@@ -79,7 +79,7 @@ internal class Tests
     {
         var sol = new Solution(input);
 
-        var movers = new BetterSolver(sol.grid, sol.start).Movers;
+        var movers = new BetterSolver(sol.grid, sol.start, sol.wallsByX, sol.wallsByY).Movers;
 
         var moverString = string.Join(
             Environment.NewLine,
@@ -99,7 +99,7 @@ internal class Tests
     {
         var sol = new Solution(input);
 
-        var solver = new BetterSolver(sol.grid, sol.start);
+        var solver = new BetterSolver(sol.grid, sol.start, sol.wallsByX, sol.wallsByY);
 
         solver.StepMovers();
 
@@ -118,7 +118,7 @@ internal class Tests
     {
         var sol = new Solution(crossSquare);
 
-        var solver = new BetterSolver(sol.grid, sol.start);
+        var solver = new BetterSolver(sol.grid, sol.start, sol.wallsByX, sol.wallsByY);
 
         string[] expecteds = [
             crossSquareStepped,
@@ -147,7 +147,7 @@ internal class Tests
     {
         var sol = new Solution(doubleOptions);
 
-        var solver = new BetterSolver(sol.grid, sol.start);
+        var solver = new BetterSolver(sol.grid, sol.start, sol.wallsByX, sol.wallsByY);
 
         string[] expecteds = [
             doubleOptionsStepped,
@@ -175,7 +175,7 @@ internal class Tests
     {
         var sol = new Solution(sidePocket);
 
-        var solver = new BetterSolver(sol.grid, sol.start);
+        var solver = new BetterSolver(sol.grid, sol.start, sol.wallsByX, sol.wallsByY);
 
         string[] expecteds = [
             sidePocketStepped,
@@ -205,7 +205,7 @@ internal class Tests
         sol.GetResult2();
         var bruteForceSpots = sol.loopSpots;
 
-        var solver = new BetterSolver(sol.grid, sol.start);
+        var solver = new BetterSolver(sol.grid, sol.start, sol.wallsByX, sol.wallsByY);
         solver.Solve();
         var betterSpots = solver.LoopSpots;
 
@@ -229,7 +229,7 @@ internal class Tests
         sol.GetResult2();
         var bruteForceSpots = sol.loopSpots;
 
-        var solver = new BetterSolver(sol.grid, sol.start);
+        var solver = new BetterSolver(sol.grid, sol.start, sol.wallsByX, sol.wallsByY);
         solver.Solve();
         var betterSpots = solver.LoopSpots;
 

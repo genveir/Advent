@@ -31,7 +31,7 @@ internal class Visualizer
                 ghostFeedback = "";
             }
 
-            Console.WriteLine("[S]tep e[X]it [R]unTo [T]urn [G]host [W]all");
+            Console.WriteLine("[S]tep e[X]it [R]unTo [T]urn [G]host [W]all, [J]ump");
             var line = Console.ReadLine();
 
             if (line is "" or "s")
@@ -77,6 +77,11 @@ internal class Visualizer
                 {
                     solver.Grid[forward.Y][forward.X] = 'O';
                 }
+            }
+
+            if (line is "j")
+            {
+                guard.JumpForwardToWall(solver.WallsByX, solver.WallsByY, new(-5, -5));
             }
         }
     }

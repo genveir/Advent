@@ -10,7 +10,7 @@ class Program
         var sol = new Day06.Solution();
         sol.GetResult2();
 
-        var solver = new Day06.BetterSolver(sol.grid, sol.start);
+        var solver = new Day06.BetterSolver(sol.grid, sol.start, sol.wallsByX, sol.wallsByY);
 
         Day06.Visualizer.Visualize(solver, sol.loopSpots.ToArray());
     }
