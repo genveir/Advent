@@ -198,6 +198,54 @@ internal class Tests
         }
     }
 
+    [Test]
+    public void BruteForceFindsNoLoopThatIsNotInBetter()
+    {
+        var sol = new Solution("Input.txt");
+        sol.GetResult2();
+        var bruteForceSpots = sol.loopSpots;
+
+        var solver = new BetterSolver(sol.grid, sol.start);
+        solver.Solve();
+        var betterSpots = solver.LoopSpots;
+
+        List<Coordinate2D> spots = [];
+        foreach (var spot in bruteForceSpots)
+        {
+            if (!betterSpots.Contains(spot))
+            {
+                spots.Add(spot);
+            }
+        }
+
+        Console.WriteLine(string.Join(Environment.NewLine, spots));
+        spots.Count.Should().Be(0);
+    }
+
+    [Test]
+    public void BetterFindsNoLoopThatIsNotInBruteForce()
+    {
+        var sol = new Solution("Input.txt");
+        sol.GetResult2();
+        var bruteForceSpots = sol.loopSpots;
+
+        var solver = new BetterSolver(sol.grid, sol.start);
+        solver.Solve();
+        var betterSpots = solver.LoopSpots;
+
+        List<Coordinate2D> spots = [];
+        foreach (var spot in betterSpots)
+        {
+            if (!bruteForceSpots.Contains(spot))
+            {
+                spots.Add(spot);
+            }
+        }
+
+        Console.WriteLine(string.Join(Environment.NewLine, spots));
+        spots.Count.Should().Be(0);
+    }
+
     public const string example = @"....#.....
 .........#
 ..........

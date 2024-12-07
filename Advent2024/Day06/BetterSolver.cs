@@ -7,7 +7,8 @@ internal class BetterSolver
 
     public List<Mover> Movers { get; set; }
 
-    public HashSet<MoverData> LeadsToOutOfBounds { get; set; } = [];
+    public Dictionary<MoverData, Coordinate2D> LeadsToOutOfBounds { get; set; } = [];
+    public HashSet<Coordinate2D> VisitedByGuard { get; set; } = [];
     public HashSet<Coordinate2D> LoopSpots { get; set; } = [];
 
     public BetterSolver(char[][] grid, Coordinate2D start)
@@ -27,40 +28,54 @@ internal class BetterSolver
         long loopSpots = 0;
         while (IsInBounds(guard.Position))
         {
-            var forward = guard.Forward();
-            var ghost = new Mover(guard.Position, (guard.Direction + 1) % 4);
-
-            if (WalkDoesNotLeadToOutOfBounds(ghost))
-            {
-                LoopSpots.Add(forward);
-                loopSpots++;
-            }
-            LeadsToOutOfBounds.Remove(guard.Data);
-
-            if (IsInBounds(forward) && Grid[forward.Y][forward.X] == '#')
-            {
-                guard.Direction = (guard.Direction + 1) % 4;
-            }
-            else
-            {
-                guard.Position = guard.Forward();
-            }
+            WalkGuard(guard, ref loopSpots);
         }
 
         return loopSpots;
     }
 
-    private bool WalkDoesNotLeadToOutOfBounds(Mover ghost)
+    public void WalkGuard(Mover guard, ref long loopSpots)
     {
+        var forward = guard.Forward();
+        var ghost = new Mover(guard.Position, (guard.Direction + 1) % 4);
+
+        LeadsToOutOfBounds.Remove(guard.Data);
+        VisitedByGuard.Add(guard.Position);
+        if (!VisitedByGuard.Contains(forward) && WalkDoesNotLeadToOutOfBounds(ghost, forward))
+        {
+            LoopSpots.Add(forward);
+            loopSpots++;
+        }
+
+        if (IsInBounds(forward) && Grid[forward.Y][forward.X] is '#' or 'O')
+        {
+            guard.Direction = (guard.Direction + 1) % 4;
+        }
+        else
+        {
+            guard.Position = guard.Forward();
+        }
+    }
+
+    public bool WalkDoesNotLeadToOutOfBounds(Mover ghost, Coordinate2D blocked)
+    {
+        HashSet<MoverData> visitedByGhost = [];
+
         while (IsInBounds(ghost.Position))
         {
-            if (!LeadsToOutOfBounds.Contains(ghost.Data))
+            if (visitedByGhost.Contains(ghost.Data))
+            {
+                return true;
+            }
+            visitedByGhost.Add(ghost.Data);
+
+            if (!LeadsToOutOfBounds.ContainsKey(ghost.Data))
             {
                 return true;
             }
 
             var forward = ghost.Forward();
-            if (IsInBounds(forward) && Grid[forward.Y][forward.X] == '#')
+            if ((IsInBounds(forward) && Grid[forward.Y][forward.X] is '#' or 'O') || forward == blocked)
             {
                 ghost.Direction = (ghost.Direction + 1) % 4;
             }
@@ -115,11 +130,11 @@ internal class BetterSolver
         List<Mover> toRemove = [];
         foreach (var mover in Movers)
         {
-            LeadsToOutOfBounds.Add(mover.Data);
+            LeadsToOutOfBounds.Add(mover.Data, mover.StartPosition);
 
             if (ShouldCreateRotatedMover(mover))
             {
-                Mover newMover = new(mover.Position, (mover.Direction + 3) % 4);
+                Mover newMover = new(mover.StartPosition, mover.Position, (mover.Direction + 3) % 4);
 
                 newMovers.Add(newMover);
             }

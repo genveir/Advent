@@ -7,6 +7,16 @@ class Program
 {
     static void Main(string[] args)
     {
+        var sol = new Day06.Solution();
+        sol.GetResult2();
+
+        var solver = new Day06.BetterSolver(sol.grid, sol.start);
+
+        Day06.Visualizer.Visualize(solver, sol.loopSpots.ToArray());
+    }
+
+    static void Main2(string[] args)
+    {
         var stopWatch = new Stopwatch();
 
         int numRuns = 1;

@@ -2,13 +2,27 @@
 
 internal class Mover
 {
-    public Mover(Coordinate2D position, int direction)
+    public Mover(Coordinate2D startPosition, Coordinate2D position, int direction)
     {
+        StartPosition = startPosition;
+
         this.position = position;
         this.direction = direction;
 
         Data = new(position, direction);
     }
+
+    public Mover(Coordinate2D position, int direction)
+    {
+        StartPosition = position;
+
+        this.position = position;
+        this.direction = direction;
+
+        Data = new(position, direction);
+    }
+
+    public Coordinate2D StartPosition { get; }
 
     private Coordinate2D position;
     public Coordinate2D Position
