@@ -1,5 +1,4 @@
-﻿using Advent2024.Shared;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace Advent2024.Day3;
 

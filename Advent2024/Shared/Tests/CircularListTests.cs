@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
-using System.Collections.Generic;
 
 namespace Advent2024.Shared.Tests;
 

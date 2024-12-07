@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using Advent2024.Shared;
+﻿using System.Diagnostics;
 using TextCopy;
 
 namespace Advent2024;

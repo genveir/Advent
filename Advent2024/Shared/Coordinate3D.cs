@@ -1,6 +1,4 @@
-﻿using Advent2024.Shared.InputParsing;
-
-namespace Advent2024.Shared;
+﻿namespace Advent2024.Shared;
 
 public class Coordinate3D
 {

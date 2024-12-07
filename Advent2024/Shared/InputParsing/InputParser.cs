@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Advent2024.Shared.InputParsing;
+﻿namespace Advent2024.Shared.InputParsing;
 
 public class InputParser
 {

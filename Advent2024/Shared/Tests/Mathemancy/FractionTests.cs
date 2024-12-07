@@ -1,8 +1,5 @@
-﻿using Advent2024.Shared.Mathemancy;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
 
 namespace Advent2024.Shared.Tests.Mathemancy;
 #pragma warning disable IDE0017 // Object initialization can be simplified

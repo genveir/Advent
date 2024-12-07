@@ -1,5 +1,4 @@
-﻿using Advent2024.Shared;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
 
 namespace Advent2024.Day06;

@@ -1,4 +1,3 @@
-﻿using Advent2024.Shared;
 
 namespace Advent2024.Day06;
 
