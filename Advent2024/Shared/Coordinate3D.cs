@@ -1,6 +1,4 @@
 ﻿using Advent2024.Shared.InputParsing;
-using System;
-using System.Collections.Generic;
 
 namespace Advent2024.Shared;
 
@@ -37,6 +35,13 @@ public class Coordinate3D
         {
             throw new ArgumentException("coord3D input must be of length 2 or 3");
         }
+    }
+
+    public void Deconstruct(out long x, out long y, out long z)
+    {
+        x = X;
+        y = Y;
+        z = Z;
     }
 
     public long X;

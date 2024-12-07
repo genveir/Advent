@@ -123,38 +123,37 @@ public class Solution : ISolution
     // not 492, not 443
     public object GetResult2()
     {
-        //while (IsInBounds(guard))
-        //{
-        //    Move();
-        //}
-
-        //return loopSpots.Count;
-
-        for (int y = 0; y < grid.Length; y++)
+        while (IsInBounds(guard))
         {
-            for (int x = 0; x < grid[y].Length; x++)
+            Move();
+        }
+
+        var checkSpots = visited.Keys.ToList();
+
+        foreach (var spot in checkSpots)
+        {
+            var (x, y) = spot;
+
+            var current = grid[y][x];
+
+            grid[y][x] = '#';
+
+            guard = start;
+            direction = 0;
+            visited = [];
+
+            while (IsInBounds(guard))
             {
-                var current = grid[y][x];
+                var exitedBecauseOfLoop = Move();
 
-                grid[y][x] = '#';
-
-                guard = start;
-                direction = 0;
-                visited = [];
-
-                while (IsInBounds(guard))
+                if (exitedBecauseOfLoop)
                 {
-                    var exitedBecauseOfLoop = Move();
-
-                    if (exitedBecauseOfLoop)
-                    {
-                        loopSpots.Add(new(x, y));
-                        break;
-                    }
+                    loopSpots.Add(new(x, y));
+                    break;
                 }
-
-                grid[y][x] = current;
             }
+
+            grid[y][x] = current;
         }
 
         return loopSpots.Count;
