@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Advent2024.Shared.Search;
+﻿namespace Advent2024.Shared.Search;
 
 public class AStar<TNode> where TNode : IEquatable<TNode>
 {

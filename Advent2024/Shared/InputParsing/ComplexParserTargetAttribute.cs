@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Advent2024.Shared.InputParsing;
+﻿namespace Advent2024.Shared.InputParsing;
 
 [AttributeUsage(AttributeTargets.Constructor | AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
 sealed class ComplexParserTargetAttribute : Attribute

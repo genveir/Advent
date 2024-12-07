@@ -1,9 +1,4 @@
-﻿using Advent2024.Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Advent2024.Day01;
+﻿namespace Advent2024.Day01;
 
 public class Solution : ISolution
 {

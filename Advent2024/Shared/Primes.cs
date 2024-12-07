@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Advent2024.Shared;
+﻿namespace Advent2024.Shared;
 
 public static class Primes
 {

@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using Advent2024.Shared;
-using Advent2024.Shared.InputParsing;
-
-namespace Advent2024.AdventBase;
+﻿namespace Advent2024.AdventBase;
 
 public class Solution : ISolution
 {
