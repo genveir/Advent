@@ -3,10 +3,7 @@ internal class Visualizer
 {
     public static void Visualize(BetterSolver solver)
     {
-        solver.RunMovers();
-
         var guard = new Mover(solver.Start, 0);
-        long loopSpots = 0;
 
         Coordinate2D runTo = null;
         string ghostFeedback = "";
@@ -16,7 +13,7 @@ internal class Visualizer
             {
                 while (IsInBounds(guard.Position, solver.Grid) && guard.Forward() != runTo)
                 {
-                    solver.WalkGuard(guard, ref loopSpots);
+                    solver.WalkGuard(guard);
                 }
                 runTo = null;
             }
@@ -36,7 +33,7 @@ internal class Visualizer
 
             if (line is "" or "s")
             {
-                solver.WalkGuard(guard, ref loopSpots);
+                solver.WalkGuard(guard);
             }
 
             if (line is "x")
@@ -120,19 +117,6 @@ internal class Visualizer
         };
 
         Console.WriteLine($"Guard is at {guard.Position} facing {directionString}");
-        if (solver.LeadsToOutOfBounds.TryGetValue(guard.Data, out Coordinate2D value))
-        {
-            Console.WriteLine("Guard will go out of bounds at " + value);
-        }
-        else
-        {
-            Console.WriteLine("Guard will not go out of bounds");
-        }
-
-        if (solver.LoopSpots.Contains(guard.Forward()))
-        {
-            Console.WriteLine("Guard is at a loop spot");
-        }
     }
 
     private static bool IsInBounds(Coordinate2D pos, char[][] grid)

@@ -1,6 +1,6 @@
 ﻿namespace Advent2024.Day06;
 
-internal class Mover
+public class Mover
 {
     public Mover(Coordinate2D startPosition, Coordinate2D position, int direction)
     {

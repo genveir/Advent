@@ -1,6 +1,8 @@
-﻿namespace Advent2024.Day06;
+﻿using System.Collections.Concurrent;
 
-internal class BetterSolver
+namespace Advent2024.Day06;
+
+public class BetterSolver
 {
     public char[][] Grid { get; set; }
     public Coordinate2D Start { get; set; }
@@ -8,11 +10,8 @@ internal class BetterSolver
     public Dictionary<long, List<long>> WallsByX { get; set; }
     public Dictionary<long, List<long>> WallsByY { get; set; }
 
-    public List<Mover> Movers { get; set; }
-
-    public Dictionary<MoverData, Coordinate2D> LeadsToOutOfBounds { get; set; } = [];
     public HashSet<Coordinate2D> VisitedByGuard { get; set; } = [];
-    public HashSet<Coordinate2D> LoopSpots { get; set; } = [];
+    public ConcurrentDictionary<Coordinate2D, bool> LoopSpots { get; set; } = new();
 
     public BetterSolver(char[][] grid, Coordinate2D start, Dictionary<long, List<long>> wallsByX, Dictionary<long, List<long>> wallsByY)
     {
@@ -20,36 +19,38 @@ internal class BetterSolver
         Start = start;
         WallsByX = wallsByX;
         WallsByY = wallsByY;
-
-        MakeMovers();
     }
 
-    public long Solve()
+    public void Solve()
     {
-        RunMovers();
+        if (VisitedByGuard.Count > 0)
+        {
+            return;
+        }
 
         var guard = new Mover(Start, 0);
 
-        long loopSpots = 0;
+        List<Task> tasks = [];
+
         while (IsInBounds(guard.Position))
         {
-            WalkGuard(guard, ref loopSpots);
+            tasks.Add(WalkGuard(guard));
         }
 
-        return loopSpots;
+        Task.WaitAll(tasks);
     }
 
-    public void WalkGuard(Mover guard, ref long loopSpots)
+    public Task WalkGuard(Mover guard)
     {
         var forward = guard.Forward();
-        var ghost = new Mover(guard.Position, (guard.Direction + 1) % 4);
 
-        LeadsToOutOfBounds.Remove(guard.Data);
         VisitedByGuard.Add(guard.Position);
-        if (!VisitedByGuard.Contains(forward) && WalkDoesNotLeadToOutOfBounds(ghost, forward))
+
+        Task task = Task.CompletedTask;
+        var currentData = guard.Data;
+        if (!VisitedByGuard.Contains(forward))
         {
-            LoopSpots.Add(forward);
-            loopSpots++;
+            task = Task.Run(() => RunGhost(currentData, forward));
         }
 
         if (IsInBounds(forward) && Grid[forward.Y][forward.X] is '#' or 'O')
@@ -59,6 +60,18 @@ internal class BetterSolver
         else
         {
             guard.Position = guard.Forward();
+        }
+
+        return task;
+    }
+
+    private void RunGhost(MoverData guardData, Coordinate2D blocked)
+    {
+        var ghost = new Mover(guardData.Position, (guardData.Direction + 1) % 4);
+
+        if (WalkDoesNotLeadToOutOfBounds(ghost, blocked))
+        {
+            LoopSpots.AddOrUpdate(blocked, true, (_, _) => true);
         }
     }
 
@@ -74,96 +87,10 @@ internal class BetterSolver
             }
             visitedByGhost.Add(ghost.Data);
 
-            if (!LeadsToOutOfBounds.ContainsKey(ghost.Data))
-            {
-                return true;
-            }
-
             ghost.JumpForwardToWall(WallsByX, WallsByY, blocked);
         }
 
         return false;
-    }
-
-    private void MakeMovers()
-    {
-        Movers = [];
-
-        for (int y = 0; y < Grid.Length; y++)
-        {
-            Movers.Add(new(new(0, y), 3));
-            Movers.Add(new(new(Grid[y].Length - 1, y), 1));
-        }
-
-        for (int x = 0; x < Grid[0].Length; x++)
-        {
-            Movers.Add(new(new(x, 0), 0));
-            Movers.Add(new(new(x, Grid.Length - 1), 2));
-        }
-
-        Movers = Movers.Where(m => Grid[m.Position.Y][m.Position.X] != '#').ToList();
-    }
-
-    public void RunMovers()
-    {
-        int maxSteps = 10000;
-
-        while (Movers.Count > 0 && maxSteps > 0)
-        {
-            StepMovers();
-
-            maxSteps--;
-        }
-
-        if (maxSteps == 0)
-        {
-            throw new Exception("Max steps reached");
-        }
-    }
-
-    public void StepMovers()
-    {
-        List<Mover> newMovers = [];
-        List<Mover> toRemove = [];
-        foreach (var mover in Movers)
-        {
-            LeadsToOutOfBounds.Add(mover.Data, mover.StartPosition);
-
-            if (ShouldCreateRotatedMover(mover))
-            {
-                Mover newMover = new(mover.StartPosition, mover.Position, (mover.Direction + 3) % 4);
-
-                newMovers.Add(newMover);
-            }
-
-            if (ShouldStepBack(mover))
-            {
-                mover.Position = mover.Backward();
-            }
-            else
-            {
-                toRemove.Add(mover);
-            }
-        }
-
-        Movers = Movers
-            .Except(toRemove)
-            .Concat(newMovers)
-            .ToList();
-    }
-
-    public bool ShouldStepBack(Mover mover)
-    {
-        var backward = mover.Backward();
-
-        return IsInBounds(backward) && Grid[backward.Y][backward.X] != '#';
-    }
-
-    public bool ShouldCreateRotatedMover(Mover mover)
-    {
-        var toTheLeft = mover.ToTheLeft();
-
-        return IsInBounds(toTheLeft) && Grid[toTheLeft.Y][toTheLeft.X] == '#';
     }
 
     public bool IsInBounds(Coordinate2D pos)

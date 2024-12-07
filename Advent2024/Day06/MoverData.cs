@@ -1,6 +1,6 @@
 ﻿namespace Advent2024.Day06;
 
-internal class MoverData
+public readonly struct MoverData
 {
     public Coordinate2D Position { get; }
     public int Direction { get; }
@@ -18,4 +18,14 @@ internal class MoverData
         obj is MoverData other && other.Position == Position && other.Direction == Direction;
 
     public override string ToString() => $"{Position} {Direction}";
+
+    public static bool operator ==(MoverData left, MoverData right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(MoverData left, MoverData right)
+    {
+        return !(left == right);
+    }
 }
