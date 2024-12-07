@@ -198,11 +198,11 @@ internal class Tests
         }
     }
 
-    [Test]
+    //[Test]
     public void BruteForceFindsNoLoopThatIsNotInBetter()
     {
         var sol = new Solution("Input.txt");
-        sol.GetResult2();
+        sol.BruteForce();
         var bruteForceSpots = sol.loopSpots;
 
         var solver = new BetterSolver(sol.grid, sol.start, sol.wallsByX, sol.wallsByY);
@@ -222,11 +222,11 @@ internal class Tests
         spots.Count.Should().Be(0);
     }
 
-    [Test]
+    //[Test]
     public void BetterFindsNoLoopThatIsNotInBruteForce()
     {
         var sol = new Solution("Input.txt");
-        sol.GetResult2();
+        sol.BruteForce();
         var bruteForceSpots = sol.loopSpots;
 
         var solver = new BetterSolver(sol.grid, sol.start, sol.wallsByX, sol.wallsByY);

@@ -109,16 +109,22 @@ public class Solution : ISolution
     // not 492, not 443
     public object GetResult2()
     {
+        var solver = new BetterSolver(grid, start, wallsByX, wallsByY);
+
+        var result = solver.Solve();
+
+        loopSpots = solver.LoopSpots;
+
+        return result;
+    }
+
+    public long BruteForce()
+    {
         while (IsInBounds(guard))
         {
             Move();
         }
 
-        return BruteForce();
-    }
-
-    public long BruteForce()
-    {
         var checkSpots = visited.Keys.ToList();
 
         foreach (var spot in checkSpots)
