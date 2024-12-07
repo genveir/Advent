@@ -2,7 +2,7 @@
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Advent2024.Day6;
+namespace Advent2024.Day06;
 
 internal class Tests
 {

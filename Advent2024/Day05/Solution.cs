@@ -1,7 +1,7 @@
 ﻿using Advent2024.Shared;
 using Advent2024.Shared.InputParsing;
 
-namespace Advent2024.Day5;
+namespace Advent2024.Day05;
 
 public class Solution : ISolution
 {

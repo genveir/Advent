@@ -1,6 +1,6 @@
 ﻿using Advent2024.Shared;
 
-namespace Advent2024.Day6;
+namespace Advent2024.Day06;
 
 public class Solution : ISolution
 {

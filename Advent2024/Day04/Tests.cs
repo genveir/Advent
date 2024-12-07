@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
 
-namespace Advent2024.Day4;
+namespace Advent2024.Day04;
 
 internal class Tests
 {

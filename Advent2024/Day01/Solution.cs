@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Advent2024.Day1;
+namespace Advent2024.Day01;
 
 public class Solution : ISolution
 {
@@ -16,7 +16,7 @@ public class Solution : ISolution
 
         foreach (var line in lines)
         {
-            var parts = line.Split(" ", System.StringSplitOptions.RemoveEmptyEntries);
+            var parts = line.Split(" ", StringSplitOptions.RemoveEmptyEntries);
             left.Add(long.Parse(parts[0]));
             right.Add(long.Parse(parts[1]));
         }

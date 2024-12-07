@@ -1,11 +1,11 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
 
-namespace Advent2024.Day2;
+namespace Advent2024.Day07;
 
 internal class Tests
 {
-    [TestCase(example, 2)]
+    [TestCase(example, 3749)]
     public void Test1(string input, object output)
     {
         var sol = new Solution(input);
@@ -13,14 +13,9 @@ internal class Tests
         sol.GetResult1().Should().Be(output);
     }
 
-    [TestCase("7 6 4 2 1", 1)]
-    [TestCase("1 2 7 8 9", 0)]
-    [TestCase("9 7 6 2 1", 0)]
-    [TestCase("1 3 2 4 5", 1)]
-    [TestCase("8 6 4 4 1", 1)]
-    [TestCase("1 3 6 7 9", 1)]
-    [TestCase(example2, 4)]
-    [TestCase("9 1 2 3 4", 1)]
+    [TestCase(example2, 11387)]
+    [TestCase("7290: 6 8 6 15", 7290)]
+    [TestCase("192: 17 8 14", 192)]
     public void Test2(string input, object output)
     {
         var sol = new Solution(input);
@@ -28,12 +23,15 @@ internal class Tests
         sol.GetResult2().Should().Be(output);
     }
 
-    public const string example = @"7 6 4 2 1
-1 2 7 8 9
-9 7 6 2 1
-1 3 2 4 5
-8 6 4 4 1
-1 3 6 7 9";
+    public const string example = @"190: 10 19
+3267: 81 40 27
+83: 17 5
+156: 15 6
+7290: 6 8 6 15
+161011: 16 10 13
+192: 17 8 14
+21037: 9 7 18 13
+292: 11 6 16 20";
 
     public const string example2 = example;
 }
