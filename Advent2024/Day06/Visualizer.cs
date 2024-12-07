@@ -1,7 +1,7 @@
 ﻿namespace Advent2024.Day06;
 internal class Visualizer
 {
-    public static void Visualize(BetterSolver solver, Coordinate2D[] actualLoopSpots)
+    public static void Visualize(BetterSolver solver)
     {
         solver.RunMovers();
 
@@ -120,9 +120,9 @@ internal class Visualizer
         };
 
         Console.WriteLine($"Guard is at {guard.Position} facing {directionString}");
-        if (solver.LeadsToOutOfBounds.ContainsKey(guard.Data))
+        if (solver.LeadsToOutOfBounds.TryGetValue(guard.Data, out Coordinate2D value))
         {
-            Console.WriteLine("Guard will go out of bounds at " + solver.LeadsToOutOfBounds[guard.Data]);
+            Console.WriteLine("Guard will go out of bounds at " + value);
         }
         else
         {

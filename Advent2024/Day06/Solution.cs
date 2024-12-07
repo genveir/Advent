@@ -1,6 +1,6 @@
 ﻿namespace Advent2024.Day06;
 
-public class Solution : ISolution
+public class Solution
 {
     public char[][] grid;
     public HashSet<Coordinate2D> walls = [];

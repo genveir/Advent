@@ -1,6 +1,6 @@
 ﻿namespace Advent2024.Day07;
 
-public class Solution : ISolution
+public class Solution
 {
     public List<ParsedInput> modules;
 

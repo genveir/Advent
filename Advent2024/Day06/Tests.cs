@@ -198,6 +198,7 @@ internal class Tests
         }
     }
 
+#pragma warning disable CA1822
     //[Test]
     public void BruteForceFindsNoLoopThatIsNotInBetter()
     {
@@ -245,6 +246,7 @@ internal class Tests
         Console.WriteLine(string.Join(Environment.NewLine, spots));
         spots.Count.Should().Be(0);
     }
+#pragma warning restore CA1822
 
     public const string example = @"....#.....
 .........#

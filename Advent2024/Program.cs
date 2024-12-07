@@ -5,6 +5,7 @@ namespace Advent2024;
 
 class Program
 {
+#pragma warning disable IDE0060
     static void Main(string[] args)
     {
         var stopWatch = new Stopwatch();
@@ -16,7 +17,7 @@ class Program
         stopWatch.Start();
         for (int n = 0; n < numRuns; n++)
         {
-            ISolution solution = new AdventActive.Solution();
+            var solution = new AdventActive.Solution();
 
             result1 = solution.GetResult1();
             result2 = solution.GetResult2();
