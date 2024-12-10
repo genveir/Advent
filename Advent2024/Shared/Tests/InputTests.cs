@@ -8,7 +8,7 @@ internal class InputTests
     [Test]
     public void GetNumbersWorksForAllNumbers()
     {
-        var numbers = Input.GetNumbers("0123456789");
+        var numbers = Input.GetDigits("0123456789");
 
         for (int n = 0; n < 10; n++) numbers[n].Should().Be(n);
     }

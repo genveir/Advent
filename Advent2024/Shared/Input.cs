@@ -6,7 +6,11 @@ public static class Input
 {
     public static string GetInput(string input)
     {
-        if (string.IsNullOrEmpty(input)) return input;
+        if (string.IsNullOrEmpty(input))
+        {
+            Console.WriteLine("Input was empty");
+            return input;
+        }
 
         Stream inputStream;
 
@@ -18,7 +22,13 @@ public static class Input
         }
 
         using var sr = new StreamReader(inputStream);
-        return sr.ReadToEnd();
+        var data = sr.ReadToEnd();
+
+        if (string.IsNullOrEmpty(data))
+        {
+            Console.WriteLine("Input was empty");
+        }
+        return data;
     }
 
     private static FileStream GetFileStream(string input)
@@ -147,13 +157,6 @@ public static class Input
             .ToArray();
     }
 
-    public static long[] GetNumbers(string input)
-    {
-        var rawInput = GetInput(input);
-
-        return rawInput.Select(c => c - 48L).ToArray();
-    }
-
     public static long[] GetNumbers(string input, params char[] splitOn)
     {
         var rawInput = GetInput(input);
@@ -161,5 +164,19 @@ public static class Input
         var split = rawInput.Split(splitOn, StringSplitOptions.RemoveEmptyEntries);
 
         return split.Select(long.Parse).ToArray();
+    }
+
+    public static long[] GetDigits(string input)
+    {
+        var rawInput = GetInput(input);
+
+        return rawInput.Select(c => c - 48L).ToArray();
+    }
+
+    public static long[][] GetDigitGrid(string input)
+    {
+        return GetInputLines(input)
+            .Select(line => line.Select(c => c - 48L).ToArray())
+            .ToArray();
     }
 }

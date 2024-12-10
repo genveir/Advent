@@ -8,7 +8,7 @@ public class Solution
 
     public Solution(string input)
     {
-        Numbers = Input.GetNumbers(input);
+        Numbers = Input.GetDigits(input);
 
         Reset();
     }
