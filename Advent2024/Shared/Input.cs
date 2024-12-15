@@ -145,12 +145,19 @@ public static class Input
             .ToList();
     }
 
+    public static string[] GetBlocks(string input)
+    {
+        var rawInput = GetInput(input);
+        return rawInput
+            .Split(Environment.NewLine + Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+    }
+
     public static string[][] GetBlockLines(string input)
     {
         var rawInput = GetInput(input);
 
         var blocks = rawInput
-            .Split(Environment.NewLine + Environment.NewLine);
+            .Split(Environment.NewLine + Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
 
         return blocks
             .Select(block => block.Split(Environment.NewLine))
