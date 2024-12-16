@@ -136,13 +136,13 @@ public class Solution
 
             if (modules.Select(m => m.position).Distinct().Count() == modules.Count)
             {
-                Console.Clear();
-                Console.WriteLine(counter);
-                Print();
-                var input = Console.ReadLine();
+                //Console.Clear();
+                //Console.WriteLine(counter);
+                //Print();
+                //var input = Console.ReadLine();
 
-                if (input == "y")
-                    return counter;
+                //if (input == "y")
+                return counter;
             }
         }
     }
