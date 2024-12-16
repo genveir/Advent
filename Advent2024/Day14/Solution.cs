@@ -46,7 +46,7 @@ public class Solution
         {
             position = position.Shift(velocity.X, velocity.Y);
 
-            position = new Coordinate2D(ModNum(position.X, width), ModNum(position.Y, height));
+            position = new Coordinate2D(new ModNum(position.X, width).number, new ModNum(position.Y, height).number);
         }
 
         public Coordinate2D PositionAt(long tick, long width, long height)
@@ -56,23 +56,10 @@ public class Solution
 
             var newPos = position.Shift(xShift, yShift);
 
-            var modPos = new Coordinate2D(ModNum(newPos.X, width), ModNum(newPos.Y, height));
+            var modPos = new Coordinate2D(new ModNum(newPos.X, width).number, new ModNum(newPos.Y, height).number);
 
             return modPos;
         }
-
-        public Coordinate2D ModPos(Coordinate2D pos, long width, long height)
-        {
-            return new Coordinate2D(ModNum(pos.X, width), ModNum(pos.Y, height));
-        }
-
-        public long ModNum(long num, long modulo)
-        {
-            num = num % modulo;
-            if (num < 0) num += modulo;
-            return num;
-        }
-
     }
 
     public class Quadrant

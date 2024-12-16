@@ -20,7 +20,7 @@ public static class Primes
         if (primesSoFar == null) primesSoFar = new List<long>() { 2, 3, 5 };
 
         int upto = 100;
-        while(primesSoFar.Count < number)
+        while (primesSoFar.Count < number)
         {
             GenerateAllPrimes(primesSoFar, upto);
             upto *= 2;
@@ -34,14 +34,14 @@ public static class Primes
     private static void GenerateAllPrimes(List<long> primesSoFar, long upperBound)
     {
         long numToCheck = 7;
-        while(true)
+        while (true)
         {
             CheckPrime(primesSoFar, numToCheck);
             numToCheck += 4;
             CheckPrime(primesSoFar, numToCheck);
             numToCheck += 2;
 
-            if (numToCheck > upperBound) break;
+            if (numToCheck - 2 > upperBound) break;
         }
     }
 
