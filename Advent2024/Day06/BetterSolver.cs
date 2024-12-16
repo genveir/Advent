@@ -37,7 +37,7 @@ public class BetterSolver
             tasks.Add(WalkGuard(guard));
         }
 
-        Task.WaitAll(tasks);
+        Task.WaitAll(tasks.ToArray());
     }
 
     public Task WalkGuard(Mover guard)
