@@ -64,14 +64,6 @@ internal class Tests
         quadrants[3].BottomRight.Should().Be(new Coordinate2D(width - 1, height - 1));
     }
 
-    [TestCase(example2, 1)] // not a proper test
-    public void Test2(string input, object output)
-    {
-        var sol = new Solution(input);
-
-        sol.GetResult2().Should().Be(output);
-    }
-
     public const string example = @"p=0,4 v=3,-3
 p=6,3 v=-1,-3
 p=10,3 v=-1,2
