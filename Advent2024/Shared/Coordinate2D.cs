@@ -1,6 +1,6 @@
 ﻿namespace Advent2024.Shared;
 
-public class Coordinate2D
+public class Coordinate2D : IEquatable<Coordinate2D>
 {
     public Coordinate2D(long x, long y)
     {
@@ -116,6 +116,23 @@ public class Coordinate2D
     public Coordinate2D Difference(Coordinate2D second) =>
         new(X - second.X, Y - second.Y);
 
+    public bool IsInBounds(long minX, long maxX, long minY, long maxY) =>
+        X >= minX && X <= maxX && Y >= minY && Y <= maxY;
+
+    public bool IsInBounds(Coordinate2D first, Coordinate2D second)
+    {
+        var minX = Math.Min(first.X, second.X);
+        var maxX = Math.Max(first.X, second.X);
+
+        var minY = Math.Min(first.Y, second.Y);
+        var maxY = Math.Max(first.Y, second.Y);
+
+        return IsInBounds(minX, maxX, minY, maxY);
+    }
+
+    public bool IsInBounds<T>(T[][] grid) =>
+        X >= 0 && X < grid.Length && Y >= 0 && Y < grid[0].Length;
+
     public override string ToString() => $"({X}, {Y})";
 
     public override int GetHashCode()
@@ -128,4 +145,6 @@ public class Coordinate2D
         if (obj is not Coordinate2D other) return false;
         return other.X == X && other.Y == Y;
     }
+
+    public bool Equals(Coordinate2D other) => other.X == X && other.Y == Y;
 }
