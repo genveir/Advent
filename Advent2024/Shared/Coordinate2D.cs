@@ -43,6 +43,8 @@ public class Coordinate2D : IEquatable<Coordinate2D>
     public Coordinate2D Shift(long shiftX, long shiftY) =>
         ShiftX(shiftX).ShiftY(shiftY);
 
+    public Coordinate3D ToCoordinate3D(long z = 0) => new(X, Y, z);
+
     private IEnumerable<Coordinate2D> _neighbours;
 
     public IEnumerable<Coordinate2D> GetNeighbours(bool orthogonalOnly = false)
@@ -67,23 +69,14 @@ public class Coordinate2D : IEquatable<Coordinate2D>
         return _neighbours;
     }
 
-    public long IntegerDistance(Coordinate2D second)
-    { return (long)Distance(second); }
+    public long IntegerDistance(Coordinate2D second) =>
+        (long)Distance(second);
 
-    public double Distance(Coordinate2D second)
-    {
-        return Distance(second.X, second.Y);
-    }
+    public long IntegerDistance(long x, long y) =>
+        (long)Distance(x, y);
 
-    public long ManhattanDistance(Coordinate2D second)
-    {
-        var diff = Difference(second);
-
-        return diff.AbsX + diff.AbsY;
-    }
-
-    public long IntegerDistance(long x, long y)
-    { return (long)Distance(x, y); }
+    public double Distance(Coordinate2D second) =>
+        Distance(second.X, second.Y);
 
     public double Distance(long x, long y)
     {
@@ -93,6 +86,33 @@ public class Coordinate2D : IEquatable<Coordinate2D>
 
         return Math.Sqrt(squared);
     }
+
+    public long ManhattanDistance(Coordinate2D second)
+    {
+        var diff = Difference(second);
+
+        return diff.AbsX + diff.AbsY;
+    }
+
+    public Coordinate2D Difference(Coordinate2D second) =>
+        new(X - second.X, Y - second.Y);
+
+    public bool IsInBounds(long minX, long maxX, long minY, long maxY) =>
+    X >= minX && X <= maxX && Y >= minY && Y <= maxY;
+
+    public bool IsInBounds(Coordinate2D first, Coordinate2D second)
+    {
+        var minX = Math.Min(first.X, second.X);
+        var maxX = Math.Max(first.X, second.X);
+
+        var minY = Math.Min(first.Y, second.Y);
+        var maxY = Math.Max(first.Y, second.Y);
+
+        return IsInBounds(minX, maxX, minY, maxY);
+    }
+
+    public bool IsInBounds<T>(T[][] grid) =>
+        Y >= 0 && Y < grid.Length && X >= 0 && X < grid[Y].Length;
 
     public static Coordinate2D operator +(Coordinate2D first, Coordinate2D second) =>
         first.Sum(second);
@@ -112,26 +132,6 @@ public class Coordinate2D : IEquatable<Coordinate2D>
 
     public static bool operator !=(Coordinate2D first, Coordinate2D second) =>
         !(first == second);
-
-    public Coordinate2D Difference(Coordinate2D second) =>
-        new(X - second.X, Y - second.Y);
-
-    public bool IsInBounds(long minX, long maxX, long minY, long maxY) =>
-        X >= minX && X <= maxX && Y >= minY && Y <= maxY;
-
-    public bool IsInBounds(Coordinate2D first, Coordinate2D second)
-    {
-        var minX = Math.Min(first.X, second.X);
-        var maxX = Math.Max(first.X, second.X);
-
-        var minY = Math.Min(first.Y, second.Y);
-        var maxY = Math.Max(first.Y, second.Y);
-
-        return IsInBounds(minX, maxX, minY, maxY);
-    }
-
-    public bool IsInBounds<T>(T[][] grid) =>
-        X >= 0 && X < grid.Length && Y >= 0 && Y < grid[0].Length;
 
     public override string ToString() => $"({X}, {Y})";
 

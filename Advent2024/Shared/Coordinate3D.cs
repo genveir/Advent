@@ -86,23 +86,14 @@ public class Coordinate3D
         return _neighbours;
     }
 
-    public long IntegerDistance(Coordinate3D second)
-    { return (long)Distance(second); }
+    public long IntegerDistance(Coordinate3D second) =>
+        (long)Distance(second);
 
-    public double Distance(Coordinate3D second)
-    {
-        return Distance(second.X, second.Y, second.Z);
-    }
+    public long IntegerDistance(long x, long y, long z) =>
+        (long)Distance(x, y, z);
 
-    public long ManhattanDistance(Coordinate3D second)
-    {
-        var diff = Difference(second);
-
-        return diff.AbsX + diff.AbsY + diff.AbsZ;
-    }
-
-    public long IntegerDistance(long x, long y, long z)
-    { return (long)Distance(x, y, z); }
+    public double Distance(Coordinate3D second) =>
+        Distance(second.X, second.Y, second.Z);
 
     public double Distance(long x, long y, long z)
     {
@@ -112,6 +103,33 @@ public class Coordinate3D
             Math.Abs(Z - z) * Math.Abs(Z - z);
 
         return Math.Sqrt(squared);
+    }
+
+    public long ManhattanDistance(Coordinate3D second)
+    {
+        var diff = Difference(second);
+
+        return diff.AbsX + diff.AbsY + diff.AbsZ;
+    }
+
+    public Coordinate3D Difference(Coordinate3D second) =>
+        new(X - second.X, Y - second.Y, Z - second.Z);
+
+    public bool IsInBounds(long minX, long maxX, long minY, long maxY, long minZ, long maxZ) =>
+        X >= minX && X <= maxX && Y >= minY && Y <= maxY && Z >= minZ && Z <= maxZ;
+
+    public bool IsInBounds(Coordinate3D first, Coordinate3D second)
+    {
+        var minX = Math.Min(first.X, second.X);
+        var maxX = Math.Max(first.X, second.X);
+
+        var minY = Math.Min(first.Y, second.Y);
+        var maxY = Math.Max(first.Y, second.Y);
+
+        var minZ = Math.Min(first.Z, second.Z);
+        var maxZ = Math.Max(first.Z, second.Z);
+
+        return IsInBounds(minX, maxX, minY, maxY, minZ, maxZ);
     }
 
     public static Coordinate3D operator +(Coordinate3D first, Coordinate3D second) =>
@@ -132,9 +150,6 @@ public class Coordinate3D
 
     public static bool operator !=(Coordinate3D first, Coordinate3D second) =>
         !(first == second);
-
-    public Coordinate3D Difference(Coordinate3D second) =>
-        new(X - second.X, Y - second.Y, Z - second.Z);
 
     public override string ToString() => $"({X}, {Y}, {Z})";
 
