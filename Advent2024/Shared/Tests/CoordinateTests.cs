@@ -244,4 +244,70 @@ internal class CoordinateTests
         neighbours.Should().Contain(new Coordinate3D(10, -4, 1000));
         neighbours.Should().Contain(new Coordinate3D(10, -5, 1001));
     }
+
+    [TestCase(0, 0, -long.MaxValue, long.MaxValue, -long.MaxValue, long.MaxValue)]
+    [TestCase(0, 0, 0, 0, 0, 0)]
+    [TestCase(10, 5, -20, 20, -10, 10)]
+    [TestCase(-10, 5, -20, 20, -10, 10)]
+    [TestCase(10, -5, -20, 20, -10, 10)]
+    [TestCase(-10, -5, -20, 20, -10, 10)]
+    [TestCase(10, 5, 20, -20, 10, -10)]
+    [TestCase(-10, 5, 20, -20, 10, -10)]
+    [TestCase(10, -5, 20, -20, 10, -10)]
+    [TestCase(-10, -5, 20, -20, 10, -10)]
+    public void CanDetermineInBoundsFromValues(long coordX, long coordY, long xOne, long xTwo, long yOne, long yTwo)
+    {
+        var coord = new Coordinate2D(coordX, coordY);
+
+        coord.IsInBounds(xOne, xTwo, yOne, yTwo).Should().BeTrue();
+    }
+
+    [TestCase(-1, -1, 0, 10, 0, 10)]
+    [TestCase(1, 1, -10, 0, -10, 0)]
+    [TestCase(1, 1, 0, 0, 0, 0)]
+    [TestCase(1, -1, 0, 0, 0, 0)]
+    [TestCase(-1, 1, 0, 0, 0, 0)]
+    [TestCase(-1, -1, 0, 0, 0, 0)]
+    public void CanDetermineOutOfBoundsFromValues(int coordX, int coordY, int xOne, int xTwo, int yOne, int yTwo)
+    {
+        var coord = new Coordinate2D(coordX, coordY);
+
+        coord.IsInBounds(xOne, xTwo, yOne, yTwo).Should().BeFalse();
+    }
+
+    [TestCase(0, 0, -long.MaxValue, long.MaxValue, -long.MaxValue, long.MaxValue)]
+    [TestCase(0, 0, 0, 0, 0, 0)]
+    [TestCase(10, 5, -20, 20, -10, 10)]
+    [TestCase(-10, 5, -20, 20, -10, 10)]
+    [TestCase(10, -5, -20, 20, -10, 10)]
+    [TestCase(-10, -5, -20, 20, -10, 10)]
+    [TestCase(10, 5, 20, -20, 10, -10)]
+    [TestCase(-10, 5, 20, -20, 10, -10)]
+    [TestCase(10, -5, 20, -20, 10, -10)]
+    [TestCase(-10, -5, 20, -20, 10, -10)]
+    public void CanDetermineInBoundsFromCoordinates(long coordX, long coordY, long xOne, long xTwo, long yOne, long yTwo)
+    {
+        var coord = new Coordinate2D(coordX, coordY);
+
+        var coordOne = new Coordinate2D(xOne, yOne);
+        var coordTwo = new Coordinate2D(xTwo, yTwo);
+
+        coord.IsInBounds(coordOne, coordTwo).Should().BeTrue();
+    }
+
+    [TestCase(-1, -1, 0, 10, 0, 10)]
+    [TestCase(1, 1, -10, 0, -10, 0)]
+    [TestCase(1, 1, 0, 0, 0, 0)]
+    [TestCase(1, -1, 0, 0, 0, 0)]
+    [TestCase(-1, 1, 0, 0, 0, 0)]
+    [TestCase(-1, -1, 0, 0, 0, 0)]
+    public void CanDetermineOutOfBoundsFromCoordinates(int coordX, int coordY, int xOne, int xTwo, int yOne, int yTwo)
+    {
+        var coord = new Coordinate2D(coordX, coordY);
+
+        var coordOne = new Coordinate2D(xOne, yOne);
+        var coordTwo = new Coordinate2D(xTwo, yTwo);
+
+        coord.IsInBounds(coordOne, coordTwo).Should().BeFalse();
+    }
 }

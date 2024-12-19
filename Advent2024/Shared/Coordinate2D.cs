@@ -97,8 +97,19 @@ public class Coordinate2D : IEquatable<Coordinate2D>
     public Coordinate2D Difference(Coordinate2D second) =>
         new(X - second.X, Y - second.Y);
 
-    public bool IsInBounds(long minX, long maxX, long minY, long maxY) =>
-    X >= minX && X <= maxX && Y >= minY && Y <= maxY;
+    private bool IsInBoundsInternal(long minX, long maxX, long minY, long maxY) =>
+        X >= minX && X <= maxX && Y >= minY && Y <= maxY;
+
+    public bool IsInBounds(long xOne, long xTwo, long yOne, long yTwo)
+    {
+        var minX = Math.Min(xOne, xTwo);
+        var maxX = Math.Max(xOne, xTwo);
+
+        var minY = Math.Min(yOne, yTwo);
+        var maxY = Math.Max(yOne, yTwo);
+
+        return IsInBoundsInternal(minX, maxX, minY, maxY);
+    }
 
     public bool IsInBounds(Coordinate2D first, Coordinate2D second)
     {
@@ -108,7 +119,7 @@ public class Coordinate2D : IEquatable<Coordinate2D>
         var minY = Math.Min(first.Y, second.Y);
         var maxY = Math.Max(first.Y, second.Y);
 
-        return IsInBounds(minX, maxX, minY, maxY);
+        return IsInBoundsInternal(minX, maxX, minY, maxY);
     }
 
     public bool IsInBounds<T>(T[][] grid) =>
