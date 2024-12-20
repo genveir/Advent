@@ -157,5 +157,5 @@ public class Coordinate2D : IEquatable<Coordinate2D>
         return other.X == X && other.Y == Y;
     }
 
-    public bool Equals(Coordinate2D other) => other.X == X && other.Y == Y;
+    public bool Equals(Coordinate2D other) => other != null && other.X == X && other.Y == Y;
 }
