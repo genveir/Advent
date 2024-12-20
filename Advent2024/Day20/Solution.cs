@@ -91,7 +91,7 @@ public class Solution
         return pathArray;
     }
 
-    public Cut[][] FindShortcuts()
+    public Cut[][] FindShortcuts(int maxDistance)
     {
         var isSinglePath = MapPath();
 
@@ -102,7 +102,7 @@ public class Solution
         var shortcuts = new Cut[pathArray.Length][];
         for (int n = 0; n < pathArray.Length; n++)
         {
-            shortcuts[n] = FindPossibleCuts(pathArray[n], pathArray);
+            shortcuts[n] = FindPossibleCuts(n, pathArray, maxDistance);
         }
         return shortcuts;
     }
@@ -113,12 +113,17 @@ public class Solution
         public long Distance { get; set; }
     }
 
-    public Cut[] FindPossibleCuts(Coordinate2D target, Coordinate2D[] pathArray)
+    public Cut[] FindPossibleCuts(int targetIndex, Coordinate2D[] pathArray, int maxDistance)
     {
+        var target = pathArray[targetIndex];
+
         List<Cut> possibleCuts = [];
-        for (int n = 0; n < pathIndex.Count; n++)
+        for (int n = 0; n < targetIndex; n++)
         {
             var manhattanDistance = pathArray[n].ManhattanDistance(target);
+
+            if (manhattanDistance > maxDistance)
+                continue;
 
             var gain = pathIndex[target] - pathIndex[pathArray[n]] - manhattanDistance;
 
@@ -137,19 +142,15 @@ public class Solution
     // not 1276
     public object GetResult1()
     {
-        return FindShortcuts()
+        return FindShortcuts(2)
             .SelectMany(c => c)
-            .Where(c => c.Distance <= 2)
-            .Select(c => c.Gain)
-            .Count(c => c >= TimeToSave);
+            .Count(c => c.Gain >= TimeToSave);
     }
 
     public object GetResult2()
     {
-        return FindShortcuts()
+        return FindShortcuts(20)
             .SelectMany(c => c)
-            .Where(c => c.Distance <= 20)
-            .Select(c => c.Gain)
-            .Count(c => c >= TimeToSave);
+            .Count(c => c.Gain >= TimeToSave);
     }
 }
