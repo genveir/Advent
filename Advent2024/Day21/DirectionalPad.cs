@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Advent2024.AdventActive;
+namespace Advent2024.Day21;
 
 public class DirectionalPad
 {
