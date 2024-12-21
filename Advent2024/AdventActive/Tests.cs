@@ -6,6 +6,7 @@ namespace Advent2024.AdventActive;
 class Tests
 {
     [TestCase(example, 126384)]
+    [TestCase("Input.txt", 184718)]
     public void Test1(string input, object output)
     {
         var sol = new Solution(input);
@@ -19,11 +20,11 @@ class Tests
         var numericPad = new NumericPad();
         var code = "029A";
 
-        var routes = numericPad.GetShortestRoutesForCode(code);
+        var route = numericPad.GetShortestRouteForCode(code);
 
         string[] options = ["<A^A>^^AvvvA", "<A^A^>^AvvvA", "<A^A^^>AvvvA"];
 
-        options.Should().BeEquivalentTo(routes);
+        options.Should().Contain(route);
     }
 
     [TestCase("<A^A>^^AvvvA", "v<<A>>^A<A>AvA<^AA>A<vAAA>^A")]
@@ -36,7 +37,31 @@ class Tests
 
         var route = directionalPad.GetOneRouteForRoute(from);
 
-        route.Length.Should().Be(to.Length);
+        route.Should().HaveLength(to.Length);
+
+        //   <    A  ^  A  >   ^   ^  A   v v v   A
+        //v<<A >^>A <A >A <A >vA ^<A >A v<A A A ^>A
+
+        //   <    A  ^  A  ^   > ^  A   v v v   A
+        //v<<A >>^A <A >A vA <^A A >A <vA A A >^A
+    }
+
+    [Test]
+    public void TestNoDirectionalPreference()
+    {
+        var directions = new[] { "^", ">", "v", "<" };
+
+        for (int n = 0; n < directions.Length; n++)
+        {
+            for (int i = 0; i < directions.Length; i++)
+            {
+                var directionalPad = new DirectionalPad();
+                var route = directionalPad.GetOneRouteForRoute(directions[n] + directions[i] + 'A');
+                var inverse = directionalPad.GetOneRouteForRoute(directions[i] + directions[n] + 'A');
+
+                route.Length.Should().Be(inverse.Length);
+            }
+        }
     }
 
     [TestCase("^", "<A")]
@@ -63,15 +88,40 @@ class Tests
 
         var route = sol.GetRouteForCode(code, 2);
 
-        route.Length.Should().Be(length);
+        // long / mine
+        // 3     7   9    A
+        //^A ^^<<A >>A vvvA
+
+        // ^  A  ^ ^   < <    A  > >  A   v v v   A
+        //<A >A <A A v<A A >>^A vA A ^A v<A A A >^A
+
+        //    <    A  >  A    <   A A   v  <    A A  > >   ^  A   v   A A  ^  A   v  <    A A A  >   ^  A
+        // v<<A >>^A vA ^A v<<A>>^A A v<A <A >>^A A vA A <^A >A v<A >^A A <A >A v<A <A >>^A A A vA <^A >A
+
+        // short / theirs
+        //  3     7   9    A
+        // ^A <<^^A >>A vvvA
+
+        //  ^   A    < <   ^ ^  A  > >  A   v v v   A 
+        // <A  >A v<<A A >^A A >A vA A ^A <vA A A >^A
+
+        //    <    A  >  A   v  < <    A A  >   ^  A A  >  A   v   A A  ^  A    <  v   A A A  >   ^  A
+        // <v<A >>^A vA ^A <vA <A A >>^A A vA <^A >A A vA ^A <vA >^A A <A >A <v<A >A >^A A A vA <^A >A
+
+        route.Should().HaveLength(length);
     }
 
-    [TestCase(example2, "")]
-    public void Test2(string input, object output)
-    {
-        var sol = new Solution(input);
+    // ^<<A ^^A >>A vvvA
 
-        sol.GetResult2().Should().Be(output);
+    [TestCase("<v<A>>^A<vA<A>>^AAvAA<^A>A<v<A>>^AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A", "<A>Av<<AA>^AA>AvAA^A<vAAA>^A")]
+    [TestCase("<Av<AA>>^A<AA>AvAA^A<vAAA>^A", "")]
+    public void Revert(string input, string output)
+    {
+        var directionalPad = new DirectionalPad();
+
+        var result = directionalPad.Revert(input);
+
+        result.Should().Be(output);
     }
 
     public const string example = @"029A
