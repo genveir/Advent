@@ -10,21 +10,29 @@ public partial class Solution
     }
     public Solution() : this("Input.txt") { }
 
-    public string GetRouteForCode(string code, int steps)
+    public Route GetRouteForCode(string code, int steps)
     {
         var numericPad = new NumericPad();
-        var directionalPad = new DirectionalPad();
 
-        var route = numericPad.GetShortestRouteForCode(code);
+        var routes = numericPad.GetRoutesForCode(code);
 
-        for (int n = 0; n < steps; n++)
+        Route minRoute = null;
+        for (int r = 0; r < routes.Length; r++)
         {
-            Console.WriteLine(n);
+            var route = routes[r];
 
-            route = directionalPad.GetOneRouteForRoute(route);
+            for (int n = 0; n < steps; n++)
+            {
+                route.Iterate();
+            }
+
+            if (minRoute == null || route.Length < minRoute.Length)
+            {
+                minRoute = route;
+            }
         }
 
-        return route;
+        return minRoute;
     }
 
     public object GetResult1()

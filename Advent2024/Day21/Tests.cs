@@ -15,113 +15,141 @@ class Tests
     }
 
     [Test]
+    public void TestNumPadCodes()
+    {
+        var numericPad = new NumericPad();
+
+        var rA0 = numericPad.GetRoutes(numericPad.buttons['A'], numericPad.buttons['0']);
+        var r02 = numericPad.GetRoutes(numericPad.buttons['0'], numericPad.buttons['2']);
+        var r29 = numericPad.GetRoutes(numericPad.buttons['2'], numericPad.buttons['9']);
+        var r9A = numericPad.GetRoutes(numericPad.buttons['9'], numericPad.buttons['A']);
+
+        (rA0.Length * r02.Length * r29.Length * r9A.Length).Should().Be(3);
+
+        List<string> results = [];
+        foreach (var r in r29)
+        {
+            results.Add(rA0.Single() + r02.Single() + r + r9A.Single());
+        }
+
+        string[] options = ["<A^A>^^AvvvA", "<A^A^>^AvvvA", "<A^A^^>AvvvA"];
+
+        results.Should().BeEquivalentTo(options);
+    }
+
+    [Test]
+    public void TestConversion()
+    {
+        var numericPad = new NumericPad();
+
+        var route = numericPad.ToRoute("<A^A>^^AvvvA");
+
+        var correctSteps = new int[17];
+        // A
+        correctSteps[Route.AL]++; // <
+        correctSteps[Route.LA]++; // A
+        correctSteps[Route.AU]++; // ^
+        correctSteps[Route.UA]++; // A
+        correctSteps[Route.AR]++; // >
+        correctSteps[Route.RU]++; // ^
+        correctSteps[Route.UU]++; // ^
+        correctSteps[Route.UA]++; // A
+        correctSteps[Route.AD]++; // v
+        correctSteps[Route.DD]++; // v
+        correctSteps[Route.DD]++; // v
+        correctSteps[Route.DA]++; // A
+
+        route.Steps.Should().BeEquivalentTo(correctSteps);
+    }
+
+    [Test]
+    public void TestFirstIteration()
+    {
+        var numericPad = new NumericPad();
+
+        var route = numericPad.ToRoute("<A^A>^^AvvvA");
+
+        route.Iterate();
+
+        var correctSteps = new int[17];
+        //A
+        correctSteps[Route.AD]++; //v
+        correctSteps[Route.DL]++; //<
+        correctSteps[Route.LL]++; //<
+        correctSteps[Route.LA]++; //A
+        correctSteps[Route.AR]++; //>
+        correctSteps[Route.RR]++; //>
+        correctSteps[Route.RU]++; //^
+        correctSteps[Route.UA]++; //A
+        correctSteps[Route.AL]++; //<
+        correctSteps[Route.LA]++; //A
+        correctSteps[Route.AR]++; //>
+        correctSteps[Route.RA]++; //A
+        correctSteps[Route.AD]++; //v
+        correctSteps[Route.DA]++; //A
+        correctSteps[Route.AL]++; //<
+        correctSteps[Route.LU]++; //^
+        correctSteps[Route.UA]++; //A
+        correctSteps[Route.AA]++; //A
+        correctSteps[Route.AR]++; //>
+        correctSteps[Route.RA]++; //A
+        correctSteps[Route.AL]++; //<
+        correctSteps[Route.LD]++; //v
+        correctSteps[Route.DA]++; //A
+        correctSteps[Route.AA]++; //A
+        correctSteps[Route.AA]++; //A
+        correctSteps[Route.AU]++; //^
+        correctSteps[Route.UR]++; //>
+        correctSteps[Route.RA]++; //A
+
+        for (int n = 0; n < route.Steps.Length; n++)
+        {
+            route.Steps[n].Should().Be(correctSteps[n], "" + n);
+        }
+    }
+
+    [TestCase("<A^A>^^AvvvA")]
+    [TestCase("<vA<AA>>^AvAA<^A>A<v<A>>^AvA^A<vA>^A<v<A>^A>AAvA^A<v<A>A>^AAAvA<^A>A")]
+    public void TestLength(string toTest)
+    {
+        var numericPad = new NumericPad();
+
+        var route = numericPad.ToRoute(toTest);
+
+        route.Length.Should().Be(toTest.Length);
+    }
+
+    [Test]
     public void TestNumPadRoutes()
     {
         var numericPad = new NumericPad();
         var code = "029A";
 
-        var route = numericPad.GetShortestRouteForCode(code);
+        var routes = numericPad.GetRoutesForCode(code);
 
         string[] options = ["<A^A>^^AvvvA", "<A^A^>^AvvvA", "<A^A^^>AvvvA"];
+        Route[] converted = options.Select(numericPad.ToRoute).ToArray();
 
-        options.Should().Contain(route);
-    }
-
-    [TestCase("<A^A>^^AvvvA", "v<<A>>^A<A>AvA<^AA>A<vAAA>^A")]
-    //[TestCase("<A^A^>^AvvvA", "v<<A>>^A<A>AvA<^AA>A<vAAA>^A")] aha
-    [TestCase("<A^A^^>AvvvA", "v<<A>>^A<A>AvA<^AA>A<vAAA>^A")]
-    [TestCase("v<<A>>^A<A>AvA<^AA>A<vAAA>^A", "<vA<AA>>^AvAA<^A>A<v<A>>^AvA^A<vA>^A<v<A>^A>AAvA^A<v<A>A>^AAAvA<^A>A")]
-    public void TestDirectionalPadRoutes(string from, string to)
-    {
-        var directionalPad = new DirectionalPad();
-
-        var route = directionalPad.GetOneRouteForRoute(from);
-
-        route.Should().HaveLength(to.Length);
-
-        //   <    A  ^  A  >   ^   ^  A   v v v   A
-        //v<<A >^>A <A >A <A >vA ^<A >A v<A A A ^>A
-
-        //   <    A  ^  A  ^   > ^  A   v v v   A
-        //v<<A >>^A <A >A vA <^A A >A <vA A A >^A
-    }
-
-    [Test]
-    public void TestNoDirectionalPreference()
-    {
-        var directions = new[] { "^", ">", "v", "<" };
-
-        for (int n = 0; n < directions.Length; n++)
+        foreach (var r in converted)
         {
-            for (int i = 0; i < directions.Length; i++)
-            {
-                var directionalPad = new DirectionalPad();
-                var route = directionalPad.GetOneRouteForRoute(directions[n] + directions[i] + 'A');
-                var inverse = directionalPad.GetOneRouteForRoute(directions[i] + directions[n] + 'A');
-
-                route.Length.Should().Be(inverse.Length);
-            }
+            routes.Should().Contain(r);
         }
     }
 
-    [TestCase("^", "<A")]
-    [TestCase("<", "v<<A")]
-    [TestCase("v", "v<A")]
-    [TestCase(">", "vA")]
-    [TestCase("<<", "v<<AA")]
-    public void DirPadTests(string route, string expected)
-    {
-        var directionalPad = new DirectionalPad();
-        var result = directionalPad.GetOneRouteForRoute(route);
-
-        result.Should().Be(expected);
-    }
-
-    [TestCase("029A", 68)]
-    [TestCase("980A", 60)]
-    [TestCase("179A", 68)]
-    [TestCase("456A", 64)]
-    [TestCase("379A", 64)]
-    public void TestLengthsForCodes(string code, int length)
+    [TestCase("029A", 0, 12)]
+    [TestCase("029A", 1, 28)]
+    [TestCase("029A", 2, 68)]
+    [TestCase("980A", 2, 60)]
+    [TestCase("179A", 2, 68)]
+    [TestCase("456A", 2, 64)]
+    [TestCase("379A", 2, 64)]
+    public void TestLengthsForCodes(string code, int steps, int length)
     {
         var sol = new Solution(example);
 
-        var route = sol.GetRouteForCode(code, 2);
+        var route = sol.GetRouteForCode(code, steps);
 
-        // long / mine
-        // 3     7   9    A
-        //^A ^^<<A >>A vvvA
-
-        // ^  A  ^ ^   < <    A  > >  A   v v v   A
-        //<A >A <A A v<A A >>^A vA A ^A v<A A A >^A
-
-        //    <    A  >  A    <   A A   v  <    A A  > >   ^  A   v   A A  ^  A   v  <    A A A  >   ^  A
-        // v<<A >>^A vA ^A v<<A>>^A A v<A <A >>^A A vA A <^A >A v<A >^A A <A >A v<A <A >>^A A A vA <^A >A
-
-        // short / theirs
-        //  3     7   9    A
-        // ^A <<^^A >>A vvvA
-
-        //  ^   A    < <   ^ ^  A  > >  A   v v v   A 
-        // <A  >A v<<A A >^A A >A vA A ^A <vA A A >^A
-
-        //    <    A  >  A   v  < <    A A  >   ^  A A  >  A   v   A A  ^  A    <  v   A A A  >   ^  A
-        // <v<A >>^A vA ^A <vA <A A >>^A A vA <^A >A A vA ^A <vA >^A A <A >A <v<A >A >^A A A vA <^A >A
-
-        route.Should().HaveLength(length);
-    }
-
-    // ^<<A ^^A >>A vvvA
-
-    [TestCase("<v<A>>^A<vA<A>>^AAvAA<^A>A<v<A>>^AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A", "<A>Av<<AA>^AA>AvAA^A<vAAA>^A")]
-    [TestCase("<Av<AA>>^A<AA>AvAA^A<vAAA>^A", "")]
-    public void Revert(string input, string output)
-    {
-        var directionalPad = new DirectionalPad();
-
-        var result = directionalPad.Revert(input);
-
-        result.Should().Be(output);
+        route.Length.Should().Be(length);
     }
 
     public const string example = @"029A

@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Advent2024.Day21;
+﻿namespace Advent2024.Day21;
 
 
 public class NumericPad
@@ -20,73 +18,111 @@ public class NumericPad
         {'A', new(2,3) }
     };
 
-    public Dictionary<(char, char), string> moves = [];
-
-    public NumericPad()
+    public Route[] GetRoutesForCode(string code)
     {
-        for (int n = 0; n < buttons.Count; n++)
+        var actual = "A" + code;
+
+        Route[] result = null;
+        foreach (var (first, second) in actual.PairWise())
         {
-            for (int i = 0; i < buttons.Count; i++)
+            var from = buttons[first];
+            var to = buttons[second];
+
+            var routes = GetRoutes(from, to)
+                .Select(ToRoute);
+
+            if (result == null) result = routes.ToArray();
+            else
             {
-                var from = buttons.ElementAt(n).Key;
-                var to = buttons.ElementAt(i).Key;
-
-                var fromCoord = buttons[from];
-                var toCoord = buttons[to];
-
-                moves.Add((from, to), GetRoute(fromCoord, toCoord));
+                var newResult = new List<Route>();
+                foreach (var r1 in routes)
+                {
+                    foreach (var r2 in result)
+                    {
+                        newResult.Add(r2 + r1);
+                    }
+                }
+                result = newResult.ToArray();
             }
         }
+
+        return result;
     }
 
-    public string GetRoute(Coordinate2D from, Coordinate2D to)
+    public Route ToRoute(string input)
+    {
+        var route = new Route()
+        {
+            InitialValue = input
+        };
+
+        var actual = "A" + input;
+
+        foreach (var (first, second) in actual.PairWise())
+        {
+            var index = moves[(first, second)];
+
+            route.Steps[index]++;
+        }
+
+        return route;
+    }
+
+    public string[] GetRoutes(Coordinate2D from, Coordinate2D to)
     {
         if (from == to)
-            return "A";
+            return ["A"];
 
-        if (from == new Coordinate2D(1, 3) && to.X < from.X)
-        {
-            return "^" + GetRoute(from.ShiftY(-1), to);
-        }
-
-        if (from == new Coordinate2D(0, 2) && to.Y > from.Y)
-        {
-            return ">" + GetRoute(from.ShiftX(1), to);
-        }
-
-        if (from.X > to.X)
-        {
-            return "<" + GetRoute(from.ShiftX(-1), to);
-        }
-        if (from.Y > to.Y)
-        {
-            return "^" + GetRoute(from.ShiftY(-1), to);
-        }
-        if (from.Y < to.Y)
-        {
-            return "v" + GetRoute(from.ShiftY(1), to);
-        }
+        List<string> results = [];
         if (from.X < to.X)
         {
-            return ">" + GetRoute(from.ShiftX(1), to);
+            results.AddRange(GetRoutes(from.ShiftX(1), to).Select(r => ">" + r));
         }
-        throw new NotSupportedException("X and Y are the same for from and to, but from and to are not the same");
-    }
 
-    public string GetShortestRouteForCode(string code)
-    {
-        code = 'A' + code;
-
-        var oneShortestBuilder = new StringBuilder();
-        for (int n = 0; n < code.Length - 1; n++)
+        if (from.X > to.X && (from != new Coordinate2D(1, 3)))
         {
-            var pair = code.Substring(n, 2);
-            var routes = moves[(pair[0], pair[1])];
-            oneShortestBuilder.Append(routes);
+            results.AddRange(GetRoutes(from.ShiftX(-1), to).Select(r => "<" + r));
         }
 
-        return oneShortestBuilder.ToString();
+        if (from.Y < to.Y && (from != new Coordinate2D(0, 2)))
+        {
+            results.AddRange(GetRoutes(from.ShiftY(1), to).Select(r => "v" + r));
+        }
+
+        if (from.Y > to.Y)
+        {
+            results.AddRange(GetRoutes(from.ShiftY(-1), to).Select(r => "^" + r));
+        }
+
+        return results.ToArray();
     }
 
+    public Dictionary<(char, char), int> moves = new()
+    {
+        {('<', '<'), Route.LL },
+        {('<', '^'), Route.LU },
+        {('<', 'v'), Route.LD },
+        {('<', 'A'), Route.LA },
 
+        {('^', '<'), Route.UL },
+        {('^', '^'), Route.UU },
+        {('^', '>'), Route.UR },
+        {('^', 'A'), Route.UA },
+
+        {('v', '<'), Route.DL },
+        {('v', 'v'), Route.DD },
+        {('v', '>'), Route.DR },
+        {('v', 'A'), Route.DA },
+
+        {('>', '^'), Route.RU },
+        {('>', 'v'), Route.RD },
+        {('>', '>'), Route.RR },
+        {('>', 'A'), Route.RA },
+
+        {('A', '<'), Route.AL },
+        {('A', '^'), Route.AU },
+        {('A', 'v'), Route.AD },
+        {('A', '>'), Route.AR },
+        {('A', 'A'), Route.AA },
+    };
 }
