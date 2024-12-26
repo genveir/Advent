@@ -14,9 +14,9 @@ public abstract class Register
         foreach (var element in Elements)
         {
             if (element.GetValue() == true)
-                sb.Append("1");
+                sb.Append('1');
             else if (element.GetValue() == false)
-                sb.Append("0");
+                sb.Append('0');
             else
                 throw new Exception("Element has no value");
         }
@@ -43,11 +43,11 @@ public class ReadonlyRegister : Register
 
 public class SettableRegister : Register
 {
-    public Pin[] Pins { get; set; }
+    public Connection[] Pins { get; set; }
     public override NetworkElement[] Elements
     {
         get => Pins;
-        set => Pins = value.Cast<Pin>().ToArray();
+        set => Pins = value.Cast<Connection>().ToArray();
     }
 
     public void SetValue(long value)

@@ -1,88 +1,51 @@
 ﻿namespace Advent2024.Day24;
 public abstract class NetworkElement
 {
-    public List<NetworkElement> FeedsInto { get; set; } = [];
+    public static int _id = 0;
+    public int Id { get; set; } = _id++;
+
 
     public abstract bool? GetValue();
-
-    public abstract IEnumerable<Connection> GetWires();
-
-    public abstract bool Validate();
-    public abstract bool Validate(NetworkElement feedsInto);
 }
 
-public abstract class NamedElement : NetworkElement
+public interface INamedElement
 {
     public string Name { get; set; }
 }
 
-public class Pin : NamedElement
+public class Connection : NetworkElement, INamedElement
 {
-    public bool Value { get; set; }
+    public Connection() { }
 
     [ComplexParserTarget("name: value")]
-    public Pin(string name, string value)
+    public Connection(string name, string value)
     {
         Name = name;
         Value = value == "1";
     }
 
-    public override bool? GetValue()
-    {
-        return Value;
-    }
+    public bool? Value { get; set; }
 
-    public override IEnumerable<Connection> GetWires() => [];
+    public string Name { get; set; }
 
-    public override string ToString() => $"Pin {Name} {Value}";
+    public Gate Source { get; set; }
 
-    public override bool Validate() => true;
-
-    public override bool Validate(NetworkElement feedsInto) => feedsInto is XorGate or AndGate;
-}
-
-public class Output : Connection
-{
-    public override bool Validate() => base.Validate(this);
-}
-
-public class Connection : NamedElement
-{
-    public static HashSet<string> faultyConnections = [];
-
-    public NetworkElement Source { get; set; }
+    public List<Gate> FeedsInto { get; set; } = [];
 
     public override bool? GetValue()
     {
-        return Source.GetValue();
+        return Value ?? Source.GetValue();
     }
 
-    public override IEnumerable<Connection> GetWires() => Source.GetWires().Append(this);
-
-    public override string ToString() => $"Connection {Name}";
-
-    public override bool Validate() => Source.Validate(this);
-
-    public override bool Validate(NetworkElement feedsInto)
-    {
-        var isValid = Source.Validate(feedsInto);
-        if (!isValid)
-        {
-            faultyConnections.Add(Name);
-        }
-
-        return isValid;
-    }
+    public override string ToString() => $"[{Id}: {Name}]";
 }
 
 public abstract class Gate : NetworkElement
 {
-    public NamedElement Left { get; set; }
-    public NamedElement Right { get; set; }
+    public Connection Left { get; set; }
+    public Connection Right { get; set; }
 
-    public override IEnumerable<Connection> GetWires() => Left.GetWires().Concat(Right.GetWires());
-
-    public override bool Validate() => Left.Validate(this) && Right.Validate(this);
+    public Connection FeedsInto { get; set; }
 }
 
 public class AndGate : Gate
@@ -98,9 +61,7 @@ public class AndGate : Gate
         return null;
     }
 
-    public override string ToString() => $"AndGate {Left} {Right}";
-
-    public override bool Validate(NetworkElement feedsInto) => feedsInto is OrGate;
+    public override string ToString() => $"{Id}: {Left} And {Right} -> {FeedsInto} ";
 }
 
 public class OrGate : Gate
@@ -116,9 +77,7 @@ public class OrGate : Gate
         return null;
     }
 
-    public override string ToString() => $"OrGate {Left} {Right}";
-
-    public override bool Validate(NetworkElement feedsInto) => feedsInto is AndGate or XorGate;
+    public override string ToString() => $"{Id}: {Left} Or {Right} -> {FeedsInto} ";
 }
 
 public class XorGate : Gate
@@ -131,7 +90,5 @@ public class XorGate : Gate
         return true;
     }
 
-    public override string ToString() => $"XorGate {Left} {Right}";
-
-    public override bool Validate(NetworkElement feedsInto) => feedsInto is Output or XorGate or AndGate;
+    public override string ToString() => $"{Id}: {Left} Xor {Right} -> {FeedsInto} ";
 }

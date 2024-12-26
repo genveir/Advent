@@ -14,7 +14,7 @@ class Tests
         sol.GetResult1().Should().Be(output);
     }
 
-    [TestCase(example2, "")]
+    [TestCase("Input.txt", "frn,gmq,vtj,wnf,wtt,z05,z21,z39")]
     public void Test2(string input, object output)
     {
         var sol = new Solution(input);

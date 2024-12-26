@@ -17,7 +17,7 @@ class Program
         stopWatch.Start();
         for (int n = 0; n < numRuns; n++)
         {
-            var solution = new AdventActive.Solution();
+            var solution = new Day24.Solution();
 
             result1 = solution.GetResult1();
             result2 = solution.GetResult2();
