@@ -209,6 +209,11 @@ public static class Helper
         return input.Select(c => (long)(c - 48)).ToArray();
     }
 
+    public static long AsDigit(this char input)
+    {
+        return input - 48;
+    }
+
     public static List<List<T>> Pivot<T>(this IEnumerable<IEnumerable<T>> input)
     {
         T[][] arrayInput = input.Select(i => i.ToArray()).ToArray();
@@ -225,6 +230,12 @@ public static class Helper
         }
 
         return output;
+    }
+
+    public static T[][] PivotToArray<T>(this IEnumerable<IEnumerable<T>> input)
+    {
+        var pivoted = Pivot(input);
+        return pivoted.Select(r => r.ToArray()).ToArray();
     }
 
     public static void InitAndUpdate<KeyType, ValueType>(this Dictionary<KeyType, ValueType> dict,
