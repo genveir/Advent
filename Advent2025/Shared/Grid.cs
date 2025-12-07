@@ -30,6 +30,8 @@ public class Grid<TCellType>
 
     public bool IsInBounds(int x, int y) => new Coordinate2D(x, y).IsInBounds(Cells);
 
+    public bool IsInBounds(Coordinate2D coord) => coord.IsInBounds(Cells);
+
     public List<TCellType> GetNeighbours(bool orthogonalOnly, int x, int y) =>
         GetNeighbours(orthogonalOnly, new Coordinate2D(x, y));
 
